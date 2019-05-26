@@ -14,7 +14,7 @@ import static com.adventofcode.Solution.getInput;
 @RunWith(Parameterized.class)
 public class AoC082017Test extends Generic {
 
-    static private Solution INSTANCE = new AoC082017();
+    private static final Solution INSTANCE = new AoC082017();
 
     public AoC082017Test(final Type type, final String input, final String result) {
         super(INSTANCE, type, input, result);

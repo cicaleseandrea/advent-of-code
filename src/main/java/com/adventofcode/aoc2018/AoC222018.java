@@ -71,7 +71,7 @@ class AoC222018 implements Solution {
                 }
             }
         }
-        return "";
+        return EMPTY;
     }
 
     private void initializeState(final List<String> input) {
@@ -93,7 +93,7 @@ class AoC222018 implements Solution {
         //rocky 0
         //wet 1
         //narrow 2
-        final int type = (int) (erosion % 3);
+        final int type = Math.floorMod(erosion, 3);
         //For each region the following tools can be used:
         //rocky 0 -> 0, 1
         //wet 1 -> 1, 2

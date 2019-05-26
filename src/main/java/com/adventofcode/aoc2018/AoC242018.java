@@ -163,7 +163,7 @@ class AoC242018 implements Solution {
         final Set<String> qualities = new HashSet<>();
         for (int i = 2; i < str.size(); i++) {
             final String quality = str.get(i);
-            qualities.add(quality.replace(",", ""));
+            qualities.add(quality.replace(",", EMPTY));
         }
         if (str.get(0).equals("weak")) {
             builder.setWeaknesses(qualities);
