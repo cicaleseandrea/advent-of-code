@@ -15,7 +15,7 @@ import static com.adventofcode.utils.Utils.MERRY_CHRISTMAS;
 @RunWith(Parameterized.class)
 public class AoC252018Test extends Generic {
 
-    static private Solution INSTANCE = new AoC252018();
+    private static final Solution INSTANCE = new AoC252018();
 
     public AoC252018Test(final Type type, final String input, final String result) {
         super(INSTANCE, type, input, result);

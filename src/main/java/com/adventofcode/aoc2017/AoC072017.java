@@ -13,10 +13,10 @@ class AoC072017 implements Solution {
         var root = new Node<>(new Pair<>(EMPTY, 0L));
         final Map<String, Node<Pair<String, Long>>> programsSeen = new HashMap<>();
         for (final String s : input) {
-            var n = parseRow(s, programsSeen);
-            while (n.getParent().isPresent()) {
-                n = n.getParent().get();
-                root = n;
+            var n = parseRow(s, programsSeen).getParent();
+            while (n.isPresent()) {
+                root = n.get();
+                n = root.getParent();
             }
         }
         return root;

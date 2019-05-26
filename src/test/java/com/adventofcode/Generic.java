@@ -44,5 +44,4 @@ public class Generic {
     }
 
     public enum Type {NONE, FIRST, SECOND}
-
 }
