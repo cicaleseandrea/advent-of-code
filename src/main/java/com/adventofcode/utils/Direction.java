@@ -1,75 +1,52 @@
 package com.adventofcode.utils;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static com.adventofcode.utils.Utils.decrementMod;
+import static com.adventofcode.utils.Utils.incrementMod;
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.toUnmodifiableList;
+
 public enum Direction {
-    DOWN('v') {
-        @Override
-        public Direction rotateClockwise() {
-            return LEFT;
-        }
+    DOWN('v', 0), LEFT('<', 1), UP('^', 2), RIGHT('>', 3);
 
-        @Override
-        public Direction rotateCounterClockwise() {
-            return RIGHT;
-        }
-    }, LEFT('<') {
-        @Override
-        public Direction rotateClockwise() {
-            return UP;
-        }
+    static final List<Direction> BY_POSITION =
+            Arrays.stream(values()).sorted(comparingInt(Direction::getPosition)).collect(toUnmodifiableList());
 
-        @Override
-        public Direction rotateCounterClockwise() {
-            return DOWN;
-        }
-    }, RIGHT('>') {
-        @Override
-        public Direction rotateClockwise() {
-            return DOWN;
-        }
-
-        @Override
-        public Direction rotateCounterClockwise() {
-            return UP;
-        }
-    }, UP('^') {
-        @Override
-        public Direction rotateClockwise() {
-            return RIGHT;
-        }
-
-        @Override
-        public Direction rotateCounterClockwise() {
-            return LEFT;
-        }
-    };
     final char symbol;
+    final int position;
 
-    Direction(final char c) {
+    Direction(final char c, final int position) {
         this.symbol = c;
+        this.position = position;
     }
 
-    public abstract Direction rotateClockwise();
+    public Direction rotateClockwise() {
+        return BY_POSITION.get(incrementMod(position, BY_POSITION.size()));
+    }
 
-    public abstract Direction rotateCounterClockwise();
+    public Direction rotateCounterClockwise() {
+        return BY_POSITION.get(decrementMod(position, BY_POSITION.size()));
+    }
+
+    public Direction rotate(final char c) {
+        if (this == UP || this == DOWN) {
+            if (c == '\\') return rotateCounterClockwise();
+            else if (c == '/') return rotateClockwise();
+        } else if (this == RIGHT || this == LEFT) {
+            if (c == '\\') return rotateClockwise();
+            else if (c == '/') return rotateCounterClockwise();
+        }
+        return this;
+    }
 
     public char getSymbol() {
         return symbol;
     }
 
-    public Direction rotate(final char c) {
-        switch (c) {
-            case '\\':
-                if (this == UP || this == DOWN) return rotateCounterClockwise();
-                if (this == RIGHT || this == LEFT) return rotateClockwise();
-                break;
-            case '/':
-                if (this == UP || this == DOWN) return rotateClockwise();
-                if (this == RIGHT || this == LEFT) return rotateCounterClockwise();
-                break;
-            default:
-                return this;
-        }
-        return this;
+    public int getPosition() {
+        return position;
     }
 
     @Override
