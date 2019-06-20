@@ -17,6 +17,7 @@ public class Generic {
     private final Type type;
     private final String input;
     private final String result;
+    protected static final String PARAMETERS_MESSAGE = "{index}: {0} = {2}";
 
     public Generic() {
         this(null, NONE, EMPTY, EMPTY);

@@ -21,7 +21,7 @@ public class AoC252018Test extends Generic {
         super(INSTANCE, type, input, result);
     }
 
-    @Parameterized.Parameters(name = "{0}({index})->{2}")
+    @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
                 {FIRST, "0,0,0,0\n" +
