@@ -89,7 +89,15 @@ public class Utils {
         return decrementMod(i, 1, mod);
     }
 
+    public static int decrementMod(final int i, final int mod) {
+        return decrementMod(i, 1, mod);
+    }
+
     public static long decrementMod(final long i, final long j, final long mod) {
+        return mod != 0 ? Math.floorMod(i - j, mod) : 0;
+    }
+
+    public static int decrementMod(final int i, final int j, final int mod) {
         return mod != 0 ? Math.floorMod(i - j, mod) : 0;
     }
 
