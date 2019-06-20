@@ -20,7 +20,7 @@ public class AoC082018Test extends Generic {
         super(INSTANCE, type, input, result);
     }
 
-    @Parameterized.Parameters(name = "{0}({index})->{2}")
+    @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
                 {FIRST, "2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2", "138"},
