@@ -4,8 +4,10 @@ import com.adventofcode.Solution;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC242018 implements Solution {
 
@@ -189,13 +191,13 @@ class AoC242018 implements Solution {
     }
 
     @Override
-    public String solveFirstPart(final List<String> input) {
-        return solve(input, b -> true);
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(input.collect(toUnmodifiableList()), b -> true);
     }
 
     @Override
-    public String solveSecondPart(final List<String> input) {
-        return solve(input, b -> b);
+    public String solveSecondPart(final Stream<String> input) {
+        return solve(input.collect(toUnmodifiableList()), b -> b);
     }
 
     private static class Group {

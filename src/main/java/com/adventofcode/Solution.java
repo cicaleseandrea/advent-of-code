@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.stream.Stream;
 
 import static java.lang.ClassLoader.getSystemResource;
 
@@ -19,7 +19,7 @@ public interface Solution {
         }
     }
 
-    String solveFirstPart(final List<String> input);
+    String solveFirstPart(final Stream<String> input);
 
-    String solveSecondPart(final List<String> input);
+    String solveSecondPart(final Stream<String> input);
 }

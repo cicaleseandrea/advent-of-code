@@ -4,20 +4,21 @@ import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
 class AoC252018 implements Solution {
 
     @Override
-    public String solveFirstPart(final List<String> input) {
-        final Set<Pair<Pair<Long, Long>, Pair<Long, Long>>> points = new HashSet<>();
-        for (final String row : input) {
-            final String[] tmp = row.split(",");
-            final Pair<Long, Long> one = new Pair<>(atol(tmp[0]), atol(tmp[1]));
-            final Pair<Long, Long> two = new Pair<>(atol(tmp[2]), atol(tmp[3]));
-            points.add(new Pair<>(one, two));
-        }
+    public String solveFirstPart(final Stream<String> input) {
+        final Set<Pair<Pair<Long, Long>, Pair<Long, Long>>> points =
+                input.map(row -> row.split(","))
+                        .map(tmp -> new Pair<>(
+                                new Pair<>(atol(tmp[0]), atol(tmp[1])),
+                                new Pair<>(atol(tmp[2]), atol(tmp[3]))))
+                        .collect(Collectors.toUnmodifiableSet());
         final Map<Pair<Pair<Long, Long>, Pair<Long, Long>>,
                 Set<Pair<Pair<Long, Long>, Pair<Long, Long>>>> starMapping = new HashMap<>();
         long res = 0L;
@@ -60,7 +61,7 @@ class AoC252018 implements Solution {
     }
 
     @Override
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return MERRY_CHRISTMAS;
     }
 

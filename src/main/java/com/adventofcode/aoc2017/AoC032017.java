@@ -2,18 +2,17 @@ package com.adventofcode.aoc2017;
 
 import com.adventofcode.Solution;
 
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
 class AoC032017 implements Solution {
-    private static String solveFirstPartAlternative(final List<String> input) {
-        final int inputNumber = atoi(input.get(0));
+    private static String solveFirstPartAlternative(final int inputNumber) {
         //compute minimum length of a side to fit our input in a square
         final long length = computeLength(inputNumber);
         //start from the last number, which has the farthest distance
@@ -37,32 +36,28 @@ class AoC032017 implements Solution {
         return itoa(res);
     }
 
-    private static String solve(final List<String> input,
+    private static String solve(final int inputNumber,
                                 BiPredicate<Long, Integer> check,
                                 final Function<long[][], BiFunction<Integer, Integer, LongUnaryOperator>> computePartialResult,
                                 final BiFunction<Integer, Integer, Function<Integer, LongUnaryOperator>> computeFinalResult) {
-        final int inputNumber = atoi(input.get(0));
         final int length = computeLength(inputNumber);
         final long[][] matrix = new long[length][length];
         final int center = length / 2;
         int i = center;
         int j = center;
         long res = matrix[i][j] = 1;
-        long direction = 3;
+        int direction = 3;
         int steps = 0;
         int max = 1;
         while (check.test(res, inputNumber)) {
             matrix[i][j] = res = computePartialResult.apply(matrix).apply(i, j).applyAsLong(res);
             //perform a step in the right direction
             steps++;
-            if (direction == 0) { //up
-                i--;
-            } else if (direction == 1) { //left
-                j--;
-            } else if (direction == 2) { //down
-                i++;
-            } else if (direction == 3) { //right
-                j++;
+            switch (direction) {
+                case 0 -> i--; //up
+                case 1 -> j--; //left
+                case 2 -> i++; //down
+                case 3 -> j++; //right
             }
             //change direction
             if (steps == max) {
@@ -85,15 +80,17 @@ class AoC032017 implements Solution {
         return length;
     }
 
-    public String solveFirstPart(final List<String> input) {
-        if (ThreadLocalRandom.current().nextInt(2) == 0) return solveFirstPartAlternative(input);
-        return solve(input, (res, inputNumber) -> res < inputNumber,
+    public String solveFirstPart(final Stream<String> input) {
+        final int inputNumber = atoi(getFirstString(input));
+        if (ThreadLocalRandom.current().nextInt(2) == 0) return solveFirstPartAlternative(inputNumber);
+        return solve(inputNumber, (res, number) -> res < number,
                 m -> (i, j) -> res -> res + 1,
                 (i, j) -> center -> res -> manhattanDistance(i, j, center, center));
     }
 
-    public String solveSecondPart(final List<String> input) {
-        return solve(input, (res, inputNumber) -> res <= inputNumber,
+    public String solveSecondPart(final Stream<String> input) {
+        final int inputNumber = atoi(getFirstString(input));
+        return solve(inputNumber, (res, number) -> res <= number,
                 m -> (i, j) -> res -> computePartialResult(m, i, j),
                 (i, j) -> center -> res -> res);
     }

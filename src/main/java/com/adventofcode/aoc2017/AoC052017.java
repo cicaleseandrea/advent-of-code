@@ -4,6 +4,7 @@ import com.adventofcode.Solution;
 
 import java.util.List;
 import java.util.function.LongUnaryOperator;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.toLongList;
@@ -14,7 +15,7 @@ class AoC052017 implements Solution {
         return offset < 3 ? offset + 1 : offset - 1;
     }
 
-    private static String solve(final List<String> input, LongUnaryOperator computeOffset) {
+    private static String solve(final Stream<String> input, LongUnaryOperator computeOffset) {
         final List<Long> numbers = toLongList(input);
         int res = 0;
         int i = 0;
@@ -31,11 +32,11 @@ class AoC052017 implements Solution {
         return offset + 1;
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input, AoC052017::computeOffsetFirstPart);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input, AoC052017::computeOffsetSecondPart);
     }
 }

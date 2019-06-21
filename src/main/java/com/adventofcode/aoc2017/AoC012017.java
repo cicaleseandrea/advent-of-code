@@ -2,11 +2,10 @@ package com.adventofcode.aoc2017;
 
 import com.adventofcode.Solution;
 
-import java.util.List;
 import java.util.function.IntUnaryOperator;
+import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.charToInt;
-import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.*;
 
 class AoC012017 implements Solution {
 
@@ -24,13 +23,13 @@ class AoC012017 implements Solution {
         return itoa(res);
     }
 
-    public String solveFirstPart(final List<String> input) {
-        final String s = input.get(0);
+    public String solveFirstPart(final Stream<String> input) {
+        final String s = getFirstString(input);
         return solve(s, i -> (i + 1) % s.length());
     }
 
-    public String solveSecondPart(final List<String> input) {
-        final String s = input.get(0);
+    public String solveSecondPart(final Stream<String> input) {
+        final String s = getFirstString(input);
         return solve(s, i -> (i + s.length() / 2) % s.length());
     }
 }

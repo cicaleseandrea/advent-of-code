@@ -9,6 +9,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 public class Utils {
     public static final String EMPTY = "";
@@ -23,6 +24,10 @@ public class Utils {
     public static final Pattern Long_PATTERN = Pattern.compile("\\d+");
 
     private Utils() {
+    }
+
+    public static String getFirstString(final Stream<String> s) {
+        return s.findFirst().orElse(EMPTY);
     }
 
     public static Pair<Long, Long> createPairLong(final long[] tmp) {
@@ -106,15 +111,24 @@ public class Utils {
     }
 
     public static boolean areNotAnagrams(final List<String> strings) {
-        return strings.stream().map(String::toCharArray).peek(Arrays::sort).map(String::new).allMatch(new HashSet<>()::add);
+        return areDistinct(strings.stream().map(String::toCharArray)
+                .peek(Arrays::sort).map(String::new).collect(toUnmodifiableList()));
     }
 
-    public static List<String> splitOnNewLine(final String s) {
-        return s.lines().collect(toList());
+    public static Stream<String> splitOnNewLine(final String s) {
+        return s.lines();
     }
 
-    public static List<Long> toLongList(final List<String> list) {
-        return list.stream().map(Long::valueOf).collect(toList());
+    public static List<Long> toLongList(final Stream<String> stream) {
+        return toLongStream(stream).collect(toList());
+    }
+
+    public static Stream<Long> toLongStream(final Stream<String> stream) {
+        return stream.map(Long::valueOf);
+    }
+
+    public static <T> Iterable<T> getIterable(Stream<T> s) {
+        return s::iterator;
     }
 
     public static List<String> splitOnTabOrSpace(final String s) {

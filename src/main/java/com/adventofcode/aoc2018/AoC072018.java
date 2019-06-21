@@ -5,8 +5,10 @@ import com.adventofcode.utils.Pair;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC072018 implements Solution {
 
@@ -110,11 +112,12 @@ class AoC072018 implements Solution {
         return (c - AT) + (isSolutionInput ? 60 : 0);
     }
 
-    public String solveFirstPart(final List<String> input) {
-        return solve(input, 1, (tasks, steps) -> tasks);
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(input.collect(toUnmodifiableList()), 1, (tasks, steps) -> tasks);
     }
 
-    public String solveSecondPart(final List<String> input) {
-        return solve(input, isSolutionInput(input) ? 5 : 2, (tasks, steps) -> steps);
+    public String solveSecondPart(final Stream<String> input) {
+        final List<String> list = input.collect(toUnmodifiableList());
+        return solve(list, isSolutionInput(list) ? 5 : 2, (tasks, steps) -> steps);
     }
 }

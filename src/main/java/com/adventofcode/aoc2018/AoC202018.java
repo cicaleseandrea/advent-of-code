@@ -6,6 +6,7 @@ import com.adventofcode.utils.Pair;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Pair.ZERO;
 import static com.adventofcode.utils.Utils.*;
@@ -170,12 +171,12 @@ class AoC202018 implements Solution {
     }
 
     @Override
-    public String solveFirstPart(final List<String> input) {
-        return solve(input.get(0), i -> true, LongSummaryStatistics::getMax);
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(getFirstString(input), i -> true, LongSummaryStatistics::getMax);
     }
 
     @Override
-    public String solveSecondPart(final List<String> input) {
-        return solve(input.get(0), i -> i >= 1000, LongSummaryStatistics::getCount);
+    public String solveSecondPart(final Stream<String> input) {
+        return solve(getFirstString(input), i -> i >= 1000, LongSummaryStatistics::getCount);
     }
 }

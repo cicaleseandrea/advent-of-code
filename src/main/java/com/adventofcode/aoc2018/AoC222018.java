@@ -5,6 +5,7 @@ import com.adventofcode.utils.Pair;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
@@ -14,8 +15,8 @@ class AoC222018 implements Solution {
     private Pair<Long, Long> target;
 
     @Override
-    public String solveFirstPart(final List<String> input) {
-        initializeState(input);
+    public String solveFirstPart(final Stream<String> input) {
+        initializeState(input.toArray(String[]::new));
         final Map<Pair<Long, Long>, List<Region>> matrix = new HashMap<>();
         final SortedMap<Long, Set<Region>> priorityQueue = new TreeMap<>();
         int res = 0;
@@ -30,8 +31,8 @@ class AoC222018 implements Solution {
     }
 
     @Override
-    public String solveSecondPart(final List<String> input) {
-        initializeState(input);
+    public String solveSecondPart(final Stream<String> input) {
+        initializeState(input.toArray(String[]::new));
         final Map<Pair<Long, Long>, List<Region>> matrix = new HashMap<>();
         final NavigableMap<Long, Set<Region>> priorityQueue = new TreeMap<>();
         //create only start position, other positions will be created only when needed
@@ -74,9 +75,9 @@ class AoC222018 implements Solution {
         return EMPTY;
     }
 
-    private void initializeState(final List<String> input) {
-        depth = atoi(extractNumberFromString(input.get(0)));
-        target = createPairLong(input.get(1).substring(8).split(","));
+    private void initializeState(final String[] input) {
+        depth = atoi(extractNumberFromString(input[0]));
+        target = createPairLong(input[1].substring(8).split(","));
     }
 
     private int computeRegion(final Map<Pair<Long, Long>, List<Region>> matrix,

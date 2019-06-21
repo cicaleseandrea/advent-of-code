@@ -4,7 +4,7 @@ import com.adventofcode.Solution;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 import static java.lang.Character.toUpperCase;
@@ -30,12 +30,12 @@ class AoC052018 implements Solution {
         return (a ^ b) == 32;
     }
 
-    public String solveFirstPart(final List<String> input) {
-        return itoa(react(input.get(0), SPACE));
+    public String solveFirstPart(final Stream<String> input) {
+        return itoa(react(getFirstString(input), SPACE));
     }
 
-    public String solveSecondPart(final List<String> input) {
-        final String str = input.get(0);
+    public String solveSecondPart(final Stream<String> input) {
+        final String str = getFirstString(input);
         int res = upperCaseLetters().mapToInt(remove -> react(str, remove)).min().orElse(0);
         return itoa(res);
     }

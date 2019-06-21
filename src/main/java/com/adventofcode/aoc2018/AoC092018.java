@@ -6,13 +6,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
 class AoC092018 implements Solution {
 
-    private static String solve(final List<String> input, final long multiplier) {
-        final List<String> sentence = splitOnTabOrSpace(input.get(0));
+    private static String solve(final String input, final long multiplier) {
+        final List<String> sentence = splitOnTabOrSpace(input);
         final int players = atoi(sentence.get(0));
         final long[] scores = new long[players];
         final long nMarbles = atol(sentence.get(6)) * multiplier;
@@ -61,11 +62,11 @@ class AoC092018 implements Solution {
         return it;
     }
 
-    public String solveFirstPart(final List<String> input) {
-        return solve(input, 1L);
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(getFirstString(input), 1L);
     }
 
-    public String solveSecondPart(final List<String> input) {
-        return solve(input, 100L);
+    public String solveSecondPart(final Stream<String> input) {
+        return solve(getFirstString(input), 100L);
     }
 }

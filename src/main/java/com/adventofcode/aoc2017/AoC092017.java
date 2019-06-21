@@ -2,19 +2,22 @@ package com.adventofcode.aoc2017;
 
 import com.adventofcode.Solution;
 
-import java.util.List;
+import java.util.stream.Stream;
+
+import static com.adventofcode.utils.Utils.getFirstString;
 
 class AoC092017 implements Solution {
 
-    private static String solve(final List<String> input) {
-        return input.get(0);
+    //TODO
+    private static String solve(final Stream<String> input) {
+        return getFirstString(input);
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input);
     }
 }

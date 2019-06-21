@@ -64,11 +64,11 @@ class AoC082018 implements Solution {
         return res;
     }
 
-    public String solveFirstPart(final List<String> input) {
-        return solve(splitOnTabOrSpace(input.get(0)), AoC082018::computeNodeSum);
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(splitOnTabOrSpace(getFirstString(input)), AoC082018::computeNodeSum);
     }
 
-    public String solveSecondPart(final List<String> input) {
-        return solve(splitOnTabOrSpace(input.get(0)), AoC082018::computeNodeValue);
+    public String solveSecondPart(final Stream<String> input) {
+        return solve(splitOnTabOrSpace(getFirstString(input)), AoC082018::computeNodeValue);
     }
 }

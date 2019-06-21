@@ -5,14 +5,15 @@ import com.adventofcode.utils.Node;
 import com.adventofcode.utils.Pair;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
 class AoC072017 implements Solution {
-    private static Node<Pair<String, Long>> buildTree(final List<String> input) {
+    private static Node<Pair<String, Long>> buildTree(final Stream<String> input) {
         var root = new Node<>(new Pair<>(EMPTY, 0L));
         final Map<String, Node<Pair<String, Long>>> programsSeen = new HashMap<>();
-        for (final String s : input) {
+        for (final String s : getIterable(input)) {
             var n = parseRow(s, programsSeen).getParent();
             while (n.isPresent()) {
                 root = n.get();
@@ -39,10 +40,10 @@ class AoC072017 implements Solution {
         return child;
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         final Set<String> programsSeen = new HashSet<>();
         final Set<String> children = new HashSet<>();
-        for (final String s : input) {
+        for (final String s : getIterable(input)) {
             final List<String> strings = splitOnTabOrSpace(s);
             final String name = strings.get(0);
             programsSeen.add(name);
@@ -57,7 +58,7 @@ class AoC072017 implements Solution {
         return programsSeen.stream().findFirst().orElse(EMPTY);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         final var root = buildTree(input);
         final long res = -computeBalancedSum(root);
         return itoa(res);

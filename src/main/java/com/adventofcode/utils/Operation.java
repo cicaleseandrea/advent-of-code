@@ -6,97 +6,97 @@ public enum Operation {
     ADDR((r, o) -> r[o[3]] = registerA(r, o) + registerB(r, o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] + r[" + o[2] + "]";
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] + r[" + valueB(o) + "]";
         }
     },
     ADDI((r, o) -> r[o[3]] = registerA(r, o) + valueB(o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] + " + o[2];
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] + " + valueB(o);
         }
     },
     MULR((r, o) -> r[o[3]] = registerA(r, o) * registerB(r, o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] * r[" + o[2] + "]";
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] * r[" + valueB(o) + "]";
         }
     },
     MULI((r, o) -> r[o[3]] = registerA(r, o) * valueB(o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] * " + o[2];
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] * " + valueB(o);
         }
     },
     BANR((r, o) -> r[o[3]] = registerA(r, o) & registerB(r, o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] & r[" + o[2] + "]";
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] & r[" + valueB(o) + "]";
         }
     },
     BANI((r, o) -> r[o[3]] = registerA(r, o) & valueB(o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] & " + o[2];
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] & " + valueB(o);
         }
     },
     BORR((r, o) -> r[o[3]] = registerA(r, o) | registerB(r, o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] | r[" + o[2] + "]";
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] | r[" + valueB(o) + "]";
         }
     },
     BORI((r, o) -> r[o[3]] = registerA(r, o) | valueB(o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] | " + o[2];
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] | " + valueB(o);
         }
     },
     SETR((r, o) -> r[o[3]] = registerA(r, o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "]";
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "]";
         }
     },
     SETI((r, o) -> r[o[3]] = valueA(o)) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " " + o[1];
+            return super.stringRepresentation(o) + " " + valueA(o);
         }
     },
     GTIR((r, o) -> r[o[3]] = valueA(o) > registerB(r, o) ? 1 : 0) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " " + o[1] + " > r[" + o[2] + "]";
+            return super.stringRepresentation(o) + " " + valueA(o) + " > r[" + valueB(o) + "]";
         }
     },
     GTRI((r, o) -> r[o[3]] = registerA(r, o) > valueB(o) ? 1 : 0) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] > " + o[2];
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] > " + valueB(o);
         }
     },
     GTRR((r, o) -> r[o[3]] = registerA(r, o) > registerB(r, o) ? 1 : 0) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] > r[" + o[2] + "]";
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] > r[" + valueB(o) + "]";
         }
     },
     EQIR((r, o) -> r[o[3]] = valueA(o) == registerB(r, o) ? 1 : 0) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " " + o[1] + " == r[" + o[2] + "]";
+            return super.stringRepresentation(o) + " " + valueA(o) + " == r[" + valueB(o) + "]";
         }
     },
     EQRI((r, o) -> r[o[3]] = registerA(r, o) == valueB(o) ? 1 : 0) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] == " + o[2];
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] == " + valueB(o);
         }
     },
     EQRR((r, o) -> r[o[3]] = registerA(r, o) == registerB(r, o) ? 1 : 0) {
         @Override
         public String stringRepresentation(final int[] o) {
-            return super.stringRepresentation(o) + " r[" + o[1] + "] == r[" + o[2] + "]";
+            return super.stringRepresentation(o) + " r[" + valueA(o) + "] == r[" + valueB(o) + "]";
         }
     };
 
@@ -107,11 +107,11 @@ public enum Operation {
     }
 
     private static int registerA(final int[] registers, final int[] op) {
-        return registers[op[1]];
+        return registers[valueA(op)];
     }
 
     private static int registerB(final int[] registers, final int[] op) {
-        return registers[op[2]];
+        return registers[valueB(op)];
     }
 
     private static int valueA(final int[] op) {

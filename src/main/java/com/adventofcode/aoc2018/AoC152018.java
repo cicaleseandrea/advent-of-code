@@ -6,6 +6,7 @@ import com.adventofcode.utils.Pair;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Pair.ZERO;
 import static com.adventofcode.utils.Utils.*;
@@ -19,7 +20,7 @@ class AoC152018 implements Solution {
     private static SortedMap<Pair<Long, Long>, Unit> originalElves;
     private static SortedMap<Pair<Long, Long>, Unit> originalGoblins;
 
-    private static String solve(final List<String> input, final Predicate<Boolean> stopEarly) {
+    private static String solve(final Stream<String> input, final Predicate<Boolean> stopEarly) {
         initializeState(input);
         SortedMap<Pair<Long, Long>, Unit> elves;
         SortedMap<Pair<Long, Long>, Unit> goblins;
@@ -197,12 +198,12 @@ class AoC152018 implements Solution {
         return map.getOrDefault(position, HASH) != HASH && !units.containsKey(position);
     }
 
-    private static void initializeState(final List<String> input) {
+    private static void initializeState(final Stream<String> input) {
         map = new TreeMap<>(getPairComparator());
         originalElves = new TreeMap<>(getPairComparator());
         originalGoblins = new TreeMap<>(getPairComparator());
         long y = 0;
-        for (final String row : input) {
+        for (final String row : getIterable(input)) {
             long x = 0;
             for (final char c : row.toCharArray()) {
                 final Pair<Long, Long> position = new Pair<>(x, y);
@@ -247,11 +248,11 @@ class AoC152018 implements Solution {
         System.out.println();
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input, b -> false);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input, b -> b);
     }
 

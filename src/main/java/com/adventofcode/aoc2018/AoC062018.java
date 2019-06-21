@@ -4,6 +4,7 @@ import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
@@ -17,10 +18,10 @@ class AoC062018 implements Solution {
         columns = 0;
     }
 
-    private static Map<Character, Pair<Integer, Integer>> createPoints(final List<String> input) {
+    private static Map<Character, Pair<Integer, Integer>> createPoints(final Stream<String> input) {
         final Map<Character, Pair<Integer, Integer>> points = new HashMap<>();
         char name = 'A';
-        for (final String s : input) {
+        for (final String s : getIterable(input)) {
             final Pair<Integer, Integer> point = createPairInteger(s.split(","));
             points.put(name++, point);
             assert name != SPACE;
@@ -34,7 +35,7 @@ class AoC062018 implements Solution {
         return i == 0 || j == 0 || i == rows - 1 || j == columns - 1;
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         reset();
         final var points = createPoints(input);
         final Map<Character, Long> frequencies = new HashMap<>();
@@ -68,7 +69,7 @@ class AoC062018 implements Solution {
         return itoa(Collections.max(frequencies.values()));
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         reset();
         final var points = createPoints(input);
         long res = 0L;

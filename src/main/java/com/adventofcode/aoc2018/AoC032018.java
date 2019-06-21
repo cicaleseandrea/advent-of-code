@@ -4,6 +4,8 @@ import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
@@ -11,18 +13,19 @@ class AoC032018 implements Solution {
 
     private static final int SIZE = 1000;
 
-    public String solveFirstPart(final List<String> input) {
-        final long[][] matrix = createMatrix(input);
+    public String solveFirstPart(final Stream<String> input) {
+        final long[][] matrix = createMatrix(getIterable(input));
         //count overlapping
         final long res =
                 matrixToLongStream(matrix).filter(i -> i == -1).count();
         return itoa(res);
     }
 
-    public String solveSecondPart(final List<String> input) {
-        final long[][] matrix = createMatrix(input);
+    public String solveSecondPart(final Stream<String> input) {
+        final Iterable<String> list = input.collect(Collectors.toUnmodifiableList());
+        final long[][] matrix = createMatrix(list);
         long res = -1;
-        for (final String fabric : input) {
+        for (final String fabric : list) {
             //check which id does not overlap
             res = computationOnFabric(matrix, fabric);
             if (res != -1) break;
@@ -30,12 +33,10 @@ class AoC032018 implements Solution {
         return itoa(res);
     }
 
-    private long[][] createMatrix(final List<String> input) {
+    private long[][] createMatrix(final Iterable<String> input) {
         final long[][] matrix = new long[SIZE][SIZE];
-        for (final String fabric : input) {
-            //fill matrix
-            computationOnFabric(matrix, fabric);
-        }
+        //fill matrix
+        input.forEach(fabric -> computationOnFabric(matrix, fabric));
         return matrix;
     }
 

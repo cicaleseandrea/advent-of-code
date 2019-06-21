@@ -9,17 +9,20 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC012018 implements Solution {
 
-    private static String solveFirstPartAlternative(final List<String> s) {
-        final long res = s.parallelStream().map(String::trim).mapToLong(Utils::atol).sum();
+    private static String solveFirstPartAlternative(final Stream<String> s) {
+        final long res = s.map(String::trim).mapToLong(Utils::atol).sum();
         return itoa(res);
     }
 
-    private static String solve(final List<String> numbers, final BiPredicate<Long, Integer> checkNextItem) {
+    private static String solve(final Stream<String> input, final BiPredicate<Long, Integer> checkNextItem) {
+        final List<String> numbers = input.collect(toUnmodifiableList());
         final int size = numbers.size();
         long sum = 0;
         int i = 0;
@@ -30,14 +33,14 @@ class AoC012018 implements Solution {
         return itoa(sum);
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         final AtomicLong sums = new AtomicLong();
         if (ThreadLocalRandom.current().nextInt(2) == 0) return solveFirstPartAlternative(input);
         //continue until you reach the end of the list
         return solve(input, (sum, size) -> sums.incrementAndGet() <= size);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         final Set<Long> set = new HashSet<>();
         //continue until you find a sum that you have already seen
         return solve(input, (sum, size) -> set.add(sum));

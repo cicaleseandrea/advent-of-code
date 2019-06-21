@@ -2,19 +2,20 @@ package com.adventofcode.aoc2018;
 
 import com.adventofcode.Solution;
 
-import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.atoi;
+import static com.adventofcode.utils.Utils.getFirstString;
 
 class AoC112018 implements Solution {
 
     private static final int SIZE = 301;
 
-    private static String solve(final List<String> input, final int minSize, final int maxSize,
+    private static String solve(final String input, final int minSize, final int maxSize,
                                 final BiFunction<String, Integer, String> computeResult) {
         final int[][] matrix = new int[SIZE][SIZE];
-        computeSummedAreaTable(atoi(input.get(0)), matrix);
+        computeSummedAreaTable(atoi(input), matrix);
         int resI = 0;
         int resJ = 0;
         int resSize = 1;
@@ -58,11 +59,11 @@ class AoC112018 implements Solution {
         }
     }
 
-    public String solveFirstPart(final List<String> input) {
-        return solve(input, 2, 3, (pos, size) -> pos);
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(getFirstString(input), 2, 3, (pos, size) -> pos);
     }
 
-    public String solveSecondPart(final List<String> input) {
-        return solve(input, 0, SIZE, (pos, size) -> pos + "," + size);
+    public String solveSecondPart(final Stream<String> input) {
+        return solve(getFirstString(input), 0, SIZE, (pos, size) -> pos + "," + size);
     }
 }

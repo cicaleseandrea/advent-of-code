@@ -8,15 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.LongBinaryOperator;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
 class AoC082017 implements Solution {
 
-    private static String solve(final List<String> input, final boolean first) {
+    private static String solve(final Stream<String> input, final boolean first) {
         final Map<String, Long> registers = new HashMap<>();
         long max = 0;
-        for (final String s : input) {
+        for (final String s : getIterable(input)) {
             final List<String> row = splitOnTabOrSpace(s);
             long registerValue = registers.computeIfAbsent(row.get(4), k -> 0L);
             final BiPredicate<Long, Long> test = test(row.get(5));
@@ -57,11 +58,11 @@ class AoC082017 implements Solution {
         };
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input, true);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input, false);
     }
 }

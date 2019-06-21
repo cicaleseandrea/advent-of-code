@@ -6,9 +6,11 @@ import com.adventofcode.utils.Operation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Operation.EQRR;
 import static com.adventofcode.utils.Utils.*;
+import static java.util.stream.Collectors.toList;
 
 class AoC212018 implements Solution {
 
@@ -42,27 +44,28 @@ class AoC212018 implements Solution {
     }
 
     @Override
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
+        final List<String> list = input.collect(toList());
         final int[] registers = new int[6];
         //instruction register
-        final int ip = atoi(extractNumberFromString(input.get(0)));
+        final int ip = atoi(extractNumberFromString(list.get(0)));
         boolean crash = false;
         while (!crash) {
-            performOperations(input.get(registers[ip] + 1), registers);
-            int reg = checkOperation(input.get(registers[ip] + 1));
+            performOperations(list.get(registers[ip] + 1), registers);
+            int reg = checkOperation(list.get(registers[ip] + 1));
             if (reg >= 0) {
                 //stop ASAP
                 return itoa(registers[reg]);
             }
             registers[ip]++;
             //check if the instruction register caused a crash
-            crash = registers[ip] >= input.size() - 1;
+            crash = registers[ip] >= list.size() - 1;
         }
         return itoa(registers[0]);
     }
 
     @Override
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         boolean crash = false;
         final Set<Long> seen = new HashSet<>();
         long prev = 0;

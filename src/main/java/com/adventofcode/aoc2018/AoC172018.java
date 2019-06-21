@@ -4,9 +4,9 @@ import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
@@ -14,7 +14,7 @@ class AoC172018 implements Solution {
 
     private static final boolean PRINT = false;
 
-    private static String solve(final List<String> input,
+    private static String solve(final Stream<String> input,
                                 final Predicate<Map.Entry<Pair<Integer, Integer>, Character>> count) {
         final Map<Pair<Integer, Integer>, Character> map = new HashMap<>();
         final var points = init(input, map);
@@ -96,13 +96,13 @@ class AoC172018 implements Solution {
         return map.getOrDefault(curr, PIPE) == PIPE;
     }
 
-    private static Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> init(final List<String> input,
+    private static Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> init(final Stream<String> input,
                                                                              final Map<Pair<Integer, Integer>, Character> map) {
         int maxX = 0;
         int maxY = 0;
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
-        for (final String row : input) {
+        for (final String row : getIterable(input)) {
             final boolean startX = row.charAt(0) == 'x';
             String[] tmp = row.split("=");
             int x = 0;
@@ -152,11 +152,11 @@ class AoC172018 implements Solution {
         System.out.println();
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input, e -> e.getValue() == PIPE);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input, e -> false);
     }
 }

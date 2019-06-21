@@ -9,13 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 
 class AoC102018 implements Solution {
 
-    private static String solve(final List<String> input, final BinaryOperator<String> computeResult) {
-        var curr = computeInitialPoints(input);
+    private static String solve(final Stream<String> input, final BinaryOperator<String> computeResult) {
+        var curr = computeInitialPoints(getIterable(input));
         int res = 0;
         boolean printed = false;
         String message = EMPTY;
@@ -66,7 +67,7 @@ class AoC102018 implements Solution {
         return true;
     }
 
-    private static Map<Pair<Integer, Integer>, List<Pair<Integer, Integer>>> computeInitialPoints(final List<String> input) {
+    private static Map<Pair<Integer, Integer>, List<Pair<Integer, Integer>>> computeInitialPoints(final Iterable<String> input) {
         final Map<Pair<Integer, Integer>, List<Pair<Integer, Integer>>> points = new HashMap<>();
         for (final String s : input) {
             final List<String> p = Utils.splitOnTabOrSpace(s.replaceAll("[<>,]", " "));
@@ -105,11 +106,11 @@ class AoC102018 implements Solution {
         return str.deleteCharAt(str.length() - 1).toString();
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input, (msg, n) -> msg);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input, (msg, n) -> n);
     }
 }
