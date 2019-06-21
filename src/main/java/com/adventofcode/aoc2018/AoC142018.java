@@ -6,21 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC142018 implements Solution {
 
     private static List<Integer> recipes;
 
-    private static String solve(final List<String> input, final BiPredicate<Integer, List<Integer>> isResult,
+    private static String solve(final String input, final BiPredicate<Integer, List<Integer>> isResult,
                                 final BiFunction<Integer, List<Integer>, String> computeResult) {
         reset();
-        final List<Integer> num = new ArrayList<>();
-        for (final char c : input.get(0).toCharArray()) {
-            num.add(charToInt(c));
-        }
-        final int n = atoi(input.get(0));
+        final List<Integer> num = input.chars().map(c -> charToInt((char) c)).boxed().collect(toUnmodifiableList());
+        final int n = atoi(input);
         int first = 0;
         int second = 1;
         while (!isResult.test(n, num)) {
@@ -65,13 +64,13 @@ class AoC142018 implements Solution {
         recipes.add(7);
     }
 
-    public String solveFirstPart(final List<String> input) {
-        return solve(input,
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(getFirstString(input),
                 (n, dummy) -> recipes.size() >= n + 10, //check if we have enough recipes
                 AoC142018::computeResultFirstPart);
     }
 
-    public String solveSecondPart(final List<String> input) {
-        return solve(input, AoC142018::isResultSecondPart, (dummy, num) -> itoa((long) recipes.size() - num.size()));
+    public String solveSecondPart(final Stream<String> input) {
+        return solve(getFirstString(input), AoC142018::isResultSecondPart, (dummy, num) -> itoa((long) recipes.size() - num.size()));
     }
 }

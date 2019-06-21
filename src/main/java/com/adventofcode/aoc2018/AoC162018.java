@@ -4,8 +4,10 @@ import com.adventofcode.Solution;
 import com.adventofcode.utils.Operation;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC162018 implements Solution {
 
@@ -83,12 +85,12 @@ class AoC162018 implements Solution {
         return operation[0];
     }
 
-    public String solveFirstPart(final List<String> input) {
-        return solve(input, false);
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(input.collect(toUnmodifiableList()), false);
     }
 
-    public String solveSecondPart(final List<String> input) {
-        return solve(input, true);
+    public String solveSecondPart(final Stream<String> input) {
+        return solve(input.collect(toUnmodifiableList()), true);
     }
 
 }

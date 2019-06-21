@@ -5,19 +5,20 @@ import com.adventofcode.Solution;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.ToLongFunction;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 import static java.time.LocalDateTime.parse;
+import static java.util.stream.Collectors.toMap;
 
 class AoC042018 implements Solution {
 
-    private static String solve(final List<String> input, final ToLongFunction<LongSummaryStatistics> findStat) {
+    private static String solve(final Stream<String> input, final ToLongFunction<LongSummaryStatistics> findStat) {
         //sort input based on LocalDateTime. Each LocalDateTime has one message only
-        final SortedMap<LocalDateTime, String> sorted = new TreeMap<>();
-        for (final String row : input) {
-            final String[] split = row.split("[\\[\\]]");
-            sorted.put(parse(split[1], DATE_TIME_FORMATTER), split[2]);
-        }
+        final SortedMap<LocalDateTime, String> sorted = input.map(row -> row.split("[\\[\\]]"))
+                .collect(toMap(split -> parse(split[1], DATE_TIME_FORMATTER), split -> split[2], (m1, m2) -> {
+                    throw new IllegalStateException();
+                }, TreeMap::new));
 
         //map each guard to his list of sleep frequencies per minute
         Map<String, Map<Integer, Long>> sleep = new HashMap<>();
@@ -50,11 +51,11 @@ class AoC042018 implements Solution {
         return itoa(res);
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input, LongSummaryStatistics::getSum);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input, LongSummaryStatistics::getMax);
     }
 }

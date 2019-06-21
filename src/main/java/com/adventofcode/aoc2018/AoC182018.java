@@ -4,15 +4,15 @@ import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingByConcurrent;
+import static java.util.stream.Collectors.*;
 
 class AoC182018 implements Solution {
 
-    private static String solve(final List<String> input, long maxIter) {
+    private static String solve(final Stream<String> input, long maxIter) {
         var curr = getInitialState(input);
         final Map<List<List<Character>>, Long> seen = new HashMap<>();
         Optional<Long> prev = Optional.empty();
@@ -47,16 +47,8 @@ class AoC182018 implements Solution {
         return itoa(computeResult(res));
     }
 
-    private static List<List<Character>> getInitialState(final List<String> input) {
-        final List<List<Character>> init = new ArrayList<>();
-        for (final String row : input) {
-            final List<Character> tmp = new ArrayList<>();
-            for (char c : row.toCharArray()) {
-                tmp.add(c);
-            }
-            init.add(tmp);
-        }
-        return init;
+    private static List<List<Character>> getInitialState(final Stream<String> input) {
+        return input.map(row -> row.chars().mapToObj(c -> (char) c).collect(toUnmodifiableList())).collect(toUnmodifiableList());
     }
 
     private static long computeResult(final List<List<Character>> curr) {
@@ -85,12 +77,12 @@ class AoC182018 implements Solution {
     }
 
     @Override
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input, 10L);
     }
 
     @Override
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input, 1000000000L);
     }
 }

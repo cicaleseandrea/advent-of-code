@@ -3,9 +3,11 @@ package com.adventofcode.aoc2017;
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.function.ToLongFunction;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.itoa;
 
@@ -32,16 +34,19 @@ class AoC022017 implements Solution {
         return 0;
     }
 
-    private static String solve(final List<String> input, final ToLongFunction<List<Long>> computeRowResult) {
-        final long res = input.parallelStream().map(Utils::splitOnTabOrSpace).map(Utils::toLongList).mapToLong(computeRowResult).sum();
+    private static String solve(final Stream<String> input, final ToLongFunction<List<Long>> computeRowResult) {
+        final long res = input.map(Utils::splitOnTabOrSpace).map(Collection::stream)
+                .map(Utils::toLongList).mapToLong(computeRowResult).sum();
         return itoa(res);
     }
 
-    public String solveFirstPart(final List<String> input) {
+    @Override
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input, AoC022017::computePartialResultFirst);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    @Override
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input, AoC022017::computePartialResultSecond);
     }
 }

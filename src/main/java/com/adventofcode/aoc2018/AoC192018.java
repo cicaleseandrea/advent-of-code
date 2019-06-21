@@ -5,8 +5,10 @@ import com.adventofcode.utils.Operation;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC192018 implements Solution {
 
@@ -61,12 +63,12 @@ class AoC192018 implements Solution {
     }
 
     @Override
-    public String solveFirstPart(final List<String> input) {
-        return solve(input, 0);
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(input.collect(toUnmodifiableList()), 0);
     }
 
     @Override
-    public String solveSecondPart(final List<String> input) {
-        return solve(input, 1);
+    public String solveSecondPart(final Stream<String> input) {
+        return solve(input.collect(toUnmodifiableList()), 1);
     }
 }

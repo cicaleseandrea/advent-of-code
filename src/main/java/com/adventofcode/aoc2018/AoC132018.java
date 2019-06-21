@@ -5,6 +5,7 @@ import com.adventofcode.utils.Direction;
 import com.adventofcode.utils.Pair;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Direction.LEFT;
 import static com.adventofcode.utils.Direction.RIGHT;
@@ -14,7 +15,7 @@ class AoC132018 implements Solution {
 
     private static final boolean PRINT = false;
 
-    private static String solve(final List<String> input, final boolean first) {
+    private static String solve(final Stream<String> input, final boolean first) {
         final Map<Pair<Long, Long>, Character> track = new HashMap<>();
         Map<Pair<Long, Long>, Cart> carts = new TreeMap<>(getPairComparator());
         final Pair<Long, Long> lastPoint = init(input, carts, track);
@@ -56,11 +57,11 @@ class AoC132018 implements Solution {
         return result.get().toString();
     }
 
-    private static Pair<Long, Long> init(final List<String> input, final Map<Pair<Long, Long>, Cart> carts,
+    private static Pair<Long, Long> init(final Stream<String> input, final Map<Pair<Long, Long>, Cart> carts,
                                          final Map<Pair<Long, Long>, Character> track) {
         long y = 0;
         long x = 0;
-        for (final String line : input) {
+        for (final String line : getIterable(input)) {
             x = 0;
             for (final char c : line.toCharArray()) {
                 final var position = new Pair<>(x, y);
@@ -98,11 +99,11 @@ class AoC132018 implements Solution {
         }
     }
 
-    public String solveFirstPart(final List<String> input) {
+    public String solveFirstPart(final Stream<String> input) {
         return solve(input, true);
     }
 
-    public String solveSecondPart(final List<String> input) {
+    public String solveSecondPart(final Stream<String> input) {
         return solve(input, false);
     }
 

@@ -3,8 +3,8 @@ package com.adventofcode;
 
 import org.junit.Test;
 
-import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static com.adventofcode.Generic.Type.*;
 import static com.adventofcode.utils.Utils.EMPTY;
@@ -30,7 +30,7 @@ public class Generic {
         this.result = result;
     }
 
-    private static void checkCorrect(final Function<List<String>, String> solution, final String input, final String result) {
+    private static void checkCorrect(final Function<Stream<String>, String> solution, final String input, final String result) {
         assertEquals(result, solution.apply(splitOnNewLine(input)));
     }
 

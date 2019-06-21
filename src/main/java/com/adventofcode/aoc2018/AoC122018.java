@@ -6,8 +6,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.adventofcode.utils.Utils.*;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC122018 implements Solution {
 
@@ -83,11 +85,11 @@ class AoC122018 implements Solution {
         return rules;
     }
 
-    public String solveFirstPart(final List<String> input) {
-        return solve(input, 20L);
+    public String solveFirstPart(final Stream<String> input) {
+        return solve(input.collect(toUnmodifiableList()), 20L);
     }
 
-    public String solveSecondPart(final List<String> input) {
-        return solve(input, 50000000000L);
+    public String solveSecondPart(final Stream<String> input) {
+        return solve(input.collect(toUnmodifiableList()), 50000000000L);
     }
 }
