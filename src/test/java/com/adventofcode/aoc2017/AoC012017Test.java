@@ -1,7 +1,6 @@
 package com.adventofcode.aoc2017;
 
 import com.adventofcode.Generic;
-import com.adventofcode.Solution;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -10,11 +9,10 @@ import java.util.List;
 import static com.adventofcode.Generic.Type.FIRST;
 import static com.adventofcode.Generic.Type.SECOND;
 import static com.adventofcode.Solution.getInput;
+import static com.adventofcode.aoc2017.AoC012017.INSTANCE;
 
 @RunWith(Parameterized.class)
 public class AoC012017Test extends Generic {
-
-    private static final Solution INSTANCE = new AoC012017();
 
     public AoC012017Test(final Type type, final String input, final String result) {
         super(INSTANCE, type, input, result);
