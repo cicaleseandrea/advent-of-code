@@ -11,4 +11,3 @@ Goals:
 ###### TODO
 - try out Kotlin
 - move to JUnit 5
-- move to gradle
