@@ -13,7 +13,7 @@ public interface Solution {
     static String getInput(final Solution sol) {
         final String fileName = sol.getClass().getPackage().getName() + File.separator + sol.getClass().getSimpleName() + ".txt";
         try {
-            return new String(Files.readAllBytes(Path.of(getSystemResource(fileName).toURI())));
+            return Files.readString(Path.of(getSystemResource(fileName).toURI()));
         } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException(fileName + "not found");
         }
