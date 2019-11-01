@@ -135,6 +135,10 @@ public class Utils {
         return List.of(s.split("\\s+"));
     }
 
+    public static Stream<String> splitOnRegex(final String s, final String regex) {
+        return Stream.of(s.split(regex));
+    }
+
     public static <K> long incrementMapElement(final Map<K, Long> map, final K key) {
         return map.merge(key, 1L, Long::sum);
     }
