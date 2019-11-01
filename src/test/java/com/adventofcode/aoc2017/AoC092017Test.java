@@ -2,7 +2,6 @@ package com.adventofcode.aoc2017;
 
 import com.adventofcode.Generic;
 import com.adventofcode.Solution;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -12,7 +11,6 @@ import static com.adventofcode.Generic.Type.FIRST;
 import static com.adventofcode.Generic.Type.SECOND;
 import static com.adventofcode.Solution.getInput;
 
-@Ignore
 @RunWith(Parameterized.class)
 public class AoC092017Test extends Generic {
 
@@ -33,16 +31,15 @@ public class AoC092017Test extends Generic {
                 {FIRST, "{{<ab>},{<ab>},{<ab>},{<ab>}}", "9"},
                 {FIRST, "{{<!!>},{<!!>},{<!!>},{<!!>}}", "9"},
                 {FIRST, "{{<a!>},{<a!>},{<a!>},{<ab>}}", "3"},
-                {FIRST, getInput(INSTANCE), "3745"},
-                {SECOND, "{}", "1"},
-                {SECOND, "{{{}}}", "6"},
-                {SECOND, "{{},{}}", "5"},
-                {SECOND, "{{{},{},{{}}}}", "16"},
-                {SECOND, "{<a>,<a>,<a>,<a>}", "1"},
-                {SECOND, "{{<ab>},{<ab>},{<ab>},{<ab>}}", "9"},
-                {SECOND, "{{<!!>},{<!!>},{<!!>},{<!!>}}", "9"},
-                {SECOND, "{{<a!>},{<a!>},{<a!>},{<ab>}}", "3"},
-                {SECOND, getInput(INSTANCE), "1226"}
+                {FIRST, getInput(INSTANCE), "20530"},
+                {SECOND, "<>", "0"},
+                {SECOND, "<random characters>", "17"},
+                {SECOND, "<<<<>", "3"},
+                {SECOND, "<{!>}>", "2"},
+                {SECOND, "<!!>", "0"},
+                {SECOND, "<!!!>>", "0"},
+                {SECOND, "<{o\"i!a,<{i<a>", "10"},
+                {SECOND, getInput(INSTANCE), "9978"}
         });
     }
 }
