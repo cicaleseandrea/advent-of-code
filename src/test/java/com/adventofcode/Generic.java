@@ -1,17 +1,23 @@
 package com.adventofcode;
 
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.adventofcode.Generic.Type.*;
-import static com.adventofcode.utils.Utils.EMPTY;
-import static com.adventofcode.utils.Utils.splitOnNewLine;
+import static com.adventofcode.Generic.Type.NONE;
+import static com.adventofcode.utils.Utils.*;
+import static java.lang.ClassLoader.getSystemResource;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeFalse;
 
+@Ignore
 public class Generic {
     private final Solution solution;
     private final Type type;
@@ -30,18 +36,30 @@ public class Generic {
         this.result = result;
     }
 
-    private static void checkCorrect(final Function<Stream<String>, String> solution, final String input, final String result) {
+    protected static String getInput(final Solution sol) {
+        final String packageName = sol.getClass().getPackage().getName();
+        final String className = sol.getClass().getSimpleName();
+        final String extension = "txt";
+        final String fileName = packageName + File.separator + className + DOT + extension;
+        try {
+            return Files.readString(Path.of(getSystemResource(fileName).toURI()));
+        } catch (IOException | URISyntaxException e) {
+            throw new IllegalStateException(fileName + "not found");
+        }
+    }
+
+    private static void checkSolution(final Function<Stream<String>, String> solution, final String input, final String result) {
         assertEquals(result, solution.apply(splitOnNewLine(input)));
     }
 
     @Test
     public void test() {
-        assumeFalse(type == NONE);
-        if (type == FIRST) {
-            checkCorrect(solution::solveFirstPart, input, result);
-        } else if (type == SECOND) {
-            checkCorrect(solution::solveSecondPart, input, result);
-        }
+        final Function<Stream<String>, String> solutionFunction = switch (type) {
+            case FIRST -> solution::solveFirstPart;
+            case SECOND -> solution::solveSecondPart;
+            default -> throw new IllegalArgumentException();
+        };
+        checkSolution(solutionFunction, input, result);
     }
 
     public enum Type {NONE, FIRST, SECOND}

@@ -8,7 +8,6 @@ import java.util.List;
 
 import static com.adventofcode.Generic.Type.FIRST;
 import static com.adventofcode.Generic.Type.SECOND;
-import static com.adventofcode.Solution.getInput;
 import static com.adventofcode.aoc2017.AoC012017.INSTANCE;
 
 @RunWith(Parameterized.class)

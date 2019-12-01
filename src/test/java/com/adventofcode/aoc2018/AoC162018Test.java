@@ -9,7 +9,7 @@ import java.util.List;
 
 import static com.adventofcode.Generic.Type.FIRST;
 import static com.adventofcode.Generic.Type.SECOND;
-import static com.adventofcode.Solution.getInput;
+
 
 @RunWith(Parameterized.class)
 public class AoC162018Test extends Generic {
