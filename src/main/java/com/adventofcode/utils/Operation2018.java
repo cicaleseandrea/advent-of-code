@@ -2,7 +2,7 @@ package com.adventofcode.utils;
 
 import java.util.function.BiConsumer;
 
-public enum Operation {
+public enum Operation2018 {
     ADDR((r, o) -> r[o[3]] = registerA(r, o) + registerB(r, o)) {
         @Override
         public String stringRepresentation(final int[] o) {
@@ -102,7 +102,7 @@ public enum Operation {
 
     public final BiConsumer<int[], int[]> op;
 
-    Operation(final BiConsumer<int[], int[]> op) {
+    Operation2018(final BiConsumer<int[], int[]> op) {
         this.op = op;
     }
 
