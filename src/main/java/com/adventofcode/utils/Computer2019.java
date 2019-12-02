@@ -1,4 +1,4 @@
-package com.adventofcode.aoc2019;
+package com.adventofcode.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-class Computer2019 {
-    List<Long> memory;
-    int pointer = 0;
+public class Computer2019 {
+    public List<Long> memory;
+    public int pointer = 0;
 
     private int getAddress(final int index) {
         return getValue(index).intValue();
@@ -38,15 +38,15 @@ class Computer2019 {
         return getValue(advancePointer());
     }
 
-    int advancePointer() {
+    public int advancePointer() {
         return ++pointer;
     }
 
-    void loadProgram(final List<Long> program) {
+    public void loadProgram(final List<Long> program) {
         memory = new ArrayList<>(program);
     }
 
-    void setPointer(final int pointer) {
+    public void setPointer(final int pointer) {
         this.pointer = pointer;
     }
 
@@ -54,7 +54,7 @@ class Computer2019 {
         return OpCode.valueOf(getValue(pointer));
     }
 
-    Long executeOneStep() {
+    public Long executeOneStep() {
         final OpCode instruction = currentInstruction();
         if (instruction == null) {
             return null;
@@ -64,20 +64,20 @@ class Computer2019 {
         return res;
     }
 
-    void run() {
+    public void run() {
         while (true) {
             if (executeOneStep() == null) return;
         }
     }
 
-    OpCode printOneStep() {
+    public OpCode printOneStep() {
         final OpCode instruction = currentInstruction();
         final String str = instruction != null ? instruction.toString(this) : null;
         System.out.println(str);
         return instruction;
     }
 
-    void printProgram() {
+    public void printProgram() {
         System.out.println("PROGRAM");
         System.out.println("=======");
         final int origPointer = pointer;
@@ -160,8 +160,8 @@ class Computer2019 {
             return code;
         }
 
-        public abstract Long apply(final Computer2019 computer);
+        abstract String toString(final Computer2019 computer);
 
-        public abstract String toString(final Computer2019 computer);
+        public abstract Long apply(final Computer2019 computer);
     }
 }
