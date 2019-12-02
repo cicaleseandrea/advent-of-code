@@ -14,7 +14,7 @@ import static com.adventofcode.utils.Utils.*;
 class AoC062017 implements Solution {
 
     private static String solve(final String input, final ToIntBiFunction<Integer, Integer> computeResult) {
-        final List<Long> block = toLongList(splitOnTabOrSpace(input).stream());
+        final List<Long> block = toLongList(input);
         final Map<List<Long>, Integer> blocksSeen = new HashMap<>();
         int firstSeen = 0;
         while (blocksSeen.putIfAbsent(block, firstSeen) == null) {

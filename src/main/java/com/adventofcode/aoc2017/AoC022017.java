@@ -3,7 +3,6 @@ package com.adventofcode.aoc2017;
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.function.ToLongFunction;
@@ -35,8 +34,7 @@ class AoC022017 implements Solution {
     }
 
     private static String solve(final Stream<String> input, final ToLongFunction<List<Long>> computeRowResult) {
-        final long res = input.map(Utils::splitOnTabOrSpace).map(Collection::stream)
-                .map(Utils::toLongList).mapToLong(computeRowResult).sum();
+        final long res = input.map(Utils::toLongList).mapToLong(computeRowResult).sum();
         return itoa(res);
     }
 
