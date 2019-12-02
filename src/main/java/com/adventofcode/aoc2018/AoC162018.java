@@ -1,7 +1,7 @@
 package com.adventofcode.aoc2018;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Operation;
+import com.adventofcode.utils.Operation2018;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -13,8 +13,8 @@ class AoC162018 implements Solution {
 
     private static String solve(final List<String> input, final boolean second) {
         int i = 0;
-        final Collection<Operation> availableOperations = EnumSet.allOf(Operation.class);
-        final Map<Integer, Operation> operationMappings = new HashMap<>();
+        final Collection<Operation2018> availableOperations = EnumSet.allOf(Operation2018.class);
+        final Map<Integer, Operation2018> operationMappings = new HashMap<>();
         long res = 0;
         do {
             final int[] before = getRegisters(input.get(i++));
@@ -56,11 +56,11 @@ class AoC162018 implements Solution {
         return registers;
     }
 
-    private static int matchOperations(final Collection<Operation> availableOperations,
-                                       final Map<Integer, Operation> operationMappings, final int[] before,
+    private static int matchOperations(final Collection<Operation2018> availableOperations,
+                                       final Map<Integer, Operation2018> operationMappings, final int[] before,
                                        final int[] operation, final int[] next) {
         int matching = 0;
-        for (final Operation operationTested : availableOperations) {
+        for (final Operation2018 operationTested : availableOperations) {
             final int[] tmp = Arrays.copyOf(before, 4);
             operationTested.op.accept(tmp, operation);
             if (Arrays.equals(tmp, next)) {
@@ -72,7 +72,7 @@ class AoC162018 implements Solution {
     }
 
     private static String performOperations(final List<String> input, int i,
-                                            final Map<Integer, Operation> operationMappings) {
+                                            final Map<Integer, Operation2018> operationMappings) {
         final int[] registers = new int[4];
         while (++i < input.size()) {
             final int[] operation = getRegisters(input.get(i));
