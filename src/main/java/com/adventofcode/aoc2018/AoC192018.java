@@ -1,7 +1,7 @@
 package com.adventofcode.aoc2018;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Operation;
+import com.adventofcode.utils.Operation2018;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,13 +44,13 @@ class AoC192018 implements Solution {
 
     private static void performOperations(final String input, int[] registers) {
         final List<String> splitOnTabOrSpace = splitOnTabOrSpace(input);
-        final Operation opCode = getOpCode(splitOnTabOrSpace);
+        final Operation2018 opCode = getOpCode(splitOnTabOrSpace);
         final int[] operation = getRegisters(splitOnTabOrSpace);
         opCode.op.accept(registers, operation);
     }
 
-    private static Operation getOpCode(final List<String> splitOnTabOrSpace) {
-        return Operation.valueOf(splitOnTabOrSpace.get(0).toUpperCase());
+    private static Operation2018 getOpCode(final List<String> splitOnTabOrSpace) {
+        return Operation2018.valueOf(splitOnTabOrSpace.get(0).toUpperCase());
     }
 
     private static int[] getRegisters(final List<String> splitOnTabOrSpace) {
