@@ -1,14 +1,14 @@
 package com.adventofcode.aoc2018;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Operation;
+import com.adventofcode.utils.Operation2018;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Operation.EQRR;
+import static com.adventofcode.utils.Operation2018.EQRR;
 import static com.adventofcode.utils.Utils.*;
 import static java.util.stream.Collectors.toList;
 
@@ -16,7 +16,7 @@ class AoC212018 implements Solution {
 
     private static void performOperations(final String input, int[] registers) {
         final List<String> splitOnTabOrSpace = splitOnTabOrSpace(input);
-        final Operation opCode = getOpCode(splitOnTabOrSpace);
+        final Operation2018 opCode = getOpCode(splitOnTabOrSpace);
         final int[] operation = getRegisters(splitOnTabOrSpace);
         opCode.op.accept(registers, operation);
     }
@@ -30,8 +30,8 @@ class AoC212018 implements Solution {
         return -1;
     }
 
-    private static Operation getOpCode(final List<String> splitOnTabOrSpace) {
-        return Operation.valueOf(splitOnTabOrSpace.get(0).toUpperCase());
+    private static Operation2018 getOpCode(final List<String> splitOnTabOrSpace) {
+        return Operation2018.valueOf(splitOnTabOrSpace.get(0).toUpperCase());
     }
 
     private static int[] getRegisters(final List<String> splitOnTabOrSpace) {

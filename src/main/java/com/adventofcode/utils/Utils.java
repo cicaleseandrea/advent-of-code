@@ -2,6 +2,7 @@ package com.adventofcode.utils;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -21,7 +22,10 @@ public class Utils {
     public static final char HASH = '#';
     public static final char PIPE = '|';
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    public static final Pattern Long_PATTERN = Pattern.compile("\\d+");
+    public static final Pattern LONG_PATTERN = Pattern.compile("-?\\d+");
+    public static final Pattern POSITIVE_LONG_PATTERN = Pattern.compile("\\d+");
+    public static final Pattern DOUBLE_PATTERN = Pattern.compile("-?\\d+(?:\\.\\d+)?");
+    public static final Pattern WORD_PATTERN = Pattern.compile("[a-zA-Z]+");
 
     private Utils() {
     }
@@ -119,6 +123,10 @@ public class Utils {
         return s.lines();
     }
 
+    public static List<Long> toLongList(final String input) {
+        return toLongStream(input).collect(toList());
+    }
+
     public static List<Long> toLongList(final Stream<String> stream) {
         return toLongStream(stream).collect(toList());
     }
@@ -127,16 +135,40 @@ public class Utils {
         return stream.map(Long::valueOf);
     }
 
+    public static Stream<Long> toLongStream(final String input) {
+        return toLongStream(LONG_PATTERN
+                .matcher(input)
+                .results()
+                .map(MatchResult::group)
+        );
+    }
+
+    public static List<Double> toDoubleList(final String input) {
+        return toDoubleStream(input).collect(toList());
+    }
+
+    public static List<Double> toDoubleList(final Stream<String> stream) {
+        return toDoubleStream(stream).collect(toList());
+    }
+
+    public static Stream<Double> toDoubleStream(final Stream<String> stream) {
+        return stream.map(Double::valueOf);
+    }
+
+    public static Stream<Double> toDoubleStream(final String input) {
+        return toDoubleStream(DOUBLE_PATTERN
+                .matcher(input)
+                .results()
+                .map(MatchResult::group)
+        );
+    }
+
     public static <T> Iterable<T> getIterable(Stream<T> s) {
         return s::iterator;
     }
 
     public static List<String> splitOnTabOrSpace(final String s) {
         return List.of(s.split("\\s+"));
-    }
-
-    public static Stream<String> splitOnRegex(final String s, final String regex) {
-        return Stream.of(s.split(regex));
     }
 
     public static <K> long incrementMapElement(final Map<K, Long> map, final K key) {
@@ -174,7 +206,7 @@ public class Utils {
     }
 
     public static String extractNumberFromString(final String msg) {
-        final Matcher matcher = Long_PATTERN.matcher(msg);
+        final Matcher matcher = POSITIVE_LONG_PATTERN.matcher(msg);
         if (matcher.find()) {
             return matcher.group();
         } else {
