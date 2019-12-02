@@ -69,7 +69,7 @@ class AoC102017 implements Solution {
     }
 
     public String solveFirstPart(final Stream<String> input) {
-        return solve(splitOnRegex(getFirstString(input), ",").mapToInt(Integer::valueOf).toArray(), true);
+        return solve(toLongStream(getFirstString(input)).mapToInt(Long::intValue).toArray(), true);
     }
 
     public String solveSecondPart(final Stream<String> input) {
