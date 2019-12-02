@@ -1,6 +1,7 @@
 package com.adventofcode.aoc2019;
 
 import com.adventofcode.Solution;
+import com.adventofcode.utils.Computer2019;
 
 import java.util.List;
 import java.util.stream.Stream;
