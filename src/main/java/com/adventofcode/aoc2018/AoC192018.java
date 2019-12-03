@@ -1,14 +1,18 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Operation2018;
+import static java.util.stream.Collectors.toUnmodifiableList;
+
+import static com.adventofcode.utils.Utils.atoi;
+import static com.adventofcode.utils.Utils.extractNumberFromString;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Operation2018;
 
 class AoC192018 implements Solution {
 
@@ -21,7 +25,7 @@ class AoC192018 implements Solution {
         while (!crash) {
             if (input.size() > 10 && registers[ip] == 1) {
                 //optimize the program
-                return itoa(computeDivisorsSum(Arrays.stream(registers).max().orElse(0)));
+                return itoa( computeDivisorsSum( Arrays.stream( registers ).max().orElseThrow() ) );
             }
             performOperations(input.get(registers[ip] + 1), registers);
             registers[ip]++;

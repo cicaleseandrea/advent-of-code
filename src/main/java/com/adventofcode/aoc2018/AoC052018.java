@@ -1,13 +1,17 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
+import static java.lang.Character.toUpperCase;
+
+import static com.adventofcode.utils.Utils.SPACE;
+import static com.adventofcode.utils.Utils.getFirstString;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.upperCaseLetters;
 
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
-import static java.lang.Character.toUpperCase;
+import com.adventofcode.Solution;
 
 class AoC052018 implements Solution {
 
@@ -36,7 +40,7 @@ class AoC052018 implements Solution {
 
     public String solveSecondPart(final Stream<String> input) {
         final String str = getFirstString(input);
-        int res = upperCaseLetters().mapToInt(remove -> react(str, remove)).min().orElse(0);
+        int res = upperCaseLetters().mapToInt( remove -> react( str, remove ) ).min().orElseThrow();
         return itoa(res);
     }
 }

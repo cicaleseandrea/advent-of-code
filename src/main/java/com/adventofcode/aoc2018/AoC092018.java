@@ -1,6 +1,11 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
+import static com.adventofcode.utils.Utils.atoi;
+import static com.adventofcode.utils.Utils.atol;
+import static com.adventofcode.utils.Utils.getFirstString;
+import static com.adventofcode.utils.Utils.incrementMod;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -8,7 +13,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
+import com.adventofcode.Solution;
 
 class AoC092018 implements Solution {
 
@@ -39,7 +44,7 @@ class AoC092018 implements Solution {
             }
             currentPlayer = incrementMod(currentPlayer, players);
         }
-        return itoa(Arrays.stream(scores).max().orElse(0));
+        return itoa( Arrays.stream( scores ).max().orElseThrow() );
     }
 
     private static ListIterator<Long> prev(final List<Long> marbles, ListIterator<Long> it) {
