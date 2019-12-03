@@ -1,16 +1,21 @@
 package com.adventofcode.utils;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
+
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toUnmodifiableList;
 
 public class Utils {
     public static final String EMPTY = "";
@@ -123,6 +128,9 @@ public class Utils {
         return s.lines();
     }
 
+    public static Stream<String> splitOnRegex(final String s, final String regex) {
+        return Stream.of(s.split(regex));
+    }
     public static List<Long> toLongList(final String input) {
         return toLongStream(input).collect(toList());
     }

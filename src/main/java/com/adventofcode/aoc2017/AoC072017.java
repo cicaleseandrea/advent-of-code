@@ -1,13 +1,22 @@
 package com.adventofcode.aoc2017;
 
+import static com.adventofcode.utils.Utils.EMPTY;
+import static com.adventofcode.utils.Utils.atol;
+import static com.adventofcode.utils.Utils.getIterable;
+import static com.adventofcode.utils.Utils.incrementMapElement;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Node;
 import com.adventofcode.utils.Pair;
-
-import java.util.*;
-import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
 
 class AoC072017 implements Solution {
     private static Node<Pair<String, Long>> buildTree(final Stream<String> input) {
@@ -55,7 +64,7 @@ class AoC072017 implements Solution {
             }
         }
         programsSeen.removeAll(children);
-        return programsSeen.stream().findFirst().orElse(EMPTY);
+        return programsSeen.stream().findFirst().orElseThrow();
     }
 
     public String solveSecondPart(final Stream<String> input) {
@@ -83,8 +92,18 @@ class AoC072017 implements Solution {
             return sum;
         }
 
-        long right = frequencies.entrySet().parallelStream().filter(e -> e.getValue() != 1).map(Map.Entry::getKey).findAny().orElse(0L);
-        long wrong = frequencies.entrySet().parallelStream().filter(e -> e.getValue() == 1).map(Map.Entry::getKey).findAny().orElse(0L);
+        long right = frequencies.entrySet()
+                .parallelStream()
+                .filter( e -> e.getValue() != 1 )
+                .map( Map.Entry::getKey )
+                .findAny()
+                .orElseThrow();
+        long wrong = frequencies.entrySet()
+                .parallelStream()
+                .filter( e -> e.getValue() == 1 )
+                .map( Map.Entry::getKey )
+                .findAny()
+                .orElseThrow();
 
         final var wrongNode = childrenSums.get(wrong);
         return wrong - right - wrongNode.getKey().getSecond();
