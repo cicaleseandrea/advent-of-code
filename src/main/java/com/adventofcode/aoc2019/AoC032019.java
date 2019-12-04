@@ -2,15 +2,13 @@ package com.adventofcode.aoc2019;
 
 import static java.util.stream.Collectors.toList;
 
-import static com.adventofcode.utils.Utils.atoi;
-import static com.adventofcode.utils.Utils.extractNumberFromString;
+import static com.adventofcode.utils.Utils.extractIntegerFromString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.manhattanDistance;
 import static com.adventofcode.utils.Utils.splitOnRegex;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
@@ -62,10 +60,9 @@ class AoC032019 implements Solution {
 
 	private void initializeWire( final String wireString, final Set<Pair<Long, Long>> wire,
 			final Map<Pair<Long, Long>, Long> positions ) {
-		final List<String> directions = splitOnRegex( wireString, "," ).collect( toList() );
 		final Pair<Long, Long> start = new Pair<>( 0L, 0L );
 		final AtomicLong steps = new AtomicLong();
-		for ( final String direction : directions ) {
+		splitOnRegex( wireString, "," ).forEach( direction -> {
 			switch ( direction.charAt( 0 ) ) {
 			case 'U' -> followDirection( wire, positions, direction, start, steps,
 					it -> it.setSecond( it.getSecond() + 1 ) );
@@ -77,14 +74,14 @@ class AoC032019 implements Solution {
 					it -> it.setFirst( it.getFirst() + 1 ) );
 			default -> throw new IllegalStateException();
 			}
-		}
+		} );
 	}
 
 	private void followDirection( final Set<Pair<Long, Long>> wire,
 			final Map<Pair<Long, Long>, Long> positions, final String direction,
 			final Pair<Long, Long> current, final AtomicLong steps,
 			final Consumer<Pair<Long, Long>> move ) {
-		for ( int i = 0; i < atoi( extractNumberFromString( direction ) ); i++ ) {
+		for ( int i = 0; i < extractIntegerFromString( direction ); i++ ) {
 			move.accept( current );
 			final Pair<Long, Long> point = new Pair<>( current.getFirst(), current.getSecond() );
 			wire.add( point );
