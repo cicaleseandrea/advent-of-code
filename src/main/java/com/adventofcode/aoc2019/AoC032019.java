@@ -39,15 +39,15 @@ class AoC032019 implements Solution {
 
 	private String solve( final Stream<String> input,
 			final BiFunction<Map<Pair<Long, Long>, Long>, Map<Pair<Long, Long>, Long>, ToLongFunction<Pair<Long, Long>>> function ) {
-		final var wires = input.collect( toList() );
+		final var directions = input.collect( toList() );
 
 		final Set<Pair<Long, Long>> firstWire = new HashSet<>();
 		final Map<Pair<Long, Long>, Long> firstWireSteps = new HashMap<>();
-		initializeWire( wires.get( 0 ), firstWire, firstWireSteps );
+		initializeWire( directions.get( 0 ), firstWire, firstWireSteps );
 
 		final Set<Pair<Long, Long>> secondWire = new HashSet<>();
 		final Map<Pair<Long, Long>, Long> secondWireSteps = new HashMap<>();
-		initializeWire( wires.get( 1 ), secondWire, secondWireSteps );
+		initializeWire( directions.get( 1 ), secondWire, secondWireSteps );
 
 		final var curriedFunction = function.apply( firstWireSteps, secondWireSteps );
 		final Long min = Sets.intersection( firstWire, secondWire )
@@ -58,34 +58,32 @@ class AoC032019 implements Solution {
 		return itoa( min );
 	}
 
-	private void initializeWire( final String wireString, final Set<Pair<Long, Long>> wire,
-			final Map<Pair<Long, Long>, Long> positions ) {
+	private void initializeWire( final String directions, final Set<Pair<Long, Long>> wire,
+			final Map<Pair<Long, Long>, Long> wireSteps ) {
 		final Pair<Long, Long> start = new Pair<>( 0L, 0L );
 		final AtomicLong steps = new AtomicLong();
-		splitOnRegex( wireString, "," ).forEach( direction -> {
-			switch ( direction.charAt( 0 ) ) {
-			case 'U' -> followDirection( wire, positions, direction, start, steps,
-					it -> it.setSecond( it.getSecond() + 1 ) );
-			case 'D' -> followDirection( wire, positions, direction, start, steps,
-					it -> it.setSecond( it.getSecond() - 1 ) );
-			case 'L' -> followDirection( wire, positions, direction, start, steps,
-					it -> it.setFirst( it.getFirst() - 1 ) );
-			case 'R' -> followDirection( wire, positions, direction, start, steps,
-					it -> it.setFirst( it.getFirst() + 1 ) );
-			default -> throw new IllegalStateException();
-			}
+
+		splitOnRegex( directions, "," ).forEach( direction -> {
+			final Consumer<Pair<Long, Long>> move = switch ( direction.charAt( 0 ) ) {
+				case 'U' -> it -> it.setSecond( it.getSecond() + 1 );
+				case 'D' -> it -> it.setSecond( it.getSecond() - 1 );
+				case 'L' -> it -> it.setFirst( it.getFirst() - 1 );
+				case 'R' -> it -> it.setFirst( it.getFirst() + 1 );
+				default -> throw new IllegalStateException();
+			};
+			followDirection( direction, wire, wireSteps, start, steps, move );
 		} );
 	}
 
-	private void followDirection( final Set<Pair<Long, Long>> wire,
-			final Map<Pair<Long, Long>, Long> positions, final String direction,
+	private void followDirection( final String direction, final Set<Pair<Long, Long>> wire,
+			final Map<Pair<Long, Long>, Long> wireSteps,
 			final Pair<Long, Long> current, final AtomicLong steps,
 			final Consumer<Pair<Long, Long>> move ) {
 		for ( int i = 0; i < extractIntegerFromString( direction ); i++ ) {
 			move.accept( current );
 			final Pair<Long, Long> point = new Pair<>( current.getFirst(), current.getSecond() );
 			wire.add( point );
-			positions.put( point, steps.incrementAndGet() );
+			wireSteps.put( point, steps.incrementAndGet() );
 		}
 	}
 
