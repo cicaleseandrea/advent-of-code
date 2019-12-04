@@ -45,4 +45,5 @@ class AoC022019 implements Solution {
 		}
 		return memory;
 	}
+
 }
