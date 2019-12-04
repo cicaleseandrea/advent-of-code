@@ -1,6 +1,10 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
+import static com.adventofcode.utils.Utils.atoi;
+import static com.adventofcode.utils.Utils.getFirstString;
+import static com.adventofcode.utils.Utils.incrementMod;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.toDigitsArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +12,16 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import com.adventofcode.Solution;
 
 class AoC142018 implements Solution {
 
     private static List<Integer> recipes;
 
-    private static String solve(final String input, final BiPredicate<Integer, List<Integer>> isResult,
-                                final BiFunction<Integer, List<Integer>, String> computeResult) {
+	private static String solve( final String input, final BiPredicate<Integer, int[]> isResult,
+			final BiFunction<Integer, int[], String> computeResult ) {
         reset();
-        final List<Integer> num = input.chars().map(c -> charToInt((char) c)).boxed().collect(toUnmodifiableList());
+		final int[] num = toDigitsArray( input );
         final int n = atoi(input);
         int first = 0;
         int second = 1;
@@ -35,7 +38,7 @@ class AoC142018 implements Solution {
         return computeResult.apply(n, num);
     }
 
-    private static String computeResultFirstPart(final int n, final List<Integer> dummy) {
+	private static String computeResultFirstPart( final int n, final int[] dummy ) {
         final StringBuilder str = new StringBuilder(10);
         for (int i = n; i < n + 10; i++) {
             str.append(recipes.get(i));
@@ -43,15 +46,15 @@ class AoC142018 implements Solution {
         return str.toString();
     }
 
-    private static boolean isResultSecondPart(final int dummy, final List<Integer> num) {
+	private static boolean isResultSecondPart( final int dummy, final int[] num ) {
         int i = recipes.size();
-        int j = num.size();
+		int j = num.length;
         if (i < j) {
             return false;
         }
         //check if recipes are the same
         while (j > 0) {
-            if (!recipes.get(--i).equals(num.get(--j))) {
+			if ( !recipes.get( --i ).equals( num[--j] ) ) {
                 return false;
             }
         }
@@ -71,6 +74,7 @@ class AoC142018 implements Solution {
     }
 
     public String solveSecondPart(final Stream<String> input) {
-        return solve(getFirstString(input), AoC142018::isResultSecondPart, (dummy, num) -> itoa((long) recipes.size() - num.size()));
+		return solve( getFirstString( input ), AoC142018::isResultSecondPart,
+				( dummy, num ) -> itoa( (long) recipes.size() - num.length ) );
     }
 }
