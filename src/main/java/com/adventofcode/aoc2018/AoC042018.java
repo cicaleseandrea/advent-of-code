@@ -1,15 +1,24 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
+import static java.time.LocalDateTime.parse;
+import static java.util.stream.Collectors.toMap;
+
+import static com.adventofcode.utils.Utils.DATE_TIME_FORMATTER;
+import static com.adventofcode.utils.Utils.extractIntegerFromString;
+import static com.adventofcode.utils.Utils.incrementMapElement;
+import static com.adventofcode.utils.Utils.itoa;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LongSummaryStatistics;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
-import static java.time.LocalDateTime.parse;
-import static java.util.stream.Collectors.toMap;
+import com.adventofcode.Solution;
 
 class AoC042018 implements Solution {
 
@@ -21,8 +30,8 @@ class AoC042018 implements Solution {
                 }, TreeMap::new));
 
         //map each guard to his list of sleep frequencies per minute
-        Map<String, Map<Integer, Long>> sleep = new HashMap<>();
-        String id = EMPTY;
+        Map<Integer, Map<Integer, Long>> sleep = new HashMap<>();
+        int id = 0;
         int start = 0;
         for (final var row : sorted.entrySet()) {
             final int minute = row.getKey().getMinute();
@@ -35,7 +44,7 @@ class AoC042018 implements Solution {
                     incrementMapElement(sleep.computeIfAbsent(id, k -> new HashMap<>()), i);
                 }
             } else {
-                id = extractNumberFromString(text.split("#")[1]);
+                id = extractIntegerFromString( text.split( "#" )[1] );
             }
         }
 
@@ -45,7 +54,8 @@ class AoC042018 implements Solution {
             final LongSummaryStatistics stats = e.getValue().values().parallelStream().mapToLong(Long::longValue).summaryStatistics();
             if (maxSleep < findStat.applyAsLong(stats)) {
                 maxSleep = findStat.applyAsLong(stats);
-                res = atol(e.getKey()) * Collections.max(e.getValue().entrySet(), Map.Entry.comparingByValue()).getKey();
+                res = e.getKey() * Collections.max( e.getValue().entrySet(),
+                        Map.Entry.comparingByValue() ).getKey();
             }
         }
         return itoa(res);

@@ -1,13 +1,28 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
-import java.util.*;
+import static com.adventofcode.utils.Utils.EMPTY;
+import static com.adventofcode.utils.Utils.atol;
+import static com.adventofcode.utils.Utils.extractIntegerFromString;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
+
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import com.adventofcode.Solution;
 
 class AoC242018 implements Solution {
 
@@ -141,7 +156,7 @@ class AoC242018 implements Solution {
         builder.setUnits(atol(tmp[0].trim()));
 
         tmp = tmp[1].split("hit");
-        builder.setHitPoints(atol(extractNumberFromString(tmp[0])));
+        builder.setHitPoints( extractIntegerFromString( tmp[0] ) );
 
         int beginIndex = row.indexOf('(');
         if (beginIndex >= 0) {

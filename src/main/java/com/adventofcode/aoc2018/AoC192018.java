@@ -3,7 +3,7 @@ package com.adventofcode.aoc2018;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 import static com.adventofcode.utils.Utils.atoi;
-import static com.adventofcode.utils.Utils.extractNumberFromString;
+import static com.adventofcode.utils.Utils.extractIntegerFromString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
 
@@ -20,7 +20,7 @@ class AoC192018 implements Solution {
         final int[] registers = new int[6];
         registers[0] = i;
         //instruction register
-        final int ip = atoi(extractNumberFromString(input.get(0)));
+        final int ip = extractIntegerFromString( input.get( 0 ) );
         boolean crash = false;
         while (!crash) {
             if (input.size() > 10 && registers[ip] == 1) {
