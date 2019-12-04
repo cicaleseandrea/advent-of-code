@@ -66,26 +66,17 @@ class AoC032019 implements Solution {
 		final Pair<Long, Long> start = new Pair<>( 0L, 0L );
 		final AtomicLong steps = new AtomicLong();
 		for ( final String direction : directions ) {
-			followDirection( wire, positions, direction, start, steps );
-		}
-	}
-
-	private void followDirection( final Set<Pair<Long, Long>> wire,
-			final Map<Pair<Long, Long>, Long> positions, final String direction,
-			final Pair<Long, Long> curr, final AtomicLong steps ) {
-		switch ( direction.charAt( 0 ) ) {
-		case 'U' -> followDirection( wire, positions, direction, curr, steps, it -> {
-			it.setSecond( it.getSecond() + 1 );
-		} );
-		case 'D' -> followDirection( wire, positions, direction, curr, steps, it -> {
-			it.setSecond( it.getSecond() - 1 );
-		} );
-		case 'L' -> followDirection( wire, positions, direction, curr, steps, it -> {
-			it.setFirst( it.getFirst() - 1 );
-		} );
-		case 'R' -> followDirection( wire, positions, direction, curr, steps,
-				it -> { it.setFirst( it.getFirst() + 1 ); } );
-		default -> throw new IllegalStateException();
+			switch ( direction.charAt( 0 ) ) {
+			case 'U' -> followDirection( wire, positions, direction, start, steps,
+					it -> it.setSecond( it.getSecond() + 1 ) );
+			case 'D' -> followDirection( wire, positions, direction, start, steps,
+					it -> it.setSecond( it.getSecond() - 1 ) );
+			case 'L' -> followDirection( wire, positions, direction, start, steps,
+					it -> it.setFirst( it.getFirst() - 1 ) );
+			case 'R' -> followDirection( wire, positions, direction, start, steps,
+					it -> it.setFirst( it.getFirst() + 1 ) );
+			default -> throw new IllegalStateException();
+			}
 		}
 	}
 
