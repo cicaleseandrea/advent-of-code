@@ -1,16 +1,20 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Operation2018;
+import static java.util.stream.Collectors.toList;
+
+import static com.adventofcode.utils.Operation2018.EQRR;
+import static com.adventofcode.utils.Utils.atoi;
+import static com.adventofcode.utils.Utils.extractIntegerFromString;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Operation2018.EQRR;
-import static com.adventofcode.utils.Utils.*;
-import static java.util.stream.Collectors.toList;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Operation2018;
 
 class AoC212018 implements Solution {
 
@@ -48,7 +52,7 @@ class AoC212018 implements Solution {
         final List<String> list = input.collect(toList());
         final int[] registers = new int[6];
         //instruction register
-        final int ip = atoi(extractNumberFromString(list.get(0)));
+        final int ip = extractIntegerFromString( list.get( 0 ) );
         boolean crash = false;
         while (!crash) {
             performOperations(list.get(registers[ip] + 1), registers);

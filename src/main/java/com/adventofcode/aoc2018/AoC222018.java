@@ -1,13 +1,28 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
+import static com.adventofcode.utils.Utils.EMPTY;
+import static com.adventofcode.utils.Utils.createPairLong;
+import static com.adventofcode.utils.Utils.extractIntegerFromString;
+import static com.adventofcode.utils.Utils.incrementMod;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.manhattanDistance;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
 
 class AoC222018 implements Solution {
 
@@ -76,7 +91,7 @@ class AoC222018 implements Solution {
     }
 
     private void initializeState(final String[] input) {
-        depth = atoi(extractNumberFromString(input[0]));
+        depth = extractIntegerFromString( input[0] );
         target = createPairLong(input[1].substring(8).split(","));
     }
 

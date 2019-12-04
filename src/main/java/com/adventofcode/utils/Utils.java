@@ -213,12 +213,12 @@ public class Utils {
         return incrementListElement(list, pos, -decrement);
     }
 
-    public static String extractNumberFromString(final String msg) {
-        final Matcher matcher = POSITIVE_LONG_PATTERN.matcher(msg);
+    public static Integer extractIntegerFromString( final String msg ) {
+        final Matcher matcher = LONG_PATTERN.matcher( msg );
         if (matcher.find()) {
-            return matcher.group();
+            return atoi( matcher.group() );
         } else {
-            return EMPTY;
+            throw new IllegalArgumentException();
         }
     }
 

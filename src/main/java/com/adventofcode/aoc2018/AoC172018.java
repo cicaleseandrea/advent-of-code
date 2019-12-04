@@ -1,14 +1,20 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
+import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.PIPE;
+import static com.adventofcode.utils.Utils.SPACE;
+import static com.adventofcode.utils.Utils.TILDE;
+import static com.adventofcode.utils.Utils.extractIntegerFromString;
+import static com.adventofcode.utils.Utils.getIterable;
+import static com.adventofcode.utils.Utils.itoa;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
 
 class AoC172018 implements Solution {
 
@@ -107,7 +113,7 @@ class AoC172018 implements Solution {
             String[] tmp = row.split("=");
             int x = 0;
             int y = 0;
-            int i = atoi(extractNumberFromString(tmp[1]));
+            int i = extractIntegerFromString( tmp[1] );
             if (startX) {
                 x = i;
                 maxX = Math.max(maxX, i);
@@ -118,8 +124,8 @@ class AoC172018 implements Solution {
                 minY = Math.min(minY, i);
             }
             tmp = tmp[2].split("\\.+");
-            final int min = atoi(extractNumberFromString(tmp[0]));
-            final int max = atoi(extractNumberFromString(tmp[1]));
+            final int min = extractIntegerFromString( tmp[0] );
+            final int max = extractIntegerFromString( tmp[1] );
             for (i = min; i <= max; i++) {
                 if (startX) {
                     y = i;
