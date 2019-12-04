@@ -8,7 +8,6 @@ import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
 
 class AoC012019 implements Solution {
-
 	public String solveFirstPart( final Stream<String> input ) {
 		return solve( input, true );
 	}
