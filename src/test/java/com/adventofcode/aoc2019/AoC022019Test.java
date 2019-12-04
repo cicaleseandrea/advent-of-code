@@ -1,14 +1,15 @@
 package com.adventofcode.aoc2019;
 
-import com.adventofcode.Generic;
-import com.adventofcode.Solution;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static com.adventofcode.Generic.Type.FIRST;
+import static com.adventofcode.Generic.Type.SECOND;
 
 import java.util.List;
 
-import static com.adventofcode.Generic.Type.FIRST;
-import static com.adventofcode.Generic.Type.SECOND;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import com.adventofcode.Generic;
+import com.adventofcode.Solution;
 
 @RunWith(Parameterized.class)
 public class AoC022019Test extends Generic {
