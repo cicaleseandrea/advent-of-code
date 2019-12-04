@@ -135,6 +135,11 @@ public class Utils {
     public static Stream<String> splitOnRegex(final String s, final String regex) {
         return Stream.of(s.split(regex));
     }
+
+    public static List<Long> toPositiveLongList(final String input) {
+        return toPositiveLongStream(input).collect(toList());
+    }
+
     public static List<Long> toLongList(final String input) {
         return toLongStream(input).collect(toList());
     }
@@ -149,6 +154,14 @@ public class Utils {
 
     public static Stream<Long> toLongStream(final String input) {
         return toLongStream(LONG_PATTERN
+                .matcher(input)
+                .results()
+                .map(MatchResult::group)
+        );
+    }
+
+    public static Stream<Long> toPositiveLongStream(final String input) {
+        return toLongStream(POSITIVE_LONG_PATTERN
                 .matcher(input)
                 .results()
                 .map(MatchResult::group)
