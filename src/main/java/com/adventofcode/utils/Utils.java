@@ -79,6 +79,10 @@ public class Utils {
         return Character.getNumericValue(c);
     }
 
+    public static int charToInt( final int c ) {
+        return Character.getNumericValue( c );
+    }
+
     public static Comparator<Pair<Long, Long>> getPairComparator() {
         return Comparator.<Pair<Long, Long>>comparingLong(Pair::getSecond).thenComparingLong(Pair::getFirst);
     }
@@ -233,6 +237,14 @@ public class Utils {
 
     public static LongStream matrixToLongStream(final long[][] matrix) {
         return Arrays.stream(matrix).flatMapToLong(Arrays::stream);
+    }
+
+    public static int[] toDigitsArray( final String i ) {
+        return i.chars().map( Utils::charToInt ).toArray();
+    }
+
+    public static int[] toDigitsArray( final long i ) {
+        return toDigitsArray( String.valueOf( i ) );
     }
 
     public static String itoa(final long i) {
