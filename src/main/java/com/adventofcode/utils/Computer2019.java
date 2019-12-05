@@ -1,145 +1,322 @@
 package com.adventofcode.utils;
 
+import static com.adventofcode.utils.Computer2019.OpCode.HALT;
+import static com.adventofcode.utils.Computer2019.OpCode.NOP;
+import static com.adventofcode.utils.Utils.itoa;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Optional;
+import java.util.Scanner;
+import java.util.function.Consumer;
+
+import com.google.common.base.Strings;
 
 public class Computer2019 {
     public List<Long> memory;
-    public int pointer = 0;
+    private int pointer = 0;
+    private final boolean modes;
+    private final Scanner in;
+    private final PrintStream out;
 
-    private int getAddress(final int index) {
-        return getValue(index).intValue();
+    public Computer2019() {
+        this( false, System.in, System.out );
     }
 
-    private Long getValueIndirect(final int index) {
-        return getValue(getAddress(index));
+    public Computer2019( final boolean modes, final InputStream in, final OutputStream out ) {
+        this.modes = modes;
+        this.in = new Scanner( in );
+        this.out = new PrintStream( out );
     }
 
-    private Long getValue(final int address) {
-        return memory.get(address);
+    private int getMode( final long value, final int param ) {
+        int position = 10;
+        for ( int i = 0; i < param; i++ ) {
+            position *= 10;
+        }
+        return (int) ( ( value / position ) % 10 );
     }
 
-    private Long setValueIndirect(final int index, final Long val) {
-        return setValue(getAddress(index), val);
+    private int getAddress( final int index ) {
+        return getValueDirect( index ).intValue();
     }
 
-    private Long setValue(final int address, final Long val) {
-        return memory.set(address, val);
+    private Long getValueIndirect( final int index ) {
+        return getValueDirect( getAddress( index ) );
     }
 
-    private Long getNextParameterIndirect() {
-        return getValueIndirect(advancePointer());
+    private Long getValueDirect( final int address ) {
+        return memory.get( address );
     }
 
-    private Long getNextParameter() {
-        return getValue(advancePointer());
+    private Long setValueIndirect( final int index, final Long val ) {
+        return setValueDirect( getAddress( index ), val );
+    }
+
+    private Long setValueDirect( final int address, final Long val ) {
+        return memory.set( address, val );
+    }
+
+    private Long getNextParameter( final int mode ) {
+        return ( mode == 0 ) ? getValueIndirect( advancePointer() ) : getValueDirect(
+                advancePointer() );
+    }
+
+	private String printParameter( final int mode, final int param ) {
+		final Long address = getValueDirect( pointer + param );
+		if ( mode == 0 ) {
+			return "m[" + itoa( address ) + "]";
+		} else {
+			return itoa( address );
+		}
     }
 
     public int advancePointer() {
         return ++pointer;
     }
 
-    public void loadProgram(final List<Long> program) {
-        memory = new ArrayList<>(program);
+    public void loadProgram( final List<Long> program ) {
+        memory = new ArrayList<>( program );
     }
 
-    public void setPointer(final int pointer) {
+    public void setPointer( final int pointer ) {
         this.pointer = pointer;
     }
 
-    private OpCode currentInstruction() {
-        return OpCode.valueOf(getValue(pointer));
+    private Optional<OpCode> getCurrentOpCode() {
+        long opCode = currentInstruction();
+        if ( modes ) {
+            opCode %= 100;
+        }
+        return Optional.ofNullable( OpCode.valueOf( opCode ) );
     }
 
-    public Long executeOneStep() {
-        final OpCode instruction = currentInstruction();
-        if (instruction == null) {
-            return null;
-        }
-        final Long res = instruction.apply(this);
+    private Long currentInstruction() {
+        return getValueDirect( pointer );
+    }
+
+    public boolean executeOneStep() {
+        final Optional<OpCode> opCode = getCurrentOpCode();
+        opCode.orElse( NOP ).accept( this );
         advancePointer();
-        return res;
+        return opCode.orElse( HALT ) != HALT;
     }
 
     public void run() {
-        while (true) {
-            if (executeOneStep() == null) return;
+        while ( true ) {
+            if ( !executeOneStep() ) {
+                return;
+            }
         }
     }
 
-    public OpCode printOneStep() {
-        final OpCode instruction = currentInstruction();
-        final String str = instruction != null ? instruction.toString(this) : null;
-        System.out.println(str);
-        return instruction;
+    public Optional<OpCode> printOneStep() {
+        final Optional<OpCode> opCode = getCurrentOpCode();
+        System.out.println( opCode.orElse( NOP ).toString( this ) );
+        return opCode;
     }
 
     public void printProgram() {
-        System.out.println("PROGRAM");
-        System.out.println("=======");
+		System.out.println( "=======BEGIN PROGRAM=======" );
         final int origPointer = pointer;
 
-        setPointer(0);
-        while (pointer < memory.size()) {
-            final OpCode instruction = printOneStep();
-            final int nParams = instruction != null ? instruction.nParams : 0;
-            pointer += nParams + 1;
+        setPointer( 0 );
+        while ( pointer < memory.size() ) {
+            final Optional<OpCode> opCode = printOneStep();
+            pointer += opCode.orElse( NOP ).nParams + 1;
         }
-        System.out.println("=======");
+		System.out.println( "========END PROGRAM========" );
 
         this.pointer = origPointer;
     }
 
-    private enum OpCode implements Function<Computer2019, Long> {
-        ADD(1, 3) {
-            @Override
-            public Long apply(final Computer2019 computer) {
-                final Long first = computer.getNextParameterIndirect();
-                final Long second = computer.getNextParameterIndirect();
-                return computer.setValueIndirect(computer.advancePointer(), first + second);
+    enum OpCode implements Consumer<Computer2019> {
+        ADD( 1, 3 ) {
+			@Override
+            public void accept( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+                final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
+                final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
+                computer.setValueIndirect( computer.advancePointer(), first + second );
             }
 
             @Override
-            public String toString(final Computer2019 computer) {
-                final Long first = computer.getValue(computer.pointer + 1);
-                final Long second = computer.getValue(computer.pointer + 2);
-                final Long third = computer.getValue(computer.pointer + 3);
-                return "m[" + third + "] = m[" + first + "] + m[" + second + "]";
-            }
-        }, MULTIPLY(2, 3) {
+            public String toString( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+				final String first = computer.printParameter( computer.getMode( instruction, 1 ),
+						1 );
+				final String second = computer.printParameter( computer.getMode( instruction, 2 ),
+						2 );
+				final String third = computer.printParameter( 0, 3 );
+				return padZero( computer.pointer ) + ": " + third + " = " + first + " + " + second;
+			}
+
+		},
+        MULTIPLY( 2, 3 ) {
             @Override
-            public Long apply(final Computer2019 computer) {
-                final Long first = computer.getNextParameterIndirect();
-                final Long second = computer.getNextParameterIndirect();
-                return computer.setValueIndirect(computer.advancePointer(), first * second);
+            public void accept( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+                final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
+                final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
+                computer.setValueIndirect( computer.advancePointer(), first * second );
             }
 
             @Override
-            public String toString(final Computer2019 computer) {
-                final Long first = computer.getValue(computer.pointer + 1);
-                final Long second = computer.getValue(computer.pointer + 2);
-                final Long third = computer.getValue(computer.pointer + 3);
-                return "m[" + third + "] = m[" + first + "] * m[" + second + "]";
+            public String toString( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+				final String first = computer.printParameter( computer.getMode( instruction, 1 ),
+						1 );
+				final String second = computer.printParameter( computer.getMode( instruction, 2 ),
+						2 );
+				final String third = computer.printParameter( 0, 3 );
+				return padZero( computer.pointer ) + ": " + third + " = " + first + " * " + second;
             }
-        }, HALT(99, 0) {
+        },
+        IN( 3, 1 ) {
             @Override
-            public Long apply(final Computer2019 computer) {
-                return null;
+            public void accept( final Computer2019 computer ) {
+                final Long first = computer.in.nextLong();
+                computer.setValueIndirect( computer.advancePointer(), first );
             }
 
             @Override
-            public String toString(final Computer2019 computer) {
-                return "nop";
+            public String toString( final Computer2019 computer ) {
+				final String first = computer.printParameter( 0, 1 );
+				return padZero( computer.pointer ) + ": " + first + " = user input";
+            }
+        },
+        OUT( 4, 1 ) {
+            @Override
+            public void accept( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+                final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
+                computer.out.println( first );
+            }
+
+            @Override
+            public String toString( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+				final String first = computer.printParameter( computer.getMode( instruction, 1 ),
+						1 );
+				return padZero( computer.pointer ) + ": print: " + first;
+            }
+        },
+        JUMP_TRUE( 5, 2 ) {
+            @Override
+            public void accept( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+                final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
+                final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
+                if ( first != 0 ) {
+                    computer.pointer = second.intValue() - 1; //after executing an instruction, computer always advances the pointer
+                }
+            }
+
+            @Override
+            public String toString( final Computer2019 computer ) {
+				final Long instruction = computer.currentInstruction();
+				final String first = computer.printParameter( computer.getMode( instruction, 1 ),
+						1 );
+				final String second = computer.printParameter( computer.getMode( instruction, 2 ),
+						2 );
+				return padZero(
+						computer.pointer ) + ": if ( " + first + " != 0 ) jump to " + second;
+            }
+        },
+        JUMP_FALSE( 6, 2 ) {
+            @Override
+            public void accept( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+                final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
+                final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
+                if ( first == 0 ) {
+                    computer.pointer = second.intValue() - 1; //after executing an instruction, computer always advances the pointer
+                }
+            }
+
+            @Override
+            public String toString( final Computer2019 computer ) {
+				final Long instruction = computer.currentInstruction();
+				final String first = computer.printParameter( computer.getMode( instruction, 1 ),
+						1 );
+				final String second = computer.printParameter( computer.getMode( instruction, 2 ),
+						2 );
+				return padZero(
+						computer.pointer ) + ": if ( " + first + " == 0 ) jump to " + second;
+            }
+        },
+        LESS_THAN( 7, 3 ) {
+            @Override
+            public void accept( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+                final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
+                final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
+                final long val = first < second ? 1L : 0L;
+                computer.setValueIndirect( computer.advancePointer(), val );
+            }
+
+            @Override
+            public String toString( final Computer2019 computer ) {
+				final Long instruction = computer.currentInstruction();
+				final String first = computer.printParameter( computer.getMode( instruction, 1 ),
+						1 );
+				final String second = computer.printParameter( computer.getMode( instruction, 2 ),
+						2 );
+				final String third = computer.printParameter( 0, 3 );
+				return padZero(
+						computer.pointer ) + ": " + third + " = ( " + first + " < " + second + " ) ? 1 : 0";
+            }
+        },
+        EQUALS( 8, 3 ) {
+            @Override
+            public void accept( final Computer2019 computer ) {
+                final Long instruction = computer.currentInstruction();
+                final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
+                final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
+                final long val = first.equals( second ) ? 1L : 0L;
+                computer.setValueIndirect( computer.advancePointer(), val );
+            }
+
+            @Override
+            public String toString( final Computer2019 computer ) {
+				final Long instruction = computer.currentInstruction();
+				final String first = computer.printParameter( computer.getMode( instruction, 1 ),
+						1 );
+				final String second = computer.printParameter( computer.getMode( instruction, 2 ),
+						2 );
+				final String third = computer.printParameter( 0, 3 );
+				return padZero(
+						computer.pointer ) + ": " + third + " = ( " + first + " == " + second + " ) ? 1 : 0";
+            }
+        },
+        HALT( 99, 0 ) {
+            @Override
+            public void accept( final Computer2019 computer ) {
+                System.err.println( "HALT" );
+            }
+
+            @Override
+            public String toString( final Computer2019 computer ) {
+				return padZero( computer.pointer ) + ": " + "HALT";
+            }
+        },
+        NOP( -1, 0 ) {
+            @Override
+            public String toString( final Computer2019 computer ) {
+				final String first = computer.printParameter( 1, 0 );
+				return padZero( computer.pointer ) + ": " + first;
             }
         };
 
         private final long code;
         private final int nParams;
 
-        OpCode(final long code, int nParams) {
+        OpCode( final long code, int nParams ) {
             this.code = code;
             this.nParams = nParams;
         }
@@ -147,21 +324,26 @@ public class Computer2019 {
         private static final Map<Long, OpCode> OP_CODES = new HashMap<>();
 
         static {
-            for (final OpCode op : OpCode.values()) {
-                OP_CODES.put(op.code, op);
+            for ( final OpCode op : OpCode.values() ) {
+                OP_CODES.put( op.code, op );
             }
         }
 
-        static OpCode valueOf(long code) {
-            return OP_CODES.get(code);
+        static OpCode valueOf( long code ) {
+            return OP_CODES.get( code );
         }
 
         long getValue() {
             return code;
         }
 
-        abstract String toString(final Computer2019 computer);
+        abstract String toString( final Computer2019 computer );
 
-        public abstract Long apply(final Computer2019 computer);
+		public void accept( final Computer2019 computer ) {}
+
+		private static String padZero( final long num ) {
+			final int PAD = 4;
+			return Strings.padStart( itoa( num ), PAD, '0' );
+		}
     }
 }
