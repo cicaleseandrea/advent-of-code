@@ -23,11 +23,11 @@ public class AoC042019Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "222221-222230", "8"},
-                {FIRST, "222221-222240", "15"},
-                {FIRST, getInput(INSTANCE), "1864"},
-                {SECOND, "111121-111130", "1"},
-                {SECOND, getInput(INSTANCE), "1258"}
+                { FIRST, "222221-222230", "8" },
+                { FIRST, "222221-222240", "15" },
+                { FIRST, getInput( INSTANCE ), "1864" },
+                { SECOND, "111121-111130", "1" },
+                { SECOND, getInput( INSTANCE ), "1258" }
         });
     }
 }
