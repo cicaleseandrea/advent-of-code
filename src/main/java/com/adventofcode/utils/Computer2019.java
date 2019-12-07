@@ -4,15 +4,15 @@ import static com.adventofcode.utils.Computer2019.OpCode.HALT;
 import static com.adventofcode.utils.Computer2019.OpCode.NOP;
 import static com.adventofcode.utils.Utils.itoa;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import com.google.common.base.Strings;
@@ -21,17 +21,19 @@ public class Computer2019 {
     public List<Long> memory;
     private int pointer = 0;
     private final boolean modes;
-    private final Scanner in;
-    private final PrintStream out;
+	private final BlockingQueue<Long> in;
+	private final BlockingQueue<Long> out;
+	private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
-    public Computer2019() {
-        this( false, System.in, System.out );
+	public Computer2019() {
+		this( false, null, null );
     }
 
-    public Computer2019( final boolean modes, final InputStream in, final OutputStream out ) {
+	public Computer2019( final boolean modes, final BlockingQueue<Long> in,
+			final BlockingQueue<Long> out ) {
         this.modes = modes;
-        this.in = new Scanner( in );
-        this.out = new PrintStream( out );
+		this.in = in;
+		this.out = out;
     }
 
     private int getMode( final long value, final int param ) {
@@ -107,13 +109,17 @@ public class Computer2019 {
         return opCode.orElse( HALT ) != HALT;
     }
 
-    public void run() {
-        while ( true ) {
-            if ( !executeOneStep() ) {
-                return;
-            }
-        }
-    }
+	public void run() {
+		while ( true ) {
+			if ( !executeOneStep() ) {
+				return;
+			}
+		}
+	}
+
+	public Future<?> runAsync() {
+		return EXECUTOR.submit( this::run );
+	}
 
     public Optional<OpCode> printOneStep() {
         final Optional<OpCode> opCode = getCurrentOpCode();
@@ -180,8 +186,13 @@ public class Computer2019 {
         IN( 3, 1 ) {
             @Override
             public void accept( final Computer2019 computer ) {
-                final Long first = computer.in.nextLong();
-                computer.setValueIndirect( computer.advancePointer(), first );
+				final Long first;
+				try {
+					first = computer.in.take();
+					computer.setValueIndirect( computer.advancePointer(), first );
+				} catch ( InterruptedException e ) {
+					e.printStackTrace();
+				}
             }
 
             @Override
@@ -195,8 +206,12 @@ public class Computer2019 {
             public void accept( final Computer2019 computer ) {
                 final Long instruction = computer.currentInstruction();
                 final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
-                computer.out.println( first );
-            }
+				try {
+					computer.out.put( first );
+				} catch ( InterruptedException e ) {
+					e.printStackTrace();
+				}
+			}
 
             @Override
             public String toString( final Computer2019 computer ) {
