@@ -1,8 +1,11 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
-import com.adventofcode.utils.Utils;
+import static com.adventofcode.utils.Utils.EMPTY;
+import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.SPACE;
+import static com.adventofcode.utils.Utils.atoi;
+import static com.adventofcode.utils.Utils.getIterable;
+import static com.adventofcode.utils.Utils.itoa;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +14,9 @@ import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
+import com.adventofcode.utils.Utils;
 
 class AoC102018 implements Solution {
 
@@ -96,7 +101,7 @@ class AoC102018 implements Solution {
         for (int i = minRows; i <= maxRows; i++) {
             for (int j = minColumns; j <= maxColumns; j++) {
                 if (curr.containsKey(new Pair<>(j, i))) {
-                    str.append(AT);
+                    str.append(HASH);
                 } else {
                     str.append(SPACE);
                 }

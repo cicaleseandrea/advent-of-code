@@ -1,14 +1,15 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Generic;
-import com.adventofcode.Solution;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static com.adventofcode.Generic.Type.FIRST;
+import static com.adventofcode.Generic.Type.SECOND;
 
 import java.util.List;
 
-import static com.adventofcode.Generic.Type.FIRST;
-import static com.adventofcode.Generic.Type.SECOND;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import com.adventofcode.Generic;
+import com.adventofcode.Solution;
 
 
 @RunWith(Parameterized.class)
@@ -54,26 +55,26 @@ public class AoC102018Test extends Generic {
                         "position=< 5,  9> velocity=< 1, -2>\n" +
                         "position=<14,  7> velocity=<-2,  0>\n" +
                         "position=<-3,  6> velocity=< 2, -1>",
-                        "@   @  @@@\n" +
-                                "@   @   @ \n" +
-                                "@   @   @ \n" +
-                                "@@@@@   @ \n" +
-                                "@   @   @ \n" +
-                                "@   @   @ \n" +
-                                "@   @   @ \n" +
-                                "@   @  @@@"},
+                        "#   #  ###\n" +
+                        "#   #   # \n" +
+                        "#   #   # \n" +
+                        "#####   # \n" +
+                        "#   #   # \n" +
+                        "#   #   # \n" +
+                        "#   #   # \n" +
+                        "#   #  ###"},
                 {
                         FIRST, getInput(INSTANCE),
-                        "@@@@@@  @@@@@   @@@@@@  @    @  @          @@@  @@@@@@   @@@@ \n" +
-                                "@       @    @       @  @   @   @           @        @  @    @\n" +
-                                "@       @    @       @  @  @    @           @        @  @     \n" +
-                                "@       @    @      @   @ @     @           @       @   @     \n" +
-                                "@@@@@   @@@@@      @    @@      @           @      @    @     \n" +
-                                "@       @         @     @@      @           @     @     @  @@@\n" +
-                                "@       @        @      @ @     @           @    @      @    @\n" +
-                                "@       @       @       @  @    @       @   @   @       @    @\n" +
-                                "@       @       @       @   @   @       @   @   @       @   @@\n" +
-                                "@       @       @@@@@@  @    @  @@@@@@   @@@    @@@@@@   @@@ @"
+                        "######  #####   ######  #    #  #          ###  ######   #### \n" +
+                        "#       #    #       #  #   #   #           #        #  #    #\n" +
+                        "#       #    #       #  #  #    #           #        #  #     \n" +
+                        "#       #    #      #   # #     #           #       #   #     \n" +
+                        "#####   #####      #    ##      #           #      #    #     \n" +
+                        "#       #         #     ##      #           #     #     #  ###\n" +
+                        "#       #        #      # #     #           #    #      #    #\n" +
+                        "#       #       #       #  #    #       #   #   #       #    #\n" +
+                        "#       #       #       #   #   #       #   #   #       #   ##\n" +
+                        "#       #       ######  #    #  ######   ###    ######   ### #"
                 },
                 {
                         SECOND, "position=< 9,  1> velocity=< 0,  2>\n" +
