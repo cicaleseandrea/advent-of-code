@@ -40,26 +40,26 @@ class AoC072019 implements Solution {
 	}
 
 	private long runComputers( final List<Long> program, final Iterator<Integer> settings ) {
-		BlockingQueue<Long> first = new LinkedBlockingQueue<>();
-		BlockingQueue<Long> previous = first;
+		BlockingQueue<Long> firstConnection = new LinkedBlockingQueue<>();
+		BlockingQueue<Long> previousConnection = firstConnection;
 		final Set<Future<?>> computers = new HashSet<>();
 		while ( settings.hasNext() ) {
 			//configure phase settings
-			previous.add( settings.next().longValue() );
-			//loop back last computer into first
-			final BlockingQueue<Long> next = settings.hasNext() ? new LinkedBlockingQueue<>() : first;
-			computers.add( runComputer( program, previous, next ) );
-			previous = next;
+			previousConnection.add( settings.next().longValue() );
+			//connect computers to each other. loop back last computer into first
+			final BlockingQueue<Long> nextConnection = settings.hasNext() ? new LinkedBlockingQueue<>() : firstConnection;
+			computers.add( runComputer( program, previousConnection, nextConnection ) );
+			previousConnection = nextConnection;
 		}
 
 		try {
 			//start computing
-			first.add( 0L );
+			firstConnection.add( 0L );
 			for ( final var computer : computers ) {
 				//wait for completion
 				computer.get();
 			}
-			return previous.remove();
+			return previousConnection.remove();
 		} catch ( InterruptedException | ExecutionException e ) {
 			throw new RuntimeException( e );
 		}
