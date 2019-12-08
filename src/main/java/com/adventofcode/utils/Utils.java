@@ -248,6 +248,15 @@ public class Utils {
         }
     }
 
+    public static <E> void printMatrix( final E[][] matrix ) {
+        for ( E[] row : matrix ) {
+            for ( E e : row ) {
+                System.out.print( e );
+            }
+            System.out.println();
+        }
+    }
+
     public static LongStream matrixToLongStream(final long[][] matrix) {
         return Arrays.stream(matrix).flatMapToLong(Arrays::stream);
     }
