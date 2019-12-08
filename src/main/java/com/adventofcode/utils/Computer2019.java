@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Strings;
 
-public class Computer2019 {
+public class Computer2019 implements Runnable {
     public List<Long> memory;
     private int pointer = 0;
     private final boolean modes;
@@ -29,12 +29,16 @@ public class Computer2019 {
 		this( false, null, null );
     }
 
-	public Computer2019( final boolean modes, final BlockingQueue<Long> in,
+	public Computer2019( final BlockingQueue<Long> in, final BlockingQueue<Long> out ) {
+		this( true, in, out );
+	}
+
+	private Computer2019( final boolean modes, final BlockingQueue<Long> in,
 			final BlockingQueue<Long> out ) {
-        this.modes = modes;
+		this.modes = modes;
 		this.in = in;
 		this.out = out;
-    }
+	}
 
     private int getMode( final long value, final int param ) {
         int position = 10;
@@ -109,6 +113,7 @@ public class Computer2019 {
         return opCode.orElse( HALT ) != HALT;
     }
 
+	@Override
 	public void run() {
 		while ( true ) {
 			if ( !executeOneStep() ) {
@@ -118,7 +123,7 @@ public class Computer2019 {
 	}
 
 	public Future<?> runAsync() {
-		return EXECUTOR.submit( this::run );
+		return EXECUTOR.submit( this );
 	}
 
     public Optional<OpCode> printOneStep() {
@@ -354,6 +359,7 @@ public class Computer2019 {
 
         abstract String toString( final Computer2019 computer );
 
+		@Override
 		public void accept( final Computer2019 computer ) {}
 
 		private static String padZero( final long num ) {
