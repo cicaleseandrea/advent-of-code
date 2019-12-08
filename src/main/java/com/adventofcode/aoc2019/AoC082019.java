@@ -1,5 +1,6 @@
 package com.adventofcode.aoc2019;
 
+import static java.util.Comparator.comparingLong;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingByConcurrent;
@@ -7,52 +8,66 @@ import static java.util.stream.Collectors.groupingByConcurrent;
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.SPACE;
 import static com.adventofcode.utils.Utils.getFirstString;
-import static com.adventofcode.utils.Utils.itoa;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
+import com.adventofcode.utils.Utils;
 
 class AoC082019 implements Solution {
+
+	private static final Map<Character, Character> PIXEL_VALUES = Map.of( '0', SPACE, '1', HASH );
+
 	public String solveFirstPart( final Stream<String> input ) {
-		return solve( input, true );
+		return solve( getFirstString( input ), this::computeResultFirst );
 	}
 
 	public String solveSecondPart( final Stream<String> input ) {
-		return solve( input, false );
+		return solve( getFirstString( input ), this::computeResultSecond );
 	}
 
-	public String solve( final Stream<String> input, final boolean first ) {
-		final String str = getFirstString( input );
-		final int rows = rowsNumber( str );
-		final int columns = columnsNumber( str );
-		final AtomicInteger k = new AtomicInteger();
-		long min = Long.MAX_VALUE;
-		long res = 0;
-		final ArrayList<List<List<Character>>> image = new ArrayList<>();
-		while ( k.get() < str.length() ) {
-			final var layer = createLayer( str, rows, columns, k );
-			image.add( layer );
-			final var digits = layer.parallelStream()
-					.flatMap( Collection::stream )
-					.collect( groupingByConcurrent( identity(), counting() ) );
-			long zeroes = digits.getOrDefault( '0', 0L );
-			if ( zeroes < min ) {
-				min = zeroes;
-				res = digits.getOrDefault( '1', 0L ) * digits.getOrDefault( '2', 0L );
-			}
+	public String solve( final String input,
+			final Function<List<List<List<Character>>>, String> computeResult ) {
+		final int rows = input.length() < 20 ? 2 : 6;
+		final int columns = input.length() < 20 ? 2 : 25;
+		final List<List<List<Character>>> image = new ArrayList<>();
+		final Iterator<Character> inputChars = input.chars().mapToObj( c -> (char) c ).iterator();
+		while ( inputChars.hasNext() ) {
+			image.add( createLayer( inputChars, rows, columns ) );
 		}
+		return computeResult.apply( image );
+	}
 
-		if ( first ) {
-			return itoa( res );
-		}
+	private String computeResultFirst( final List<List<List<Character>>> image ) {
+		return image.stream()
+				.map( this::computeLayerValue )
+				.min( comparingLong( Pair::getFirst ) )
+				.map( Pair::getSecond )
+				.map( Utils::itoa )
+				.orElseThrow();
+	}
+
+	private Pair<Long, Long> computeLayerValue( final List<List<Character>> layer ) {
+		final var frequencies = layer.parallelStream()
+				.flatMap( Collection::stream )
+				.collect( groupingByConcurrent( identity(), counting() ) );
+		final long zeroes = frequencies.getOrDefault( '0', 0L );
+		final long value = frequencies.getOrDefault( '1', 0L ) * frequencies.getOrDefault( '2',
+				0L );
+		return new Pair<>( zeroes, value );
+	}
+
+	private String computeResultSecond( final List<List<List<Character>>> image ) {
 		final StringBuilder result = new StringBuilder();
-		for ( int i = 0; i < rows; i++ ) {
-			for ( int j = 0; j < columns; j++ ) {
+		for ( int i = 0; i < image.get( 0 ).size(); i++ ) {
+			for ( int j = 0; j < image.get( 0 ).get( 0 ).size(); j++ ) {
 				result.append( findPixel( image, i, j ) );
 			}
 			result.append( "\n" );
@@ -60,37 +75,27 @@ class AoC082019 implements Solution {
 		return result.toString();
 	}
 
-	private Character findPixel( final ArrayList<List<List<Character>>> image, final int i,
+	private Character findPixel( final List<List<List<Character>>> image, final int i,
 			final int j ) {
-		for ( final var layer : image ) {
-			final Character pixel = layer.get( i ).get( j );
-			if ( pixel != '2' ) {
-				return pixel == '1' ? HASH : SPACE;
-			}
-		}
-		throw new IllegalArgumentException();
+		return image.stream()
+				.map( layer -> layer.get( i ).get( j ) )
+				.filter( PIXEL_VALUES::containsKey )
+				.findFirst()
+				.map( PIXEL_VALUES::get )
+				.orElseThrow();
 	}
 
-	private List<List<Character>> createLayer( final String str, final int rows, final int columns,
-			final AtomicInteger k ) {
+	private List<List<Character>> createLayer( final Iterator<Character> input, final int rows,
+			final int columns ) {
 		final List<List<Character>> matrix = new ArrayList<>();
 		for ( int i = 0; i < rows; i++ ) {
 			final List<Character> row = new ArrayList<>();
 			for ( int j = 0; j < columns; j++ ) {
-				final char digit = str.charAt( k.getAndIncrement() );
-				row.add( digit );
+				row.add( input.next() );
 			}
 			matrix.add( row );
 		}
 		return matrix;
-	}
-
-	private int rowsNumber( final String str ) {
-		return str.length() < 20 ? 2 : 6;
-	}
-
-	private int columnsNumber( final String str ) {
-		return str.length() < 20 ? 2 : 25;
 	}
 
 }
