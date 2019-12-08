@@ -97,5 +97,4 @@ class AoC082019 implements Solution {
 		}
 		return matrix;
 	}
-
 }
