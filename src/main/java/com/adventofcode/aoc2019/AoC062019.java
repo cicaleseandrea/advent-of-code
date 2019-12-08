@@ -6,6 +6,7 @@ import static com.adventofcode.utils.Utils.splitOnRegex;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
@@ -14,15 +15,16 @@ import com.adventofcode.utils.Node;
 class AoC062019 implements Solution {
 
 	public String solveFirstPart( final Stream<String> input ) {
-		return solve( input, true );
+		return solve( input, new HashMap<>(), this::countOrbits );
 	}
 
 	public String solveSecondPart( final Stream<String> input ) {
-		return solve( input, false );
+		final Map<String, Node<String>> nodes = new HashMap<>();
+		return solve( input, nodes, n -> countTransfers( nodes ) );
 	}
 
-	public String solve( final Stream<String> input, final boolean first ) {
-		final Map<String, Node<String>> nodes = new HashMap<>();
+	public String solve( final Stream<String> input, final Map<String, Node<String>> nodes,
+			final Function<Node<String>, Long> computeResult ) {
 		final Node<String> COM = new Node<>( "COM" );
 		nodes.put( "COM", COM );
 
@@ -31,23 +33,19 @@ class AoC062019 implements Solution {
 			getOrAddNode( nodes, connection[0] ).addChild( getOrAddNode( nodes, connection[1] ) );
 		} );
 
-		if ( first ) {
-			return itoa( countOrbits( COM, 0 ) );
-		} else {
-			return itoa( countTransfers( nodes ) );
-		}
+		return itoa( computeResult.apply( COM ) );
 	}
 
 	private Node<String> getOrAddNode( final Map<String, Node<String>> nodes,
 			final String nodeStr ) {
-		final Node<String> node;
-		if ( nodes.containsKey( nodeStr ) ) {
-			node = nodes.get( nodeStr );
-		} else {
-			node = new Node<>( nodeStr );
-			nodes.put( nodeStr, node );
+		if ( !nodes.containsKey( nodeStr ) ) {
+			nodes.put( nodeStr, new Node<>( nodeStr ) );
 		}
-		return node;
+		return nodes.get( nodeStr );
+	}
+
+	private long countOrbits( final Node<String> node ) {
+		return countOrbits( node, 0 );
 	}
 
 	private long countOrbits( final Node<String> node, final long count ) {
@@ -64,32 +62,32 @@ class AoC062019 implements Solution {
 		final Map<Node<String>, Long> sanAncestors = new HashMap<>();
 		Node<String> sanAncestor = nodes.get( "SAN" );
 
-		long count = 0;
-		Optional<Long> res;
+		long currDistance = 0;
+		Optional<Long> distance;
 		do {
-			count++;
-			youAncestor = addAncestor( youAncestors, youAncestor, count );
-			sanAncestor = addAncestor( sanAncestors, sanAncestor, count );
-			res = countAncestors( youAncestors, sanAncestor, sanAncestors, youAncestor );
-		} while ( res.isEmpty() );
-		return res.get() + count - 2;
+			currDistance++;
+			youAncestor = addAncestor( youAncestors, youAncestor, currDistance );
+			sanAncestor = addAncestor( sanAncestors, sanAncestor, currDistance );
+			distance = getDistance( youAncestors, sanAncestor, sanAncestors, youAncestor );
+		} while ( distance.isEmpty() );
+		return distance.get() + currDistance - 2;
 	}
 
 	private Node<String> addAncestor( final Map<Node<String>, Long> ancestors,
-			final Node<String> node, final long count ) {
+			final Node<String> node, final long distance ) {
 		final Node<String> ancestor = node.getParent().orElseThrow();
-		ancestors.put( ancestor, count );
+		ancestors.put( ancestor, distance );
 		return ancestor;
 	}
 
-	private Optional<Long> countAncestors( final Map<Node<String>, Long> nodesFirst,
-			final Node<String> nodeSecond, final Map<Node<String>, Long> nodesSecond,
+	private Optional<Long> getDistance( final Map<Node<String>, Long> ancestorsFirst,
+			final Node<String> ancestorSecond, final Map<Node<String>, Long> ancestorsSecond,
 			final Node<String> nodeFirst ) {
-		final Long count = nodesFirst.get( nodeSecond );
-		if ( count != null ) {
-			return Optional.of( count );
+		final Long distance = ancestorsFirst.get( ancestorSecond );
+		if ( distance != null ) {
+			return Optional.of( distance );
 		} else {
-			return Optional.ofNullable( nodesSecond.get( nodeFirst ) );
+			return Optional.ofNullable( ancestorsSecond.get( nodeFirst ) );
 		}
 	}
 
