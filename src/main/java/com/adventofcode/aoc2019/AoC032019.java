@@ -36,7 +36,7 @@ class AoC032019 implements Solution {
 	}
 
 	private String solve( final Stream<String> input,
-			final BiFunction<Map<Pair<Long, Long>, Long>, Map<Pair<Long, Long>, Long>, ToLongFunction<Pair<Long, Long>>> function ) {
+			final BiFunction<Map<Pair<Long, Long>, Long>, Map<Pair<Long, Long>, Long>, ToLongFunction<Pair<Long, Long>>> computeResult ) {
 		final var directions = input.collect( toList() );
 
 		final Map<Pair<Long, Long>, Long> firstWireSteps = new HashMap<>();
@@ -45,7 +45,7 @@ class AoC032019 implements Solution {
 		final Map<Pair<Long, Long>, Long> secondWireSteps = new HashMap<>();
 		initializeWire( directions.get( 1 ), secondWireSteps );
 
-		final var curriedFunction = function.apply( firstWireSteps, secondWireSteps );
+		final var curriedFunction = computeResult.apply( firstWireSteps, secondWireSteps );
 		final Long min = Sets.intersection( firstWireSteps.keySet(), secondWireSteps.keySet() )
 				.stream()
 				.mapToLong( curriedFunction )
