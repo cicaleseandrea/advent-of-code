@@ -21,7 +21,7 @@ class AoC022019 implements Solution {
 		final List<Long> program = toLongList( getFirstString( input ) );
 		for ( int noun = 0; noun <= 99; noun++ ) {
 			for ( int verb = 0; verb <= 99; verb++ ) {
-				if ( computeResult( program, noun, verb ) == 19690720 ) {
+				if ( computeResult( program, noun, verb ).equals( 19690720L ) ) {
 					return itoa( 100 * noun + verb );
 				}
 			}
@@ -37,7 +37,7 @@ class AoC022019 implements Solution {
 		final Computer2019 computer = new Computer2019();
 		computer.loadProgram( program );
 		computer.run();
-		return computer.memory.get( 0 );
+		return computer.memory.get( 0L );
 	}
 
 }
