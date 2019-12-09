@@ -100,6 +100,10 @@ public class Computer2019 implements Runnable {
 		}
     }
 
+	private void setPointer( final int pointer ) {
+		this.pointer = pointer;
+	}
+
 	public void reset() {
 		this.pointer = 0L;
 		this.relativeBase = 0L;
@@ -147,7 +151,7 @@ public class Computer2019 implements Runnable {
 		System.out.println( "=======BEGIN PROGRAM=======" );
 		final long origPointer = pointer;
 
-		reset();
+		setPointer( 0 );
         while ( pointer < memory.size() ) {
             final Optional<OpCode> opCode = printOneStep();
             pointer += opCode.orElse( NOP ).nParams + 1;
