@@ -4,10 +4,10 @@ import static com.adventofcode.utils.Computer2019.OpCode.HALT;
 import static com.adventofcode.utils.Computer2019.OpCode.NOP;
 import static com.adventofcode.utils.Utils.itoa;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -18,8 +18,9 @@ import java.util.function.Consumer;
 import com.google.common.base.Strings;
 
 public class Computer2019 implements Runnable {
-    public List<Long> memory;
-    private int pointer = 0;
+	public Map<Long, Long> memory;
+	private long pointer = 0L;
+	private long relativeBase = 0L;
     private final boolean modes;
 	private final BlockingQueue<Long> in;
 	private final BlockingQueue<Long> out;
@@ -48,29 +49,35 @@ public class Computer2019 implements Runnable {
         return (int) ( ( value / position ) % 10 );
     }
 
-    private int getAddress( final int index ) {
-        return getValueDirect( index ).intValue();
+	private Long getValueIndirect( final Long index, final boolean relative ) {
+		final long offSet = relative ? relativeBase : 0;
+		return getValueDirect( getValueDirect( index ) + offSet );
     }
 
-    private Long getValueIndirect( final int index ) {
-        return getValueDirect( getAddress( index ) );
+	private Long getValueDirect( final Long address ) {
+		return memory.getOrDefault( address, 0L );
     }
 
-    private Long getValueDirect( final int address ) {
-        return memory.get( address );
+	private Long setValueIndirect( final Long index, final Long val, final boolean relative ) {
+		final long offSet = relative ? relativeBase : 0;
+		return setValueDirect( getValueDirect( index ) + offSet, val );
     }
 
-    private Long setValueIndirect( final int index, final Long val ) {
-        return setValueDirect( getAddress( index ), val );
-    }
-
-    private Long setValueDirect( final int address, final Long val ) {
-        return memory.set( address, val );
+	private Long setValueDirect( final Long address, final Long val ) {
+		Objects.requireNonNull( val );
+		return memory.put( address, val );
     }
 
     private Long getNextParameter( final int mode ) {
-        return ( mode == 0 ) ? getValueIndirect( advancePointer() ) : getValueDirect(
-                advancePointer() );
+		if ( mode == 1 ) {
+			return getValueDirect( advancePointer() );
+		} else {
+			return getValueIndirect( advancePointer(), mode == 2 );
+		}
+	}
+
+	private Long setNextParameter( final Long val, final int mode ) {
+		return setValueIndirect( advancePointer(), val, mode == 2 );
     }
 
 	private String printParameter( final int mode, final int param ) {
@@ -82,16 +89,20 @@ public class Computer2019 implements Runnable {
 		}
     }
 
-    public int advancePointer() {
+	public Long advancePointer() {
         return ++pointer;
     }
 
     public void loadProgram( final List<Long> program ) {
-        memory = new ArrayList<>( program );
+		memory = new HashMap<>();
+		for ( long i = 0L; i < program.size(); i++ ) {
+			memory.put( i, program.get( (int) i ) );
+		}
     }
 
-    public void setPointer( final int pointer ) {
-        this.pointer = pointer;
+	public void reset() {
+		this.pointer = 0L;
+		this.relativeBase = 0L;
     }
 
     private Optional<OpCode> getCurrentOpCode() {
@@ -134,9 +145,9 @@ public class Computer2019 implements Runnable {
 
     public void printProgram() {
 		System.out.println( "=======BEGIN PROGRAM=======" );
-        final int origPointer = pointer;
+		final long origPointer = pointer;
 
-        setPointer( 0 );
+		reset();
         while ( pointer < memory.size() ) {
             final Optional<OpCode> opCode = printOneStep();
             pointer += opCode.orElse( NOP ).nParams + 1;
@@ -153,7 +164,7 @@ public class Computer2019 implements Runnable {
                 final Long instruction = computer.currentInstruction();
                 final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
                 final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
-                computer.setValueIndirect( computer.advancePointer(), first + second );
+				computer.setNextParameter( first + second, computer.getMode( instruction, 3 ) );
             }
 
             @Override
@@ -174,7 +185,7 @@ public class Computer2019 implements Runnable {
                 final Long instruction = computer.currentInstruction();
                 final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
                 final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
-                computer.setValueIndirect( computer.advancePointer(), first * second );
+				computer.setNextParameter( first * second, computer.getMode( instruction, 3 ) );
             }
 
             @Override
@@ -193,8 +204,9 @@ public class Computer2019 implements Runnable {
             public void accept( final Computer2019 computer ) {
 				final Long first;
 				try {
+					final Long instruction = computer.currentInstruction();
 					first = computer.in.take();
-					computer.setValueIndirect( computer.advancePointer(), first );
+					computer.setNextParameter( first, computer.getMode( instruction, 1 ) );
 				} catch ( InterruptedException e ) {
 					e.printStackTrace();
 				}
@@ -277,7 +289,7 @@ public class Computer2019 implements Runnable {
                 final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
                 final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
                 final long val = first < second ? 1L : 0L;
-                computer.setValueIndirect( computer.advancePointer(), val );
+				computer.setNextParameter( val, computer.getMode( instruction, 3 ) );
             }
 
             @Override
@@ -299,7 +311,7 @@ public class Computer2019 implements Runnable {
                 final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
                 final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
                 final long val = first.equals( second ) ? 1L : 0L;
-                computer.setValueIndirect( computer.advancePointer(), val );
+				computer.setNextParameter( val, computer.getMode( instruction, 3 ) );
             }
 
             @Override
@@ -314,6 +326,22 @@ public class Computer2019 implements Runnable {
 						computer.pointer ) + ": " + third + " = ( " + first + " == " + second + " ) ? 1 : 0";
             }
         },
+		RELATIVE_BASE( 9, 1 ) {
+			@Override
+			public void accept( final Computer2019 computer ) {
+				final Long instruction = computer.currentInstruction();
+				final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
+				computer.relativeBase += first;
+			}
+
+			@Override
+			public String toString( final Computer2019 computer ) {
+				final Long instruction = computer.currentInstruction();
+				final String first = computer.printParameter( computer.getMode( instruction, 1 ),
+						1 );
+				return padZero( computer.pointer ) + ": " + "base += " + first;
+			}
+		},
         HALT( 99, 0 ) {
             @Override
             public void accept( final Computer2019 computer ) {
