@@ -1,8 +1,8 @@
 package com.adventofcode.aoc2018;
 
+import static com.adventofcode.utils.Utils.BLACK;
 import static com.adventofcode.utils.Utils.EMPTY;
-import static com.adventofcode.utils.Utils.HASH;
-import static com.adventofcode.utils.Utils.SPACE;
+import static com.adventofcode.utils.Utils.WHITE;
 import static com.adventofcode.utils.Utils.atoi;
 import static com.adventofcode.utils.Utils.getIterable;
 import static com.adventofcode.utils.Utils.itoa;
@@ -101,9 +101,9 @@ class AoC102018 implements Solution {
         for (int i = minRows; i <= maxRows; i++) {
             for (int j = minColumns; j <= maxColumns; j++) {
                 if (curr.containsKey(new Pair<>(j, i))) {
-                    str.append(HASH);
+                    str.append(BLACK);
                 } else {
-                    str.append(SPACE);
+                    str.append(WHITE);
                 }
             }
             str.append('\n');
