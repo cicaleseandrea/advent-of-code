@@ -26,6 +26,8 @@ public class Utils {
     public static final char AT = '@';
     public static final char HASH = '#';
     public static final char PIPE = '|';
+    public static final char BLACK = '⬛';
+    public static final char WHITE = '⬜';
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final Pattern LONG_PATTERN = Pattern.compile("-?\\d+");
     public static final Pattern POSITIVE_LONG_PATTERN = Pattern.compile("\\d+");
