@@ -5,8 +5,8 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingByConcurrent;
 
-import static com.adventofcode.utils.Utils.HASH;
-import static com.adventofcode.utils.Utils.SPACE;
+import static com.adventofcode.utils.Utils.BLACK;
+import static com.adventofcode.utils.Utils.WHITE;
 import static com.adventofcode.utils.Utils.getFirstString;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import com.adventofcode.utils.Utils;
 
 class AoC082019 implements Solution {
 
-	private static final Map<Character, Character> PIXEL_VALUES = Map.of( '0', SPACE, '1', HASH );
+	private static final Map<Character, Character> PIXEL_VALUES = Map.of( '0', WHITE, '1', BLACK );
 
 	public String solveFirstPart( final Stream<String> input ) {
 		return solve( getFirstString( input ), this::computeResultFirst );
