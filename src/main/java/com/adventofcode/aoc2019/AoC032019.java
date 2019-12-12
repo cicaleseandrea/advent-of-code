@@ -76,7 +76,7 @@ class AoC032019 implements Solution {
 			final AtomicLong steps, final Consumer<Pair<Long, Long>> move ) {
 		for ( int i = 0; i < extractIntegerFromString( direction ); i++ ) {
 			move.accept( current );
-			final Pair<Long, Long> point = new Pair<>( current.getFirst(), current.getSecond() );
+			final Pair<Long, Long> point = new Pair<>( current );
 			wireSteps.put( point, steps.incrementAndGet() );
 		}
 	}
