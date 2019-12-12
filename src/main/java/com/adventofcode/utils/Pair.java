@@ -12,6 +12,11 @@ public class Pair<T, U> {
         this.second = Objects.requireNonNull(second);
     }
 
+    public Pair( Pair<T, U> pair ) {
+        this.first = pair.getFirst();
+        this.second = pair.getSecond();
+    }
+
     public T getFirst() {
         return first;
     }
