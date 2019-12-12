@@ -1,12 +1,12 @@
 package com.adventofcode.aoc2019;
 
 import static java.lang.Math.abs;
+import static java.util.Comparator.comparingDouble;
 
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.getIterable;
 import static com.adventofcode.utils.Utils.itoa;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NavigableSet;
@@ -67,18 +67,17 @@ class AoC102019 implements Solution {
 
 	private Pair<Long, Long> vaporizeAsteroids( final Pair<Long, Long> station,
 			final Set<Pair<Long, Long>> asteroids, final int rows, final int columns ) {
-		final NavigableSet<Pair<Long, Long>> angles = new TreeSet<>( Comparator.comparingDouble(
-				( Pair<Long, Long> it ) -> -( Math.toDegrees(
-						Math.atan2( it.getSecond() - station.getSecond(),
-								it.getFirst() - station.getFirst() ) ) ) ) );
-		angles.addAll( asteroids );
-		angles.remove( station );
-		angles.add( new Pair<>( station.getFirst() + 1, station.getSecond() ) ); //180 degrees
 
-		long count = 1;
+		final NavigableSet<Pair<Long, Long>> angles = new TreeSet<>( comparingDouble(
+				it -> -Math.atan2( it.getSecond() - station.getSecond(),
+						it.getFirst() - station.getFirst() ) ) );
+
+		angles.addAll( asteroids );
+
+		long count = 0;
 		Pair<Long, Long> res = null;
 		Iterator<Pair<Long, Long>> iterator = angles.iterator();
-		while ( count <= 200 ) {
+		while ( count < 200 ) {
 			final Pair<Long, Long> direction = iterator.next();
 			res = vaporizeAsteroids( station, direction, asteroids, rows, columns, false );
 			if ( res != null ) {
