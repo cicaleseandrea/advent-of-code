@@ -14,6 +14,12 @@ public class Triplet<T, U, V> {
         this.third = Objects.requireNonNull(third);
     }
 
+    public Triplet( Triplet<T, U, V> triplet ) {
+        this.first = triplet.getFirst();
+        this.second = triplet.getSecond();
+        this.third = triplet.getThird();
+    }
+
     public T getFirst() {
         return first;
     }
