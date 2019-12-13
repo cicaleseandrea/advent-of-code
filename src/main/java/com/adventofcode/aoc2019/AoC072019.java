@@ -29,7 +29,7 @@ class AoC072019 implements Solution {
 		return solve( input, Set.of( 5, 6, 7, 8, 9 ) );
 	}
 
-	public String solve( final Stream<String> input, final Collection<Integer> availablePhases ) {
+	private String solve( final Stream<String> input, final Collection<Integer> availablePhases ) {
 		final List<Long> program = toLongList( getFirstString( input ) );
 		return Collections2.permutations( availablePhases )
 				.stream()
