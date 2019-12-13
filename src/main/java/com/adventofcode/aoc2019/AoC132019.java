@@ -1,19 +1,20 @@
 package com.adventofcode.aoc2019;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
 import static com.adventofcode.utils.Utils.AT;
 import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.PLUS;
 import static com.adventofcode.utils.Utils.SPACE;
 import static com.adventofcode.utils.Utils.TILDE;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.printMatrix;
+import static com.adventofcode.utils.Utils.readOutput;
 import static com.adventofcode.utils.Utils.toLongList;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,16 +32,18 @@ import com.adventofcode.utils.Computer2019;
 import com.adventofcode.utils.Pair;
 
 class AoC132019 implements Solution {
+	private static final int COLUMNS = 37;
+	private static final char ROWS = 26;
 	private static final char EMPTY = SPACE;
 	private static final char WALL = HASH;
 	private static final char BLOCK = TILDE;
-	private static final char PADDLE = '+';
+	private static final char PADDLE = PLUS;
 	private static final char BALL = AT;
+	private static final Map<Long, Character> TILES = Map.of( 0L, EMPTY, 1L, WALL, 2L, BLOCK,
+			3L, PADDLE, 4L, BALL );
+
 	private static final boolean DRAW = false;
 	private static boolean INTERACTIVE = false;
-
-	private static final Map<Long, Character> PANEL_OUT = Map.of( 0L, EMPTY, 1L, WALL, 2L, BLOCK,
-			3L, PADDLE, 4L, BALL );
 
 	public String solveFirstPart( final Stream<String> input ) {
 		return solve( input, true );
@@ -65,11 +68,8 @@ class AoC132019 implements Solution {
 		try {
 			do {
 				//out
-				Long x;
-				do {
-					x = out.poll( 100, MILLISECONDS );
-				} while ( x == null && !future.isDone() );
-				if ( future.isDone() ) {
+				Long x = readOutput( out, future );
+				if ( x == null ) {
 					//program halted
 					break;
 				}
@@ -79,37 +79,44 @@ class AoC132019 implements Solution {
 				Character symbol = null;
 
 				if ( !first && x == -1 && y == 0 ) {
+					//update score
 					score = tile;
 				} else {
 					//draw
-					symbol = PANEL_OUT.get( tile );
+					symbol = TILES.get( tile );
 					grid.put( new Pair<>( y, x ), symbol );
 					if ( !INTERACTIVE ) {
 						move( grid, in, x, symbol );
 					}
-				}
-
-				if ( !first && ( DRAW || INTERACTIVE ) ) {
-					printGame( grid, score );
-					if ( Objects.equals( symbol, BALL ) ) {
+					if ( ( DRAW || INTERACTIVE ) && ( x == COLUMNS - 1 || Objects.equals( symbol,
+							BALL ) ) ) {
+						printGame( grid, score );
 						Thread.sleep( 400 );
 					}
 				}
 
-			} while ( !future.isDone() );
-		} catch ( Exception e ) {
-			e.printStackTrace();
+			} while ( true );
+		} catch ( InterruptedException e ) {
+			throw new RuntimeException( e );
 		}
 
 		if ( first ) {
 			return itoa( grid.values().stream().filter( c -> c == BLOCK ).count() );
 		} else {
-			if ( !grid.containsValue( BLOCK ) ) {
-				System.err.println( "✅✅✅✅✅" );
-				System.err.println( "YOU WON!!" );
-				System.err.println( "✅✅✅✅✅" );
-			}
+			announceVictory( grid );
 			return itoa( score );
+		}
+	}
+
+	private void announceVictory( final Map<Pair<Long, Long>, Character> grid ) {
+		if ( grid != null && !grid.containsValue( BLOCK ) ) {
+			System.out.println( "✅✅✅✅✅" );
+			System.out.println( "YOU WON!!" );
+			System.out.println( "✅✅✅✅✅" );
+		} else {
+			System.out.println( "❌❌❌❌❌" );
+			System.out.println( "GAME OVER" );
+			System.out.println( "❌❌❌❌❌" );
 		}
 	}
 
@@ -158,15 +165,15 @@ class AoC132019 implements Solution {
 							"Only 'l/a', ' /s', 'r/d' are allowed. You wrote: " + command );
 				}
 			}
-			System.err.println( "❌❌❌❌❌" );
-			System.err.println( "GAME OVER" );
-			System.err.println( "❌❌❌❌❌" );
 			Computer2019.shutdownAll();
 		} ).start();
 	}
 
 	private void printGame( final Map<Pair<Long, Long>, Character> grid, final Long score ) {
-		final Character[][] matrix = new Character[26][37];
+		final Character[][] matrix = new Character[ROWS][COLUMNS];
+		for ( final Character[] row : matrix ) {
+			Arrays.fill( row, EMPTY );
+		}
 		for ( final Pair<Long, Long> point : grid.keySet() ) {
 			matrix[point.getFirst().intValue()][point.getSecond().intValue()] = grid.getOrDefault(
 					point, EMPTY );
@@ -175,14 +182,10 @@ class AoC132019 implements Solution {
 		System.out.println( "SCORE: " + score );
 	}
 
-	public static void main( String[] args ) {
+	public static void main( String[] args ) throws IOException {
 		INTERACTIVE = true;
-		try {
-			new AoC132019().solveSecondPart( Files.lines(
-					Path.of( "src", "test", "resources", "com.adventofcode.aoc2019",
-							"AoC132019.txt" ) ) );
-		} catch ( IOException e ) {
-			e.printStackTrace();
-		}
+		new AoC132019().solveSecondPart( Files.lines(
+				Path.of( "src", "test", "resources", "com.adventofcode.aoc2019",
+						"AoC132019.txt" ) ) );
 	}
 }

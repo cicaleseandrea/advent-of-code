@@ -1,5 +1,6 @@
 package com.adventofcode.utils;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
@@ -10,6 +11,8 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.Future;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,6 +26,7 @@ public class Utils {
     public static final char SPACE = ' ';
     public static final char DOT = '.';
     public static final char TILDE = '~';
+    public static final char PLUS = '+';
     public static final char AT = '@';
     public static final char HASH = '#';
     public static final char PIPE = '|';
@@ -239,6 +243,15 @@ public class Utils {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    public static Long readOutput( final BlockingDeque<Long> out, final Future<?> future )
+            throws InterruptedException {
+        Long x;
+        do {
+            x = out.poll( 100, MILLISECONDS );
+        } while ( x == null && !future.isDone() );
+        return x;
     }
 
     public static <E> void printMatrix(final List<List<E>> matrix) {

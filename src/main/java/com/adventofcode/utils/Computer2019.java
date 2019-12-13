@@ -216,7 +216,7 @@ public class Computer2019 implements Runnable {
 					first = computer.in.take();
 					computer.setNextParameter( first, computer.getMode( instruction, 1 ) );
 				} catch ( InterruptedException e ) {
-					e.printStackTrace();
+					throw new RuntimeException( e );
 				}
             }
 
@@ -234,7 +234,7 @@ public class Computer2019 implements Runnable {
 				try {
 					computer.out.put( first );
 				} catch ( InterruptedException e ) {
-					e.printStackTrace();
+					throw new RuntimeException( e );
 				}
 			}
 
