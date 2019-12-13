@@ -56,13 +56,13 @@ class AoC122019 implements Solution {
 			final int steps,
 			final Function<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>, Pair<Long, Long>> axisGetter ) {
 		int i = 0;
-		final List<Pair<Long, Long>> initial = deepCopy( moons, axisGetter );
+		final var initialState = deepCopy( moons, axisGetter );
 		List<Pair<Long, Long>> state;
 		do {
 			computeOneStep( moons, axisGetter );
 			state = moons.stream().map( axisGetter ).collect( toList() );
 			i++;
-		} while ( ( first && i < steps ) || ( !first && !initial.equals( state ) ) );
+		} while ( ( first && i < steps ) || ( !first && !initialState.equals( state ) ) );
 		return i;
 	}
 
