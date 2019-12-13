@@ -22,7 +22,7 @@ class AoC042019 implements Solution {
 		return solve( input, groupSize -> ( groupSize == 2 ) );
 	}
 
-	public String solve( final Stream<String> input, final IntPredicate checkSize ) {
+	private String solve( final Stream<String> input, final IntPredicate checkSize ) {
 		final List<Long> range = toPositiveLongList( getFirstString( input ) );
 		long res = LongStream.range( range.get( 0 ), range.get( 1 ) )
 				.parallel()
