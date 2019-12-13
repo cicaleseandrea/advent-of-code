@@ -23,7 +23,7 @@ class AoC062019 implements Solution {
 		return solve( input, nodes, n -> countTransfers( nodes ) );
 	}
 
-	public String solve( final Stream<String> input, final Map<String, Node<String>> nodes,
+	private String solve( final Stream<String> input, final Map<String, Node<String>> nodes,
 			final Function<Node<String>, Long> computeResult ) {
 		final Node<String> COM = new Node<>( "COM" );
 		nodes.put( "COM", COM );
