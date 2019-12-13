@@ -16,7 +16,7 @@ class AoC012019 implements Solution {
 		return solve( input, false );
 	}
 
-	public String solve( final Stream<String> input, final boolean first ) {
+	private String solve( final Stream<String> input, final boolean first ) {
 		final long res = input.mapToLong( Utils::atol ).map( l -> computeFuel( l, first ) ).sum();
 		return itoa( res );
 	}
