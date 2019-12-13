@@ -33,7 +33,7 @@ class AoC082019 implements Solution {
 		return solve( getFirstString( input ), this::computeResultSecond );
 	}
 
-	public String solve( final String input,
+	private String solve( final String input,
 			final Function<List<List<List<Character>>>, String> computeResult ) {
 		final int rows = input.length() < 20 ? 2 : 6;
 		final int columns = input.length() < 20 ? 2 : 25;
