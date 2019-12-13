@@ -24,7 +24,7 @@ class AoC052019 implements Solution {
 		return solve( input, 5 );
 	}
 
-	public String solve( final Stream<String> input, final long inputNumber ) {
+	private String solve( final Stream<String> input, final long inputNumber ) {
 		final BlockingQueue<Long> in = new LinkedBlockingQueue<>();
 		in.add( inputNumber );
 		final BlockingDeque<Long> out = new LinkedBlockingDeque<>();
