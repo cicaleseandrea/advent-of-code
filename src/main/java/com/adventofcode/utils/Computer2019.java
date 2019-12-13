@@ -141,6 +141,10 @@ public class Computer2019 implements Runnable {
 		return EXECUTOR.submit( this );
 	}
 
+	public static void shutdownAll() {
+		EXECUTOR.shutdown();
+	}
+
     public Optional<OpCode> printOneStep() {
         final Optional<OpCode> opCode = getCurrentOpCode();
         System.out.println( opCode.orElse( NOP ).toString( this ) );
