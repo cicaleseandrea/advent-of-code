@@ -60,6 +60,7 @@ class AoC132019 implements Solution {
 
 		final Map<Pair<Long, Long>, Character> grid = new HashMap<>();
 		Long score = 0L;
+		Long paddlePosition = 0L;
 
 		if ( INTERACTIVE ) {
 			enableInteractiveMode( in, future );
@@ -68,7 +69,7 @@ class AoC132019 implements Solution {
 		try {
 			do {
 				//out
-				Long x = readOutput( out, future );
+				final Long x = readOutput( out, future );
 				if ( x == null ) {
 					//program halted
 					break;
@@ -76,17 +77,17 @@ class AoC132019 implements Solution {
 
 				final Long y = out.take();
 				final Long tile = out.take();
-				Character symbol = null;
 
 				if ( !first && x == -1 && y == 0 ) {
 					//update score
 					score = tile;
 				} else {
 					//draw
-					symbol = TILES.get( tile );
+					final Character symbol = TILES.get( tile );
 					grid.put( new Pair<>( y, x ), symbol );
-					if ( !INTERACTIVE ) {
-						move( grid, in, x, symbol );
+					paddlePosition = ( symbol == PADDLE ) ? x : paddlePosition;
+					if ( !INTERACTIVE && symbol == BALL ) {
+						movePaddle( paddlePosition, in, x );
 					}
 					if ( ( DRAW || INTERACTIVE ) && ( x == COLUMNS - 1 || Objects.equals( symbol,
 							BALL ) ) ) {
@@ -103,20 +104,8 @@ class AoC132019 implements Solution {
 		if ( first ) {
 			return itoa( grid.values().stream().filter( c -> c == BLOCK ).count() );
 		} else {
-			announceVictory( grid );
+			printResult( grid );
 			return itoa( score );
-		}
-	}
-
-	private void announceVictory( final Map<Pair<Long, Long>, Character> grid ) {
-		if ( grid != null && !grid.containsValue( BLOCK ) ) {
-			System.out.println( "✅✅✅✅✅" );
-			System.out.println( "YOU WON!!" );
-			System.out.println( "✅✅✅✅✅" );
-		} else {
-			System.out.println( "❌❌❌❌❌" );
-			System.out.println( "GAME OVER" );
-			System.out.println( "❌❌❌❌❌" );
 		}
 	}
 
@@ -133,39 +122,29 @@ class AoC132019 implements Solution {
 		return computer.runAsync();
 	}
 
-	private void move( final Map<Pair<Long, Long>, Character> grid, final BlockingQueue<Long> in,
-			final Long x, final Character symbol ) {
-		if ( symbol == BALL ) {
-			final Long paddlePos = grid.entrySet()
-					.stream()
-					.filter( e -> e.getValue() == PADDLE )
-					.map( Map.Entry::getKey )
-					.findFirst()
-					.orElse( Pair.ZERO )
-					.getSecond();
-			in.add( ( (long) Long.compare( x, paddlePos ) ) );
-		}
+	private void movePaddle( final Long paddlePosition, final BlockingQueue<Long> in,
+			final Long x ) {
+		in.add( ( (long) Long.compare( x, paddlePosition ) ) );
 	}
 
 	private void enableInteractiveMode( final BlockingQueue<Long> in, final Future<?> future ) {
 		final Scanner scanner = new Scanner( System.in );
 		new Thread( () -> {
 			while ( !future.isDone() ) {
-				final String command = scanner.nextLine();
-				Long joystick = switch ( command.toLowerCase() ) {
+				final String joystickInput = scanner.nextLine();
+				final Long direction = switch ( joystickInput.toLowerCase() ) {
 					case "a", "l" -> -1L;
 					case "s", " " -> 0L;
 					case "d", "r" -> 1L;
 					default -> null;
 				};
-				if ( joystick != null ) {
-					in.add( joystick );
+				if ( direction != null ) {
+					in.add( direction );
 				} else {
 					System.out.println(
-							"Only 'l/a', ' /s', 'r/d' are allowed. You wrote: " + command );
+							"Only 'l/a', ' /s', 'r/d' are allowed. You wrote: " + joystickInput );
 				}
 			}
-			Computer2019.shutdownAll();
 		} ).start();
 	}
 
@@ -174,12 +153,23 @@ class AoC132019 implements Solution {
 		for ( final Character[] row : matrix ) {
 			Arrays.fill( row, EMPTY );
 		}
-		for ( final Pair<Long, Long> point : grid.keySet() ) {
-			matrix[point.getFirst().intValue()][point.getSecond().intValue()] = grid.getOrDefault(
-					point, EMPTY );
-		}
+		grid.keySet()
+				.forEach( point -> matrix[point.getFirst().intValue()][point.getSecond()
+						.intValue()] = grid.getOrDefault( point, EMPTY ) );
 		printMatrix( matrix );
 		System.out.println( "SCORE: " + score );
+	}
+
+	private void printResult( final Map<Pair<Long, Long>, Character> grid ) {
+		if ( !grid.containsValue( BLOCK ) ) {
+			System.out.println( "✅✅✅✅✅" );
+			System.out.println( "YOU WON!!" );
+			System.out.println( "✅✅✅✅✅" );
+		} else {
+			System.out.println( "❌❌❌❌❌" );
+			System.out.println( "GAME OVER" );
+			System.out.println( "❌❌❌❌❌" );
+		}
 	}
 
 	public static void main( String[] args ) throws IOException {
@@ -187,5 +177,6 @@ class AoC132019 implements Solution {
 		new AoC132019().solveSecondPart( Files.lines(
 				Path.of( "src", "test", "resources", "com.adventofcode.aoc2019",
 						"AoC132019.txt" ) ) );
+		Computer2019.shutdownAll();
 	}
 }

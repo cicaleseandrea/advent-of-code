@@ -245,12 +245,12 @@ public class Utils {
         }
     }
 
-    public static Long readOutput( final BlockingDeque<Long> out, final Future<?> future )
+    public static Long readOutput( final BlockingDeque<Long> output, final Future<?> writer )
             throws InterruptedException {
         Long x;
         do {
-            x = out.poll( 100, MILLISECONDS );
-        } while ( x == null && !future.isDone() );
+            x = output.poll( 50, MILLISECONDS );
+        } while ( x == null && !writer.isDone() );
         return x;
     }
 
