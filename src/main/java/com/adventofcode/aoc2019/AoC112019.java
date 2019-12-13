@@ -1,7 +1,5 @@
 package com.adventofcode.aoc2019;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
 import static com.adventofcode.utils.Direction.DOWN;
 import static com.adventofcode.utils.Direction.LEFT;
 import static com.adventofcode.utils.Direction.RIGHT;
@@ -12,6 +10,7 @@ import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.WHITE;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.readOutput;
 import static com.adventofcode.utils.Utils.toLongList;
 
 import java.util.HashMap;
@@ -23,6 +22,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
@@ -47,36 +47,30 @@ class AoC112019 implements Solution {
 	//@formatter:on
 
 	public String solveFirstPart( final Stream<String> input ) {
-		return solve( input, true );
+		return solve( input, DOT, grid -> itoa( grid.size() ) );
 	}
 
 	public String solveSecondPart( final Stream<String> input ) {
-		return solve( input, false );
+		return solve( input, HASH, this::computeImage );
 	}
 
-	public String solve( final Stream<String> input, final boolean first ) {
+	private String solve( final Stream<String> input, final Character start,
+			final Function<Map<Pair<Long, Long>, Character>, String> computeResult ) {
 		final Pair<Long, Long> pos = new Pair<>( 0L, 0L );
 		final Map<Pair<Long, Long>, Character> grid = new HashMap<>();
 		final BlockingQueue<Long> in = new LinkedBlockingQueue<>();
 		final BlockingDeque<Long> out = new LinkedBlockingDeque<>();
-		final List<Long> program = toLongList( getFirstString( input ) );
-
-		final Computer2019 computer = new Computer2019( in, out );
-		computer.loadProgram( program );
-		final Future<?> future = computer.runAsync();
+		final Future<?> future = startComputer( input, in, out );
 
 		Direction direction = UP;
 		try {
 			do {
 				//in
-				in.add( PANEL_IN.get( grid.getOrDefault( pos, first ? DOT : HASH ) ) );
+				in.add( PANEL_IN.get( grid.getOrDefault( pos, start ) ) );
 
 				//out
-				Long paint;
-				do {
-					paint = out.poll( 50, MILLISECONDS );
-				} while ( paint == null && !future.isDone() );
-				if ( future.isDone() ) {
+				final Long paint = readOutput( out, future );
+				if ( paint == null ) {
 					//program halted
 					break;
 				}
@@ -89,32 +83,44 @@ class AoC112019 implements Solution {
 				MOVE.get( direction ).accept( pos );
 
 			} while ( true );
-		} catch ( Exception e ) {
-			e.printStackTrace();
+		} catch ( InterruptedException e ) {
+			throw new RuntimeException( e );
 		}
 
-		if ( first ) {
-			return itoa( grid.size() );
-		} else {
+		return computeResult.apply( grid );
+	}
 
-			//TODO find boundaries programmatically
-			final long[][] matrix = new long[43][6];
-			for ( final Pair<Long, Long> point : grid.keySet() ) {
-				matrix[point.getFirst().intValue()][point.getSecond().intValue()] = PANEL_IN.get(
-						grid.getOrDefault( point, HASH ) );
-			}
-
-			//flip image
-			final StringBuilder res = new StringBuilder();
-			for ( int j = 0; j < matrix[0].length; j++ ) {
-				for ( long[] longs : matrix ) {
-					res.append( PAINT.get( longs[j] ) );
-				}
-				res.append( "\n" );
-			}
-
-			return res.toString();
+	private String computeImage( final Map<Pair<Long, Long>, Character> grid ) {
+		int maxX = 0;
+		int maxY = 0;
+		for ( final var p : grid.keySet() ) {
+			maxX = Math.max( p.getFirst().intValue(), maxX );
+			maxY = Math.max( p.getSecond().intValue(), maxY );
 		}
+		final long[][] matrix = new long[maxY + 1][maxX + 1];
+
+		//flip image
+		grid.keySet()
+				.forEach( point -> matrix[point.getSecond().intValue()][point.getFirst()
+						.intValue()] = PANEL_IN.get( grid.getOrDefault( point, HASH ) ) );
+
+		final StringBuilder res = new StringBuilder();
+		for ( long[] row : matrix ) {
+			for ( long e : row ) {
+				res.append( PAINT.get( e ) );
+			}
+			res.append( "\n" );
+		}
+
+		return res.toString();
+	}
+
+	private Future<?> startComputer( final Stream<String> input, final BlockingQueue<Long> in,
+			final BlockingDeque<Long> out ) {
+		final List<Long> program = toLongList( getFirstString( input ) );
+		final Computer2019 computer = new Computer2019( in, out );
+		computer.loadProgram( program );
+		return computer.runAsync();
 	}
 
 }
