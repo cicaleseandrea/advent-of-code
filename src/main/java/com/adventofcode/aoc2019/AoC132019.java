@@ -1,35 +1,17 @@
 package com.adventofcode.aoc2019;
 
-import static com.adventofcode.utils.Utils.AT;
-import static com.adventofcode.utils.Utils.HASH;
-import static com.adventofcode.utils.Utils.PLUS;
-import static com.adventofcode.utils.Utils.SPACE;
-import static com.adventofcode.utils.Utils.TILDE;
-import static com.adventofcode.utils.Utils.getFirstString;
-import static com.adventofcode.utils.Utils.itoa;
-import static com.adventofcode.utils.Utils.printMatrix;
-import static com.adventofcode.utils.Utils.readOutput;
-import static com.adventofcode.utils.Utils.toLongList;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Computer2019;
+import com.adventofcode.utils.Pair;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Stream;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Computer2019;
-import com.adventofcode.utils.Pair;
+import static com.adventofcode.utils.Utils.*;
 
 class AoC132019 implements Solution {
 	private static final int COLUMNS = 37;
@@ -42,7 +24,7 @@ class AoC132019 implements Solution {
 	private static final Map<Long, Character> TILES = Map.of( 0L, EMPTY, 1L, WALL, 2L, BLOCK,
 			3L, PADDLE, 4L, BALL );
 
-	private static final boolean DRAW = false;
+	private static final boolean PRINT = false;
 	private static boolean INTERACTIVE = false;
 
 	public String solveFirstPart( final Stream<String> input ) {
@@ -89,7 +71,7 @@ class AoC132019 implements Solution {
 					if ( !INTERACTIVE && symbol == BALL ) {
 						movePaddle( paddlePosition, in, x );
 					}
-					if ( ( DRAW || INTERACTIVE ) && ( x == COLUMNS - 1 || Objects.equals( symbol,
+					if ( ( PRINT || INTERACTIVE ) && ( x == COLUMNS - 1 || Objects.equals( symbol,
 							BALL ) ) ) {
 						printGame( grid, score );
 						Thread.sleep( 400 );
@@ -104,7 +86,9 @@ class AoC132019 implements Solution {
 		if ( first ) {
 			return itoa( grid.values().stream().filter( c -> c == BLOCK ).count() );
 		} else {
-			printResult( grid );
+            if (PRINT) {
+                printResult(grid);
+            }
 			return itoa( score );
 		}
 	}

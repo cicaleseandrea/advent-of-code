@@ -1,21 +1,17 @@
 package com.adventofcode.utils;
 
-import static com.adventofcode.utils.Computer2019.OpCode.HALT;
-import static com.adventofcode.utils.Computer2019.OpCode.NOP;
-import static com.adventofcode.utils.Utils.itoa;
+import com.google.common.base.Strings;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-import com.google.common.base.Strings;
+import static com.adventofcode.utils.Computer2019.OpCode.HALT;
+import static com.adventofcode.utils.Computer2019.OpCode.NOP;
+import static com.adventofcode.utils.Utils.itoa;
 
 public class Computer2019 implements Runnable {
 	public Map<Long, Long> memory;
@@ -25,6 +21,7 @@ public class Computer2019 implements Runnable {
 	private final BlockingQueue<Long> in;
 	private final BlockingQueue<Long> out;
 	private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    private static final boolean PRINT = false;
 
 	public Computer2019() {
 		this( false, null, null );
@@ -353,7 +350,9 @@ public class Computer2019 implements Runnable {
         HALT( 99, 0 ) {
             @Override
             public void accept( final Computer2019 computer ) {
-                System.err.println( "HALT" );
+                if (PRINT) {
+                    System.err.println("HALT");
+                }
             }
 
             @Override
