@@ -20,10 +20,10 @@ You can also specify your own JDK path like this:
 `./gradlew clean test -Dorg.gradle.java.home=/path/to/java12`
 
 ## Enable printing to `stdout`
-Some days have a flag to enable drawing a representation of the puzzle to `stdout`.
+Some days have a flag to enable printing a representation of the puzzle to `stdout`.
 
 ## Enable interactive mode
-13th December 2019 has a flag to enable an interactive mode. Enjoy! 🕹️
+13th December 2019 has a `main` method that enables a really basic interactive mode. Enjoy! 🕹️
 
 ## TODO
 - try out Kotlin
