@@ -1,16 +1,7 @@
 package com.adventofcode.utils;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toUnmodifiableList;
-
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.Future;
 import java.util.regex.MatchResult;
@@ -19,6 +10,10 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 public class Utils {
     public static final String EMPTY = "";
@@ -154,6 +149,11 @@ public class Utils {
         return toLongStream(stream).collect(toList());
     }
 
+
+    public static List<String> toWordList(final String input) {
+        return toWordStream(input).collect(toList());
+    }
+
     public static Stream<Long> toLongStream(final Stream<String> stream) {
         return stream.map(Long::valueOf);
     }
@@ -194,6 +194,13 @@ public class Utils {
         );
     }
 
+    public static Stream<String> toWordStream(final String input) {
+        return WORD_PATTERN
+                .matcher(input)
+                .results()
+                .map(MatchResult::group);
+    }
+
     public static <T> Iterable<T> getIterable(Stream<T> s) {
         return s::iterator;
     }
@@ -211,7 +218,7 @@ public class Utils {
     }
 
     public static <K> long decrementMapElement(final Map<K, Long> map, final K key, final boolean remove) {
-        final long res = map.merge(key, -1L, Long::sum);
+        final Long res = map.merge(key, -1L, Long::sum);
         if (remove && res == 0) {
             return map.remove(key);
         }
