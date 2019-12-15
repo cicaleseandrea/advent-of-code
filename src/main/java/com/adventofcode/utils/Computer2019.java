@@ -21,7 +21,7 @@ public class Computer2019 implements Runnable {
 	private final BlockingQueue<Long> in;
 	private final BlockingQueue<Long> out;
 	private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-    private static final boolean PRINT = false;
+    private static final boolean PRINT_HALT = false;
 
 	public Computer2019() {
 		this( false, null, null );
@@ -350,7 +350,7 @@ public class Computer2019 implements Runnable {
         HALT( 99, 0 ) {
             @Override
             public void accept( final Computer2019 computer ) {
-                if (PRINT) {
+                if (PRINT_HALT) {
                     System.err.println("HALT");
                 }
             }

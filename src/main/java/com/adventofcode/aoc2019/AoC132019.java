@@ -3,7 +3,6 @@ package com.adventofcode.aoc2019;
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Computer2019;
 import com.adventofcode.utils.Pair;
-import com.adventofcode.utils.Utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +24,7 @@ class AoC132019 implements Solution {
 	private static final Map<Long, Character> TILES = Map.of( 0L, EMPTY, 1L, WALL, 2L, BLOCK,
 			3L, PADDLE, 4L, BALL );
 
-	private static final boolean PRINT = false;
+	private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
 	private static boolean INTERACTIVE = false;
 
 	public String solveFirstPart( final Stream<String> input ) {
@@ -75,7 +74,6 @@ class AoC132019 implements Solution {
 					if ( ( PRINT || INTERACTIVE ) && ( x == COLUMNS - 1 || Objects.equals( symbol,
 							BALL ) ) ) {
 						printGame( grid, score );
-						Thread.sleep(70);
 					}
 				}
 
@@ -133,7 +131,7 @@ class AoC132019 implements Solution {
 		} ).start();
 	}
 
-	private void printGame( final Map<Pair<Long, Long>, Character> grid, final Long score ) {
+	private void printGame(final Map<Pair<Long, Long>, Character> grid, final Long score) throws InterruptedException {
 		final Character[][] matrix = new Character[ROWS][COLUMNS];
 		for (final var row : matrix) {
 			Arrays.fill(row, EMPTY);
@@ -141,9 +139,10 @@ class AoC132019 implements Solution {
 		grid.keySet()
 				.forEach( point -> matrix[point.getFirst().intValue()][point.getSecond()
 						.intValue()] = grid.get(point));
-		Utils.clearScreen();
+		clearScreen();
 		printMatrix( matrix );
 		System.out.println("\033[1m\033[31mSCORE: \033[0m\033[4m" + score + "\033[0m");
+		Thread.sleep(70);
 	}
 
 	private void printResult( final Map<Pair<Long, Long>, Character> grid ) {
