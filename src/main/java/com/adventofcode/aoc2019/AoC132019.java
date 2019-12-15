@@ -3,6 +3,7 @@ package com.adventofcode.aoc2019;
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Computer2019;
 import com.adventofcode.utils.Pair;
+import com.adventofcode.utils.Utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,10 +18,10 @@ class AoC132019 implements Solution {
 	private static final int COLUMNS = 37;
 	private static final char ROWS = 26;
 	private static final char EMPTY = SPACE;
-	private static final char WALL = HASH;
-	private static final char BLOCK = TILDE;
-	private static final char PADDLE = PLUS;
-	private static final char BALL = AT;
+	private static final char WALL = '█';
+	private static final char BLOCK = '▒';
+	private static final char PADDLE = '▬';
+	private static final char BALL = '⚬';
 	private static final Map<Long, Character> TILES = Map.of( 0L, EMPTY, 1L, WALL, 2L, BLOCK,
 			3L, PADDLE, 4L, BALL );
 
@@ -74,7 +75,7 @@ class AoC132019 implements Solution {
 					if ( ( PRINT || INTERACTIVE ) && ( x == COLUMNS - 1 || Objects.equals( symbol,
 							BALL ) ) ) {
 						printGame( grid, score );
-						Thread.sleep( 400 );
+						Thread.sleep(70);
 					}
 				}
 
@@ -134,24 +135,25 @@ class AoC132019 implements Solution {
 
 	private void printGame( final Map<Pair<Long, Long>, Character> grid, final Long score ) {
 		final Character[][] matrix = new Character[ROWS][COLUMNS];
-		for ( final Character[] row : matrix ) {
-			Arrays.fill( row, EMPTY );
+		for (final var row : matrix) {
+			Arrays.fill(row, EMPTY);
 		}
 		grid.keySet()
 				.forEach( point -> matrix[point.getFirst().intValue()][point.getSecond()
-						.intValue()] = grid.getOrDefault( point, EMPTY ) );
+						.intValue()] = grid.get(point));
+		Utils.clearScreen();
 		printMatrix( matrix );
-		System.out.println( "SCORE: " + score );
+		System.out.println("\033[1m\033[31mSCORE: \033[0m\033[4m" + score + "\033[0m");
 	}
 
 	private void printResult( final Map<Pair<Long, Long>, Character> grid ) {
 		if ( !grid.containsValue( BLOCK ) ) {
 			System.out.println( "✅✅✅✅✅" );
-			System.out.println( "YOU WON!!" );
+			System.out.println("\033[5mYOU WON!!\033[0m");
 			System.out.println( "✅✅✅✅✅" );
 		} else {
 			System.out.println( "❌❌❌❌❌" );
-			System.out.println( "GAME OVER" );
+			System.out.println("\033[5mGAME OVER\033[0m");
 			System.out.println( "❌❌❌❌❌" );
 		}
 	}
