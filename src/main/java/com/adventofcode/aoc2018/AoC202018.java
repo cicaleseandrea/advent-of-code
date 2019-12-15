@@ -14,7 +14,7 @@ import static java.util.Collections.singleton;
 
 class AoC202018 implements Solution {
 
-    private static final boolean PRINT = false;
+    private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
 
     private static String solve(final String input, final LongPredicate filter,
                                 final Function<LongSummaryStatistics, Long> computeResult) {
@@ -155,8 +155,7 @@ class AoC202018 implements Solution {
         return exit;
     }
 
-    private static void print(final Map<Pair<Long, Long>, Character> map
-    ) {
+    private static void print(final Map<Pair<Long, Long>, Character> map) {
         final long minX = -8;
         final long minY = -8;
         final long maxX = 8;
@@ -168,6 +167,11 @@ class AoC202018 implements Solution {
             System.out.println();
         }
         System.out.println();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

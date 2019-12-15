@@ -1,24 +1,18 @@
 package com.adventofcode.aoc2018;
 
-import static com.adventofcode.utils.Utils.HASH;
-import static com.adventofcode.utils.Utils.PIPE;
-import static com.adventofcode.utils.Utils.SPACE;
-import static com.adventofcode.utils.Utils.TILDE;
-import static com.adventofcode.utils.Utils.extractIntegerFromString;
-import static com.adventofcode.utils.Utils.getIterable;
-import static com.adventofcode.utils.Utils.itoa;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
+import static com.adventofcode.utils.Utils.*;
 
 class AoC172018 implements Solution {
 
-    private static final boolean PRINT = false;
+    private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
 
     private static String solve(final Stream<String> input,
                                 final Predicate<Map.Entry<Pair<Integer, Integer>, Character>> count) {
@@ -156,6 +150,11 @@ class AoC172018 implements Solution {
             System.out.println();
         }
         System.out.println();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public String solveFirstPart(final Stream<String> input) {
