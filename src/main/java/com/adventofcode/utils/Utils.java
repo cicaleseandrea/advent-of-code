@@ -1,5 +1,6 @@
 package com.adventofcode.utils;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.BlockingDeque;
@@ -355,6 +356,18 @@ public class Utils {
             for (long i = 0; i < n; i++) {
                 deque.add(deque.poll());
             }
+        }
+    }
+
+    public static void clearScreen() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                Runtime.getRuntime().exec("clear");
+            }
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
         }
     }
 }

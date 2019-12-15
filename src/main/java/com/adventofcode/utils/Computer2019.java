@@ -153,7 +153,7 @@ public class Computer2019 implements Runnable {
 		final long origPointer = pointer;
 
 		setPointer( 0 );
-        while ( pointer < memory.size() ) {
+        while (memory.containsKey(pointer)) {
             final Optional<OpCode> opCode = printOneStep();
             pointer += opCode.orElse( NOP ).nParams + 1;
         }
