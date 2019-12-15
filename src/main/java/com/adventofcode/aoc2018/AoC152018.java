@@ -15,7 +15,7 @@ class AoC152018 implements Solution {
     private static final int BASE_ATTACK = 3;
     private static final char GOBLIN = 'G';
     private static final char ELF = 'E';
-    private static final boolean PRINT = false;
+    private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
     private static SortedMap<Pair<Long, Long>, Character> map;
     private static SortedMap<Pair<Long, Long>, Unit> originalElves;
     private static SortedMap<Pair<Long, Long>, Unit> originalGoblins;
@@ -229,6 +229,7 @@ class AoC152018 implements Solution {
     private static void printState(final SortedMap<Pair<Long, Long>, Character> map,
                                    final SortedMap<Pair<Long, Long>, Unit> units,
                                    final int turns) {
+        clearScreen();
         Pair<Long, Long> prevPosition = ZERO;
         System.out.println("Turn: " + turns);
         for (final Map.Entry<Pair<Long, Long>, Character> e : map.entrySet()) {
@@ -246,6 +247,11 @@ class AoC152018 implements Solution {
             prevPosition = position;
         }
         System.out.println();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public String solveFirstPart(final Stream<String> input) {

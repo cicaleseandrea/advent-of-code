@@ -1,6 +1,7 @@
 # Advent of Code
 My [Advent of Code](https://adventofcode.com/) solutions.
 
+
 ## Goals
 - have fun
 - have fun
@@ -9,8 +10,19 @@ My [Advent of Code](https://adventofcode.com/) solutions.
   `Optional`, `var`, 
   [switch expressions](https://openjdk.java.net/jeps/325)
 
+
 ## Run Unit Tests
+Run all tests:
+
 `./gradlew clean test`
+
+Run a specific year:
+
+`./gradlew clean test --tests *2019*`
+
+Run a specific day:
+
+`./gradlew clean test --tests *132019*`
 
 You need JDK 12.
 By default the project will look for it in `/Library/Java/JavaVirtualMachines/openjdk-12.jdk/Contents/Home`
@@ -19,11 +31,16 @@ You can also specify your own JDK path like this:
 
 `./gradlew clean test -Dorg.gradle.java.home=/path/to/java12`
 
-## Enable printing to `stdout`
-Some days have a flag to enable printing a representation of the puzzle to `stdout`.
+
+### Enable printing to `stdout`
+Print a representation of some puzzles to `stdout`:
+
+`./gradlew clean test -Dprint=true`
+
 
 ## Enable interactive mode
 13th December 2019 has a `main` method that enables a really basic interactive mode. Enjoy! 🕹️
+
 
 ## TODO
 - try out Kotlin

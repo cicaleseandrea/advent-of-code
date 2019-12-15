@@ -23,6 +23,8 @@ tasks.withType(JavaCompile).each {
 
 test {
     jvmArgs(['--enable-preview'])
+    systemProperty "print", System.getProperty("print")
+
     testLogging {
         outputs.upToDateWhen {false}
         showStandardStreams = true

@@ -13,7 +13,7 @@ import static com.adventofcode.utils.Utils.*;
 
 class AoC132018 implements Solution {
 
-    private static final boolean PRINT = false;
+    private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
 
     private static String solve(final Stream<String> input, final boolean first) {
         final Map<Pair<Long, Long>, Character> track = new HashMap<>();
@@ -81,19 +81,20 @@ class AoC132018 implements Solution {
 
     private static void print(final Map<Pair<Long, Long>, Character> track, final Map<Pair<Long, Long>, Cart> carts,
                               final Pair<Long, Long> last) {
+        clearScreen();
         for (int i = 0; i < last.getSecond(); i++) {
             for (int j = 0; j < last.getFirst(); j++) {
                 final Pair<Integer, Integer> p = new Pair<>(j, i);
                 if (carts.containsKey(p)) {
                     System.out.print(carts.get(p));
                 } else {
-                    System.out.print(track.get(p));
+                    System.out.print(track.getOrDefault(p, DOT));
                 }
             }
             System.out.println();
         }
         try {
-            Thread.sleep(1000);
+            Thread.sleep(300);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
