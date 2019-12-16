@@ -1,5 +1,6 @@
 package com.adventofcode.aoc2019;
 
+import static java.lang.Long.signum;
 import static java.lang.Math.abs;
 import static java.util.stream.Collectors.toList;
 
@@ -103,7 +104,7 @@ class AoC122019 implements Solution {
 
 	private void applyGravity( final Pair<Long, Long> axis, final Pair<Long, Long> axis2 ) {
 		//compute gravity based on positions
-		final long gravity = Long.compare( axis.getFirst(), axis2.getFirst() );
+		final long gravity = signum( axis.getFirst() - axis2.getFirst() );
 		//update velocities based on gravity
 		axis.setSecond( axis.getSecond() - gravity );
 		axis2.setSecond( axis2.getSecond() + gravity );
