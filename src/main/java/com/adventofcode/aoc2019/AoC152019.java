@@ -80,7 +80,7 @@ class AoC152019 implements Solution {
 			return itoa( maze.get( droidPosition ).getSecond() );
 		}
 
-		final Map<Pair<Long, Long>, Pair<Character, Long>> invertedMaze = new HashMap<>();
+		final Map<Pair<Long, Long>, Pair<Character, Long>> invertedMaze = getInvertedMaze( maze );
 
 		exploreMaze( in, out, invertedMaze, droidPosition );
 
@@ -102,6 +102,9 @@ class AoC152019 implements Solution {
 		long steps = 0;
 		Direction direction = RIGHT;
 		try {
+			//the maze is simply connected: explore it using wall follower right-hand rule
+			//(no need for BFS, Dijkstra, spawning of multiple copies of the computer)
+			//keep track of distances
 			do {
 				//move
 				final Long movement = MOVE_COMMAND.get( direction );
@@ -152,17 +155,32 @@ class AoC152019 implements Solution {
 	private void printMaze( final Map<Pair<Long, Long>, Pair<Character, Long>> maze )
 			throws InterruptedException {
 		clearScreen();
-		final Character[][] matrix = new Character[60][60];
+		final int offset = 21;
+		final int size = 41;
+		final Character[][] matrix = new Character[size][size];
 		for ( final var row : matrix ) {
 			Arrays.fill( row, UNKNOWN );
 		}
-		final int offset = 39;
 		maze.keySet()
 				.forEach( point -> matrix[point.getSecond().intValue() + offset][point.getFirst()
 						.intValue() + offset] = maze.getOrDefault( point,
 						new Pair<>( UNKNOWN, 0L ) ).getFirst() );
+		System.out.println();
 		printMatrix( matrix );
-		Thread.sleep( 50 );
+		System.out.println();
+		Thread.sleep( 20 );
+	}
+
+	private Map<Pair<Long, Long>, Pair<Character, Long>> getInvertedMaze(
+			final Map<Pair<Long, Long>, Pair<Character, Long>> maze ) {
+		if ( !PRINT ) {
+			return new HashMap<>();
+		} else {
+			for ( final var cell : maze.entrySet() ) {
+				cell.setValue( new Pair<>( cell.getValue().getFirst(), Long.MAX_VALUE ) );
+			}
+			return maze;
+		}
 	}
 
 	private Future<?> startComputer( final Stream<String> input, final BlockingQueue<Long> in,
