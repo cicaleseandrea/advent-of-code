@@ -1,17 +1,34 @@
 package com.adventofcode.aoc2019;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Computer2019;
-import com.adventofcode.utils.Pair;
+import static java.lang.Long.signum;
+
+import static com.adventofcode.utils.Utils.SPACE;
+import static com.adventofcode.utils.Utils.clearScreen;
+import static com.adventofcode.utils.Utils.getFirstString;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.printMatrix;
+import static com.adventofcode.utils.Utils.readOutput;
+import static com.adventofcode.utils.Utils.toLongList;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Computer2019;
+import com.adventofcode.utils.Pair;
 
 class AoC132019 implements Solution {
 	private static final int COLUMNS = 37;
@@ -107,7 +124,7 @@ class AoC132019 implements Solution {
 
 	private void movePaddle( final Long paddlePosition, final BlockingQueue<Long> in,
 			final Long x ) {
-		in.add( ( (long) Long.compare( x, paddlePosition ) ) );
+		in.add( (long) signum( x - paddlePosition ) );
 	}
 
 	private void enableInteractiveMode( final BlockingQueue<Long> in, final Future<?> future ) {
@@ -132,6 +149,7 @@ class AoC132019 implements Solution {
 	}
 
 	private void printGame(final Map<Pair<Long, Long>, Character> grid, final Long score) throws InterruptedException {
+		clearScreen();
 		final Character[][] matrix = new Character[ROWS][COLUMNS];
 		for (final var row : matrix) {
 			Arrays.fill(row, EMPTY);
@@ -139,7 +157,6 @@ class AoC132019 implements Solution {
 		grid.keySet()
 				.forEach( point -> matrix[point.getFirst().intValue()][point.getSecond()
 						.intValue()] = grid.get(point));
-		clearScreen();
 		printMatrix( matrix );
 		System.out.println("\033[1m\033[31mSCORE: \033[0m\033[4m" + score + "\033[0m");
 		Thread.sleep(70);
