@@ -36,4 +36,5 @@ public class AoC052019Test extends Generic {
                 { SECOND, getInput( INSTANCE ), "7161591" }
         });
     }
+
 }
