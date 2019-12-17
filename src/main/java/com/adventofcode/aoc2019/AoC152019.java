@@ -8,7 +8,6 @@ import static com.adventofcode.utils.Direction.RIGHT;
 import static com.adventofcode.utils.Direction.UP;
 import static com.adventofcode.utils.Utils.clearScreen;
 import static com.adventofcode.utils.Utils.getFirstString;
-import static com.adventofcode.utils.Utils.incrementMapElement;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.printMatrix;
 import static com.adventofcode.utils.Utils.toLongList;
@@ -98,7 +97,6 @@ class AoC152019 implements Solution {
 		Pair<Long, Long> droidPosition = start;
 		maze.put( droidPosition, new Pair<>( ROOM, 0L ) );
 		Long status;
-		final Map<Pair<Long, Long>, Long> seen = new HashMap<>();
 		long steps = 0;
 		Direction direction = RIGHT;
 		try {
@@ -131,8 +129,6 @@ class AoC152019 implements Solution {
 						maze.put( droidPosition, new Pair<>( UNKNOWN, steps ) );
 					}
 					steps = maze.get( droidPosition ).getSecond();
-
-					incrementMapElement( seen, droidPosition );
 				}
 
 				//add maze position
