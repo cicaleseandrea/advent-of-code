@@ -25,45 +25,40 @@ class AoC162019 implements Solution {
 
 	private String solve( final Stream<String> input, final boolean first ) {
 		final String inputStr = getFirstString( input );
-		int[] signal = inputStr.chars().map( Utils::charToInt ).toArray();
+		int[] inputSignal = inputStr.chars().map( Utils::charToInt ).toArray();
+		int[] signal;
 
-		if ( !first ) {
-			int[] biggerSignal = new int[signal.length * 10000];
-			for ( int i = 0; i < 10000; i++ ) {
-				System.arraycopy( signal, 0, biggerSignal, signal.length * i, signal.length );
-			}
-			signal = biggerSignal;
-		}
-
-		final int[] pattern = new int[] { 0, 1, 0, -1 };
-		final int phases = signal.length < 10 ? 4 : 100;
-		for ( int i = 0; i < phases; i++ ) {
-			//each phase
-			final int[] finalSignal = signal;
-			signal = IntStream.range( 0, signal.length )
-					.parallel()
-					.map( j -> computeDigit( pattern, finalSignal, j ) )
-					.toArray();
-
-		}
 		if ( first ) {
-			return Arrays.stream( signal ).mapToObj( Utils::itoa ).limit( 8 ).collect( joining() );
+			signal = inputSignal;
+			final int[] pattern = new int[] { 0, 1, 0, -1 };
+			final int phases = inputSignal.length < 10 ? 4 : 100;
+			for ( int i = 0; i < phases; i++ ) {
+				//each phase
+				final int[] previousSignal = signal;
+				signal = IntStream.range( 0, inputSignal.length )
+						.parallel().map( j -> computeDigit( pattern, previousSignal, j ) )
+						.toArray();
+			}
 		} else {
-			final long offset = atoi( inputStr.substring( 0, 7 ) );
-			System.out.println( offset );
-			return Arrays.stream( signal )
-					.mapToObj( Utils::itoa )
-					.skip( offset )
-					.limit( 8 )
-					.collect( joining() );
+			final int offset = atoi( inputStr.substring( 0, 7 ) );
+			signal = getSignal( inputSignal, offset );
+
+			for ( int i = 0; i < 100; i++ ) {
+				for ( int j = signal.length - 2; j >= 0; j-- ) {
+					signal[j] += signal[j + 1];
+					signal[j] %= 10;
+				}
+			}
 		}
+
+		return Arrays.stream( signal ).mapToObj( Utils::itoa ).limit( 8 ).collect( joining() );
 	}
 
 	private int computeDigit( final int[] pattern, final int[] signal, final int j ) {
 		int pos = ( j == 0 ) ? 1 : 0;
-		int tmp = 0;
+		int res = 0;
 		for ( int k = 0; k < signal.length; k++ ) {
-			tmp += signal[k] * pattern[pos];
+			res += signal[k] * pattern[pos];
 
 			//don't move until you use first pattern digit enough times
 			//move to next pattern digit every j+1 steps
@@ -71,10 +66,21 @@ class AoC162019 implements Solution {
 				pos = incrementMod( pos, pattern.length );
 			}
 		}
-		return simplifyDigit( tmp );
+		return abs( res ) % 10;
 	}
 
-	private int simplifyDigit( final int number ) {
-		return abs( number ) % 10;
+	private int[] getSignal( final int[] inputSignal, final int offset ) {
+		final int start = offset % inputSignal.length;
+		final int[] biggerSignal = new int[inputSignal.length * 10000 - offset];
+
+		System.arraycopy( inputSignal, start, biggerSignal, 0, inputSignal.length - start );
+
+		int dest = inputSignal.length - start;
+		while ( dest < biggerSignal.length ) {
+			System.arraycopy( inputSignal, 0, biggerSignal, dest,
+					Math.min( inputSignal.length, biggerSignal.length - dest ) );
+			dest += inputSignal.length;
+		}
+		return biggerSignal;
 	}
 }
