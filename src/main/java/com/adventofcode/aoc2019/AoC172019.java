@@ -1,25 +1,22 @@
 package com.adventofcode.aoc2019;
 
-import static java.util.stream.Collectors.joining;
-
 import static com.adventofcode.utils.Direction.DOWN;
 import static com.adventofcode.utils.Direction.LEFT;
 import static com.adventofcode.utils.Direction.RIGHT;
 import static com.adventofcode.utils.Direction.UP;
 import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.clearScreen;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.toLongList;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.UnaryOperator;
@@ -31,8 +28,7 @@ import com.adventofcode.utils.Direction;
 import com.adventofcode.utils.Pair;
 
 class AoC172019 implements Solution {
-	private static final boolean PRINT = true;
-	//	private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
+	private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
 
 	//@formatter:off
 	private static final Map<Direction, UnaryOperator<Pair<Long, Long>>> MOVE_POSITION = Map.of(
@@ -43,32 +39,19 @@ class AoC172019 implements Solution {
 	//@formatter:on
 
 	public String solveFirstPart( final Stream<String> input ) {
-		String res = null;
-		try {
-			res = solve( input, true );
-		} catch ( ExecutionException | InterruptedException e ) {
-			e.printStackTrace();
-		}
-		return res;
+		return solve( input, true );
 	}
 
 	public String solveSecondPart( final Stream<String> input ) {
-		String res = null;
-		try {
-			res = solve( input, false );
-		} catch ( ExecutionException | InterruptedException e ) {
-			e.printStackTrace();
-		}
-		return res;
+		return solve( input, false );
 	}
 
-	private String solve( final Stream<String> input, final boolean first )
-			throws ExecutionException, InterruptedException {
+	private String solve( final Stream<String> input, final boolean first ) {
 		final BlockingQueue<Long> in = new LinkedBlockingQueue<>();
 		final BlockingDeque<Long> out = new LinkedBlockingDeque<>();
 		final List<Long> program = toLongList( getFirstString( input ) );
+		startComputer( program, true, in, out );
 
-		startComputer( program, true, in, out ).get();
 		final Map<Pair<Long, Long>, Character> grid = initializeGrid( out );
 
 		if ( first ) {
@@ -77,24 +60,36 @@ class AoC172019 implements Solution {
 
 		//move robot
 		final String movements = findMovements( grid );
-		if ( PRINT ) {
-			System.out.println( movements );
-		}
 		//L,4,L,4,L,10,R,4,R,4,L,4,L,4,R,8,R,10,L,4,L,4,L,10,R,4,R,4,L,10,R,10,L,4,L,4,L,10,R,4,R,4,L,10,R,10,R,4,L,4,L,4,R,8,R,10,R,4,L,10,R,10,R,4,L,10,R,10,R,4,L,4,L,4,R,8,R,10
 		//TODO find commands programmatically
-		final String commands = "A,C,A,B,A,B,C,B,B,C\nL,4,L,4,L,10,R,4\nR,4,L,10,R,10\nR,4,L,4,L,4,R,8,R,10\nn\n";
+		String commands = "A,C,A,B,A,B,C,B,B,C\nL,4,L,4,L,10,R,4\nR,4,L,10,R,10\nR,4,L,4,L,4,R,8,R,10\n";
+		if ( PRINT ) {
+			commands += "y\n";
+		} else {
+			commands += "n\n";
+		}
 		commands.chars().forEach( c -> in.add( (long) c ) );
 		out.clear();
 
 		//wait for robot to stop
-		startComputer( program, first, in, out ).get();
+		startComputer( program, first, in, out );
 
 		if ( PRINT ) {
-			System.out.println( Arrays.stream( out.toArray( Long[]::new ) )
-					.map( c -> (char) c.intValue() )
-					.map( Object::toString )
-					.collect( joining() ) );
+			long previous = DOT;
+			for ( final long current : out ) {
+				System.out.print( (char) current );
+				if ( current == '\n' && current == previous ) {
+					clearScreen();
+					try {
+						Thread.sleep( 100 );
+					} catch ( InterruptedException e ) {
+						e.printStackTrace();
+					}
+				}
+				previous = current;
+			}
 		}
+
 		return itoa( out.removeLast() );
 	}
 
@@ -187,13 +182,17 @@ class AoC172019 implements Solution {
 				.isEmpty();
 	}
 
-	private Future<?> startComputer( final List<Long> program, final boolean first,
+	private void startComputer( final List<Long> program, final boolean first,
 			final BlockingQueue<Long> in, final BlockingDeque<Long> out ) {
 		if ( !first ) {
 			program.set( 0, 2L );
 		}
 		final Computer2019 computer = new Computer2019( in, out );
 		computer.loadProgram( program );
-		return computer.runAsync();
+		try {
+			computer.runAsync().get();
+		} catch ( InterruptedException | ExecutionException e ) {
+			e.printStackTrace();
+		}
 	}
 }
