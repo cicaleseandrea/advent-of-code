@@ -1,5 +1,7 @@
 package com.adventofcode.aoc2019;
 
+import static java.util.stream.Collectors.joining;
+
 import static com.adventofcode.utils.Direction.DOWN;
 import static com.adventofcode.utils.Direction.LEFT;
 import static com.adventofcode.utils.Direction.RIGHT;
@@ -8,7 +10,6 @@ import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
-import static com.adventofcode.utils.Utils.printMatrix;
 import static com.adventofcode.utils.Utils.toLongList;
 
 import java.util.Arrays;
@@ -70,35 +71,35 @@ class AoC172019 implements Solution {
 		startComputer( program, true, in, out ).get();
 		final Map<Pair<Long, Long>, Character> grid = initializeGrid( out );
 
-		if ( PRINT ) {
-			printGrid( grid );
-			printMovements( grid );
-		}
-
 		if ( first ) {
-			return itoa( computeIntersection( grid ) );
+			return itoa( computeIntersections( grid ) );
 		}
-
-		final Future<?> future = startComputer( program, false, in, out );
 
 		//move robot
+		final String movements = findMovements( grid );
+		if ( PRINT ) {
+			System.out.println( movements );
+		}
 		//L,4,L,4,L,10,R,4,R,4,L,4,L,4,R,8,R,10,L,4,L,4,L,10,R,4,R,4,L,10,R,10,L,4,L,4,L,10,R,4,R,4,L,10,R,10,R,4,L,4,L,4,R,8,R,10,R,4,L,10,R,10,R,4,L,10,R,10,R,4,L,4,L,4,R,8,R,10
-		//TODO find movements programmatically
-		final String movements = "A,C,A,B,A,B,C,B,B,C\nL,4,L,4,L,10,R,4\nR,4,L,10,R,10\nR,4,L,4,L,4,R,8,R,10\nn\n";
-		movements.chars().forEach( c -> in.add( (long) c ) );
+		//TODO find commands programmatically
+		final String commands = "A,C,A,B,A,B,C,B,B,C\nL,4,L,4,L,10,R,4\nR,4,L,10,R,10\nR,4,L,4,L,4,R,8,R,10\nn\n";
+		commands.chars().forEach( c -> in.add( (long) c ) );
+		out.clear();
 
 		//wait for robot to stop
-		future.get();
+		startComputer( program, first, in, out ).get();
 
+		if ( PRINT ) {
+			System.out.println( Arrays.stream( out.toArray( Long[]::new ) )
+					.map( c -> (char) c.intValue() )
+					.map( Object::toString )
+					.collect( joining() ) );
+		}
 		return itoa( out.removeLast() );
 	}
 
-	private void printMovements( final Map<Pair<Long, Long>, Character> grid ) {
-		final int size = 40;
-		final Character[][] matrix = new Character[size][size];
-		for ( final var row : matrix ) {
-			Arrays.fill( row, DOT );
-		}
+	private String findMovements( final Map<Pair<Long, Long>, Character> grid ) {
+		final StringBuilder sb = new StringBuilder();
 
 		Pair<Long, Long> droid = new Pair<>( grid.entrySet()
 				.stream()
@@ -113,31 +114,30 @@ class AoC172019 implements Solution {
 
 		while ( !stop ) {
 			if ( grid.getOrDefault( MOVE_POSITION.get( direction ).apply( droid ), DOT ) == HASH ) {
+				//move forward
 				droid = MOVE_POSITION.get( direction ).apply( droid );
 				steps++;
 			} else {
 				if ( steps != 0 ) {
-					System.out.print( steps + "," );
+					sb.append( "," ).append( steps );
 				}
 				steps = 0;
 				if ( grid.getOrDefault(
 						MOVE_POSITION.get( direction.rotateClockwise() ).apply( droid ),
 						DOT ) == HASH ) {
-
 					direction = direction.rotateClockwise();
-					System.out.print( "R," );
+					sb.append( ",R" );
 				} else if ( grid.getOrDefault(
 						MOVE_POSITION.get( direction.rotateCounterClockwise() ).apply( droid ),
 						DOT ) == HASH ) {
-
 					direction = direction.rotateCounterClockwise();
-					System.out.print( "L," );
+					sb.append( ",L" );
 				} else {
 					stop = true;
 				}
 			}
 		}
-		System.out.println();
+		return sb.deleteCharAt( 0 ).toString();
 	}
 
 	private Map<Pair<Long, Long>, Character> initializeGrid( final BlockingDeque<Long> out ) {
@@ -147,7 +147,10 @@ class AoC172019 implements Solution {
 		while ( ( symbol = out.poll() ) != null ) {
 			final char c = (char) symbol.intValue();
 			grid.put( new Pair<>( pos ), c );
-			//moe right
+			if ( PRINT ) {
+				System.out.print( c );
+			}
+			//move right
 			pos.setFirst( pos.getFirst() + 1 );
 			if ( symbol == '\n' ) {
 				//move to new line
@@ -158,7 +161,7 @@ class AoC172019 implements Solution {
 		return grid;
 	}
 
-	private long computeIntersection( final Map<Pair<Long, Long>, Character> grid ) {
+	private long computeIntersections( final Map<Pair<Long, Long>, Character> grid ) {
 		long res = 0L;
 		for ( final var point : grid.keySet() ) {
 			if ( isIntersection( point, grid ) ) {
@@ -182,19 +185,6 @@ class AoC172019 implements Solution {
 				.filter( c -> c != HASH )
 				.findAny()
 				.isEmpty();
-	}
-
-	private void printGrid( final Map<Pair<Long, Long>, Character> grid ) {
-		final int size = 40;
-		final Character[][] matrix = new Character[size][size];
-		for ( final var row : matrix ) {
-			Arrays.fill( row, DOT );
-		}
-		grid.keySet()
-				.stream().filter( p -> grid.getOrDefault( p, DOT ) != '\n' )
-				.forEach( point -> matrix[point.getSecond().intValue()][point.getFirst()
-						.intValue()] = grid.getOrDefault( point, DOT ) );
-		printMatrix( matrix );
 	}
 
 	private Future<?> startComputer( final List<Long> program, final boolean first,
