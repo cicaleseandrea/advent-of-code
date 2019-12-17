@@ -103,12 +103,12 @@ class AoC172019 implements Solution {
 
 		Pair<Long, Long> droid = new Pair<>( grid.entrySet()
 				.stream()
-				.filter( p -> p.getValue() == '^' )
+				.filter( p -> Direction.fromSymbol( p.getValue() ) != null )
 				.map( Map.Entry::getKey )
 				.findFirst()
 				.orElseThrow() );
 
-		Direction direction = UP;
+		Direction direction = Direction.fromSymbol( grid.get( droid ) );
 		boolean stop = false;
 		long steps = 0;
 

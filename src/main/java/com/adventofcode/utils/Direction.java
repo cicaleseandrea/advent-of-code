@@ -1,12 +1,13 @@
 package com.adventofcode.utils;
 
-import java.util.Arrays;
-import java.util.List;
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 import static com.adventofcode.utils.Utils.decrementMod;
 import static com.adventofcode.utils.Utils.incrementMod;
-import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.toUnmodifiableList;
+
+import java.util.Arrays;
+import java.util.List;
 
 public enum Direction {
     DOWN('v', 0), LEFT('<', 1), UP('^', 2), RIGHT('>', 3);
@@ -39,6 +40,15 @@ public enum Direction {
             else if (c == '/') return rotateCounterClockwise();
         }
         return this;
+    }
+
+    public static Direction fromSymbol( final char c ) {
+        for ( final Direction d : Direction.values() ) {
+            if ( d.getSymbol() == c ) {
+                return d;
+            }
+        }
+        return null;
     }
 
     public char getSymbol() {
