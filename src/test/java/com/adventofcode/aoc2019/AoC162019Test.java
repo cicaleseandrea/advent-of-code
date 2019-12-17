@@ -31,7 +31,7 @@ public class AoC162019Test extends Generic {
                 { SECOND, "03036732577212944063491565474664", "84462026" },
                 { SECOND, "02935109699940807407585447034323", "78725270" },
                 { SECOND, "03081770884921959731165446850517", "53553731" },
-                { SECOND, getInput( INSTANCE ), "" }
+                { SECOND, getInput( INSTANCE ), "53201602" }
         });
     }
 }
