@@ -20,6 +20,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
@@ -29,6 +31,10 @@ import com.adventofcode.utils.Pair;
 
 class AoC172019 implements Solution {
 	private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
+
+	//3 repeating groups of max 21 chars each (including trailing comma)
+	private static final Pattern REGEXP = Pattern.compile(
+			"^(.{1,21})(?:\\1)*(.{1,21})(?:\\1|\\2)*(.{1,21})(?:\\1|\\2|\\3)*$" );
 
 	//@formatter:off
 	private static final Map<Direction, UnaryOperator<Pair<Long, Long>>> MOVE_POSITION = Map.of(
@@ -59,15 +65,7 @@ class AoC172019 implements Solution {
 		}
 
 		//move robot
-		final String movements = findMovements( grid );
-		//L,4,L,4,L,10,R,4,R,4,L,4,L,4,R,8,R,10,L,4,L,4,L,10,R,4,R,4,L,10,R,10,L,4,L,4,L,10,R,4,R,4,L,10,R,10,R,4,L,4,L,4,R,8,R,10,R,4,L,10,R,10,R,4,L,10,R,10,R,4,L,4,L,4,R,8,R,10
-		//TODO find commands programmatically
-		String commands = "A,C,A,B,A,B,C,B,B,C\nL,4,L,4,L,10,R,4\nR,4,L,10,R,10\nR,4,L,4,L,4,R,8,R,10\n";
-		if ( PRINT ) {
-			commands += "y\n";
-		} else {
-			commands += "n\n";
-		}
+		final String commands = findCommands( findMovements( grid ) );
 		commands.chars().forEach( c -> in.add( (long) c ) );
 		out.clear();
 
@@ -75,22 +73,54 @@ class AoC172019 implements Solution {
 		startComputer( program, first, in, out );
 
 		if ( PRINT ) {
-			long previous = DOT;
-			for ( final long current : out ) {
-				System.out.print( (char) current );
-				if ( current == '\n' && current == previous ) {
-					clearScreen();
-					try {
+			try {
+				long previous = DOT;
+				for ( final long current : out ) {
+					System.out.print( (char) current );
+					if ( current == ':' || current == '?' ) {
+						System.out.println( commands );
+						Thread.sleep( 5000 );
+					} else if ( current == '\n' && current == previous ) {
+						clearScreen();
 						Thread.sleep( 100 );
-					} catch ( InterruptedException e ) {
-						e.printStackTrace();
 					}
+					previous = current;
 				}
-				previous = current;
+			} catch ( InterruptedException e ) {
+				e.printStackTrace();
 			}
 		}
 
 		return itoa( out.removeLast() );
+	}
+
+	private String findCommands( final String movements ) {
+		//add trailing comma to find repeating groups
+		final Matcher match = REGEXP.matcher( movements + "," );
+		if ( !match.matches() ) {
+			throw new IllegalArgumentException();
+		}
+
+		//remove trailing comma from groups
+		final String A = match.group( 1 ).replaceAll( ",$", "" );
+		final String B = match.group( 2 ).replaceAll( ",$", "" );
+		final String C = match.group( 3 ).replaceAll( ",$", "" );
+
+		final String mainRoutine = movements.replaceAll( A, "A" )
+				.replaceAll( B, "B" )
+				.replaceAll( C, "C" );
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append( mainRoutine ).append( '\n' );
+		sb.append( A ).append( '\n' );
+		sb.append( B ).append( '\n' );
+		sb.append( C ).append( '\n' );
+		if ( PRINT ) {
+			sb.append( "y\n" );
+		} else {
+			sb.append( "n\n" );
+		}
+		return sb.toString();
 	}
 
 	private String findMovements( final Map<Pair<Long, Long>, Character> grid ) {
