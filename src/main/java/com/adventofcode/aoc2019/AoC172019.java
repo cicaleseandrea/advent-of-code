@@ -6,12 +6,15 @@ import static com.adventofcode.utils.Direction.RIGHT;
 import static com.adventofcode.utils.Direction.UP;
 import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.SPACE;
 import static com.adventofcode.utils.Utils.clearScreen;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.toLongList;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
@@ -22,6 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
@@ -58,16 +62,20 @@ class AoC172019 implements Solution {
 		final List<Long> program = toLongList( getFirstString( input ) );
 		startComputer( program, true, in, out );
 
-		final Map<Pair<Long, Long>, Character> grid = initializeGrid( out );
+		final Map<Pair<Long, Long>, Character> grid = initializeGrid( out, first );
 
 		if ( first ) {
 			return itoa( computeIntersections( grid ) );
 		}
 
-		//move robot
-		final String commands = findCommands( findMovements( grid ) );
-		commands.chars().forEach( c -> in.add( (long) c ) );
 		out.clear();
+
+		//move robot
+		final String[] commands = findCommands( findMovements( grid ) );
+		Arrays.stream( commands )
+				.map( String::chars )
+				.flatMap( IntStream::boxed )
+				.forEach( c -> in.add( c.longValue() ) );
 
 		//wait for robot to stop
 		startComputer( program, first, in, out );
@@ -75,11 +83,17 @@ class AoC172019 implements Solution {
 		if ( PRINT ) {
 			try {
 				long previous = DOT;
-				for ( final long current : out ) {
-					System.out.print( (char) current );
+				int i = 0;
+				for ( Iterator<Long> iterator = out.iterator(); iterator.hasNext(); ) {
+					final long current = iterator.next();
+					if ( iterator.hasNext() ) {
+						System.out.print( (char) current );
+					} else {
+						System.out.print( "Dust collected: " + current );
+					}
 					if ( current == ':' || current == '?' ) {
-						System.out.println( commands );
-						Thread.sleep( 5000 );
+						System.out.println( SPACE + commands[i++] );
+						Thread.sleep( 2000 );
 					} else if ( current == '\n' && current == previous ) {
 						clearScreen();
 						Thread.sleep( 100 );
@@ -94,7 +108,7 @@ class AoC172019 implements Solution {
 		return itoa( out.removeLast() );
 	}
 
-	private String findCommands( final String movements ) {
+	private String[] findCommands( final String movements ) {
 		//add trailing comma to find repeating groups
 		final Matcher match = REGEXP.matcher( movements + "," );
 		if ( !match.matches() ) {
@@ -110,17 +124,17 @@ class AoC172019 implements Solution {
 				.replaceAll( B, "B" )
 				.replaceAll( C, "C" );
 
-		final StringBuilder sb = new StringBuilder();
-		sb.append( mainRoutine ).append( '\n' );
-		sb.append( A ).append( '\n' );
-		sb.append( B ).append( '\n' );
-		sb.append( C ).append( '\n' );
+		final String[] commands = new String[5];
+		commands[0] = mainRoutine + '\n';
+		commands[1] = A + '\n';
+		commands[2] = B + '\n';
+		commands[3] = C + '\n';
 		if ( PRINT ) {
-			sb.append( "y\n" );
+			commands[4] = "y\n";
 		} else {
-			sb.append( "n\n" );
+			commands[4] = "n\n";
 		}
-		return sb.toString();
+		return commands;
 	}
 
 	private String findMovements( final Map<Pair<Long, Long>, Character> grid ) {
@@ -165,14 +179,15 @@ class AoC172019 implements Solution {
 		return sb.deleteCharAt( 0 ).toString();
 	}
 
-	private Map<Pair<Long, Long>, Character> initializeGrid( final BlockingDeque<Long> out ) {
+	private Map<Pair<Long, Long>, Character> initializeGrid( final BlockingDeque<Long> out,
+			final boolean first ) {
 		final Map<Pair<Long, Long>, Character> grid = new HashMap<>();
 		final Pair<Long, Long> pos = new Pair<>( 0L, 0L );
 		Long symbol;
 		while ( ( symbol = out.poll() ) != null ) {
 			final char c = (char) symbol.intValue();
 			grid.put( new Pair<>( pos ), c );
-			if ( PRINT ) {
+			if ( PRINT && first ) {
 				System.out.print( c );
 			}
 			//move right
