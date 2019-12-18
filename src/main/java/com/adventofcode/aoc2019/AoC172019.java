@@ -80,6 +80,12 @@ class AoC172019 implements Solution {
 		//wait for robot to stop
 		startComputer( program, first, in, out );
 
+		printVideoFeed( out, commands );
+
+		return itoa( out.removeLast() );
+	}
+
+	private void printVideoFeed( final BlockingDeque<Long> out, final String[] commands ) {
 		if ( PRINT ) {
 			try {
 				long previous = DOT;
@@ -104,8 +110,6 @@ class AoC172019 implements Solution {
 				e.printStackTrace();
 			}
 		}
-
-		return itoa( out.removeLast() );
 	}
 
 	private String[] findCommands( final String movements ) {
