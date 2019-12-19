@@ -23,9 +23,8 @@ public class AoC192019Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                { FIRST, getInput( INSTANCE ), "" },
-                { SECOND, "", "" },
-                { SECOND, getInput( INSTANCE ), "" }
+                { FIRST, getInput( INSTANCE ), "114" },
+                { SECOND, getInput( INSTANCE ), "10671712" }
         });
     }
 }
