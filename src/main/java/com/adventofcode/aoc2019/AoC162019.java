@@ -42,7 +42,7 @@ class AoC162019 implements Solution {
 		} else {
 			final int offset = atoi( inputStr.substring( 0, 7 ) );
 			signal = getSignal( inputSignal, offset );
-
+			//optimization possible only because the offset is always greater than half the size of the signal
 			for ( int i = 0; i < 100; i++ ) {
 				for ( int j = signal.length - 2; j >= 0; j-- ) {
 					signal[j] += signal[j + 1];
