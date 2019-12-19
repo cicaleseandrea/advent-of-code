@@ -38,7 +38,7 @@ class AoC172019 implements Solution {
 
 	//3 repeating groups of max 21 chars each (including trailing comma)
 	private static final Pattern REGEXP = Pattern.compile(
-			"^(.{1,21})(?:\\1)*(.{1,21})(?:\\1|\\2)*(.{1,21})(?:\\1|\\2|\\3)*$" );
+			"(.{1,21})(?:\\1)*(.{1,21})(?:\\1|\\2)*(.{1,21})(?:\\1|\\2|\\3)*" );
 
 	//@formatter:off
 	private static final Map<Direction, UnaryOperator<Pair<Long, Long>>> MOVE_POSITION = Map.of(
