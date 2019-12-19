@@ -68,8 +68,6 @@ class AoC172019 implements Solution {
 			return itoa( computeIntersections( grid ) );
 		}
 
-		out.clear();
-
 		//move robot
 		final String[] commands = findCommands( findMovements( grid ) );
 		Arrays.stream( commands )
