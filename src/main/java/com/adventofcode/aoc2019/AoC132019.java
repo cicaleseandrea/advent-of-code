@@ -55,7 +55,13 @@ class AoC132019 implements Solution {
 	private String solve( final Stream<String> input, final boolean first ) {
 		final BlockingQueue<Long> in = new LinkedBlockingQueue<>();
 		final BlockingDeque<Long> out = new LinkedBlockingDeque<>();
-		final Future<?> future = startComputer( input, first, in, out );
+		final List<Long> program = toLongList( getFirstString( input ) );
+		if ( !first ) {
+			//play
+			program.set( 0, 2L );
+		}
+
+		final Future<?> future = Computer2019.runComputer( program, in, out, true );
 
 		final Map<Pair<Long, Long>, Character> grid = new HashMap<>();
 		Long score = 0L;
@@ -107,19 +113,6 @@ class AoC132019 implements Solution {
             }
 			return itoa( score );
 		}
-	}
-
-	private Future<?> startComputer( final Stream<String> input, final boolean first,
-			final BlockingQueue<Long> in, final BlockingDeque<Long> out ) {
-		final List<Long> program = toLongList( getFirstString( input ) );
-		if ( !first ) {
-			//play
-			program.set( 0, 2L );
-		}
-
-		final Computer2019 computer = new Computer2019( in, out );
-		computer.loadProgram( program );
-		return computer.runAsync();
 	}
 
 	private void movePaddle( final Long paddlePosition, final BlockingQueue<Long> in,
