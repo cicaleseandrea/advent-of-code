@@ -48,7 +48,8 @@ class AoC072019 implements Solution {
 			previousConnection.add( settings.next().longValue() );
 			//connect computers to each other. loop back last computer into first
 			final BlockingQueue<Long> nextConnection = settings.hasNext() ? new LinkedBlockingQueue<>() : firstConnection;
-			computers.add( runComputer( program, previousConnection, nextConnection ) );
+			computers.add(
+					Computer2019.runComputer( program, previousConnection, nextConnection, true ) );
 			previousConnection = nextConnection;
 		}
 
@@ -63,13 +64,6 @@ class AoC072019 implements Solution {
 		} catch ( InterruptedException | ExecutionException e ) {
 			throw new RuntimeException( e );
 		}
-	}
-
-	private Future<?> runComputer( final List<Long> program, final BlockingQueue<Long> previous,
-			final BlockingQueue<Long> next ) {
-		final Computer2019 computer = new Computer2019( previous, next );
-		computer.loadProgram( program );
-		return computer.runAsync();
 	}
 
 }
