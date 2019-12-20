@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.UnaryOperator;
@@ -60,7 +59,7 @@ class AoC172019 implements Solution {
 		final BlockingQueue<Long> in = new LinkedBlockingQueue<>();
 		final BlockingDeque<Long> out = new LinkedBlockingDeque<>();
 		final List<Long> program = toLongList( getFirstString( input ) );
-		startComputer( program, true, in, out );
+		Computer2019.runComputer( program, in, out, false );
 
 		final Map<Pair<Long, Long>, Character> grid = initializeGrid( out, first );
 
@@ -68,15 +67,16 @@ class AoC172019 implements Solution {
 			return itoa( computeIntersections( grid ) );
 		}
 
-		//move robot
+		//robot commands
 		final String[] commands = findCommands( findMovements( grid ) );
 		Arrays.stream( commands )
 				.map( String::chars )
 				.flatMap( IntStream::boxed )
 				.forEach( c -> in.add( c.longValue() ) );
 
-		//wait for robot to stop
-		startComputer( program, first, in, out );
+		//move robot and wait for it to stop
+		program.set( 0, 2L );
+		Computer2019.runComputer( program, in, out, false );
 
 		printVideoFeed( out, commands );
 
@@ -229,17 +229,4 @@ class AoC172019 implements Solution {
 				.isEmpty();
 	}
 
-	private void startComputer( final List<Long> program, final boolean first,
-			final BlockingQueue<Long> in, final BlockingDeque<Long> out ) {
-		if ( !first ) {
-			program.set( 0, 2L );
-		}
-		final Computer2019 computer = new Computer2019( in, out );
-		computer.loadProgram( program );
-		try {
-			computer.runAsync().get();
-		} catch ( InterruptedException | ExecutionException e ) {
-			e.printStackTrace();
-		}
-	}
 }
