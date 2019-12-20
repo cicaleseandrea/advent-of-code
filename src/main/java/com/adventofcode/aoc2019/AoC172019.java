@@ -88,7 +88,8 @@ class AoC172019 implements Solution {
 			try {
 				long previous = DOT;
 				int i = 0;
-				for ( Iterator<Long> iterator = out.iterator(); iterator.hasNext(); ) {
+				final Iterator<Long> iterator = out.iterator();
+				while ( iterator.hasNext() ) {
 					final long current = iterator.next();
 					if ( iterator.hasNext() ) {
 						System.out.print( (char) current );
@@ -111,20 +112,19 @@ class AoC172019 implements Solution {
 	}
 
 	private String[] findCommands( final String movements ) {
-		//add trailing comma to find repeating groups
-		final Matcher match = REGEXP.matcher( movements + "," );
+		final Matcher match = REGEXP.matcher( movements );
 		if ( !match.matches() ) {
 			throw new IllegalArgumentException();
 		}
 
-		//remove trailing comma from groups
+		//remove trailing commas
 		final String A = match.group( 1 ).replaceAll( ",$", "" );
 		final String B = match.group( 2 ).replaceAll( ",$", "" );
 		final String C = match.group( 3 ).replaceAll( ",$", "" );
-
 		final String mainRoutine = movements.replaceAll( A, "A" )
 				.replaceAll( B, "B" )
-				.replaceAll( C, "C" );
+				.replaceAll( C, "C" )
+				.replaceAll( ",$", "" );
 
 		final String[] commands = new String[5];
 		commands[0] = mainRoutine + '\n';
@@ -159,26 +159,28 @@ class AoC172019 implements Solution {
 				droid = MOVE_POSITION.get( direction ).apply( droid );
 				steps++;
 			} else {
-				if ( steps != 0 ) {
-					sb.append( "," ).append( steps );
+				if ( steps > 0 ) {
+					sb.append( "," ).append( steps ).append( "," );
+					steps = 0;
 				}
-				steps = 0;
 				if ( grid.getOrDefault(
 						MOVE_POSITION.get( direction.rotateClockwise() ).apply( droid ),
 						DOT ) == HASH ) {
 					direction = direction.rotateClockwise();
-					sb.append( ",R" );
+					sb.append( "R" );
 				} else if ( grid.getOrDefault(
 						MOVE_POSITION.get( direction.rotateCounterClockwise() ).apply( droid ),
 						DOT ) == HASH ) {
 					direction = direction.rotateCounterClockwise();
-					sb.append( ",L" );
+					sb.append( "L" );
 				} else {
 					stop = true;
 				}
 			}
 		}
-		return sb.deleteCharAt( 0 ).toString();
+
+		//keep trailing comma to find repeating groups
+		return sb.toString();
 	}
 
 	private Map<Pair<Long, Long>, Character> initializeGrid( final BlockingDeque<Long> out,
