@@ -60,7 +60,8 @@ class AoC112019 implements Solution {
 		final Map<Pair<Long, Long>, Character> grid = new HashMap<>();
 		final BlockingQueue<Long> in = new LinkedBlockingQueue<>();
 		final BlockingDeque<Long> out = new LinkedBlockingDeque<>();
-		final Future<?> future = startComputer( input, in, out );
+		final List<Long> program = toLongList( getFirstString( input ) );
+		final Future<?> future = Computer2019.runComputer( program, in, out, true );
 
 		Direction direction = UP;
 		try {
@@ -113,14 +114,6 @@ class AoC112019 implements Solution {
 		}
 
 		return res.toString();
-	}
-
-	private Future<?> startComputer( final Stream<String> input, final BlockingQueue<Long> in,
-			final BlockingDeque<Long> out ) {
-		final List<Long> program = toLongList( getFirstString( input ) );
-		final Computer2019 computer = new Computer2019( in, out );
-		computer.loadProgram( program );
-		return computer.runAsync();
 	}
 
 }
