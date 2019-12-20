@@ -34,8 +34,7 @@ class AoC022019 implements Solution {
 			program.set( 1, noun );
 			program.set( 2, verb );
 		}
-		final Computer2019 computer = new Computer2019();
-		computer.loadProgram( program );
+		final Computer2019 computer = new Computer2019( program );
 		computer.run();
 		return computer.memory.get( 0L );
 	}
