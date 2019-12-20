@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.UnaryOperator;
@@ -70,7 +69,8 @@ class AoC152019 implements Solution {
 	private String solve( final Stream<String> input, final boolean first ) {
 		final BlockingQueue<Long> in = new LinkedBlockingQueue<>();
 		final BlockingDeque<Long> out = new LinkedBlockingDeque<>();
-		startComputer( input, in, out );
+		final List<Long> program = toLongList( getFirstString( input ) );
+		Computer2019.runComputer( program, in, out, true );
 
 		final Map<Pair<Long, Long>, Pair<Character, Long>> maze = new HashMap<>();
 		final Pair<Long, Long> droidPosition = exploreMaze( in, out, maze, new Pair<>( 0L, 0L ) );
@@ -179,11 +179,4 @@ class AoC152019 implements Solution {
 		}
 	}
 
-	private Future<?> startComputer( final Stream<String> input, final BlockingQueue<Long> in,
-			final BlockingDeque<Long> out ) {
-		final List<Long> program = toLongList( getFirstString( input ) );
-		final Computer2019 computer = new Computer2019( in, out );
-		computer.loadProgram( program );
-		return computer.runAsync();
-	}
 }
