@@ -8,7 +8,6 @@ import static com.adventofcode.utils.Utils.toLongList;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
@@ -75,14 +74,12 @@ class AoC192019 implements Solution {
 
 	private long getNumber( final List<Long> program, final BlockingQueue<Long> in,
 			final BlockingDeque<Long> out, final int x, final int y ) {
-		final Computer2019 computer = new Computer2019( in, out );
-		computer.loadProgram( program );
 		in.add( (long) x );
 		in.add( (long) y );
 		try {
-			computer.runAsync().get();
+			Computer2019.runComputer( program, in, out, false );
 			return out.take();
-		} catch ( InterruptedException | ExecutionException e ) {
+		} catch ( InterruptedException e ) {
 			e.printStackTrace();
 		}
 
