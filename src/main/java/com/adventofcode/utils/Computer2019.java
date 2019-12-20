@@ -1,17 +1,22 @@
 package com.adventofcode.utils;
 
-import com.google.common.base.Strings;
+import static com.adventofcode.utils.Computer2019.OpCode.HALT;
+import static com.adventofcode.utils.Computer2019.OpCode.NOP;
+import static com.adventofcode.utils.Utils.itoa;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-import static com.adventofcode.utils.Computer2019.OpCode.HALT;
-import static com.adventofcode.utils.Computer2019.OpCode.NOP;
-import static com.adventofcode.utils.Utils.itoa;
+import com.google.common.base.Strings;
 
 public class Computer2019 implements Runnable {
 	public Map<Long, Long> memory;
@@ -23,19 +28,33 @@ public class Computer2019 implements Runnable {
 	private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final boolean PRINT_HALT = false;
 
-	public Computer2019() {
-		this( false, null, null );
-    }
-
-	public Computer2019( final BlockingQueue<Long> in, final BlockingQueue<Long> out ) {
-		this( true, in, out );
+	public static Future<?> runComputer( final List<Long> program, final BlockingQueue<Long> in,
+			final BlockingQueue<Long> out, final boolean async ) {
+		final Computer2019 computer = new Computer2019( program, in, out );
+		final Future<?> future;
+		if ( async ) {
+			future = computer.runAsync();
+		} else {
+			computer.run();
+			future = CompletableFuture.completedFuture( null );
+		}
+		return future;
 	}
 
-	private Computer2019( final boolean modes, final BlockingQueue<Long> in,
-			final BlockingQueue<Long> out ) {
+	public Computer2019( final List<Long> program ) {
+		this( false, program, null, null );
+	}
+
+	public Computer2019( final List<Long> program, final BlockingQueue<Long> in, final BlockingQueue<Long> out ) {
+		this( true, program, in, out );
+	}
+
+	private Computer2019( final boolean modes, final List<Long> program,
+			final BlockingQueue<Long> in, final BlockingQueue<Long> out ) {
 		this.modes = modes;
 		this.in = in;
 		this.out = out;
+		loadProgram( program );
 	}
 
     private int getMode( final long value, final int param ) {
@@ -90,7 +109,7 @@ public class Computer2019 implements Runnable {
         return ++pointer;
     }
 
-    public void loadProgram( final List<Long> program ) {
+	private void loadProgram( final List<Long> program ) {
 		memory = new HashMap<>();
 		for ( long i = 0L; i < program.size(); i++ ) {
 			memory.put( i, program.get( (int) i ) );
