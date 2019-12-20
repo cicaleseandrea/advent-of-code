@@ -28,10 +28,8 @@ class AoC052019 implements Solution {
 		final BlockingQueue<Long> in = new LinkedBlockingQueue<>();
 		in.add( inputNumber );
 		final BlockingDeque<Long> out = new LinkedBlockingDeque<>();
-		final Computer2019 computer = new Computer2019( in, out );
 		final List<Long> program = toLongList( getFirstString( input ) );
-		computer.loadProgram( program );
-		computer.run();
+		Computer2019.runComputer( program, in, out, false );
 
 		return itoa( out.removeLast() );
 	}
