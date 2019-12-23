@@ -43,6 +43,7 @@ class AoC202019 implements Solution {
 			final Multimap<Pair<Long, Long>, Pair<Pair<Long, Long>, Long>> edges,
 			final Pair<Pair<Long, Long>, Long> src, final Pair<Pair<Long, Long>, Long> dst ) {
 		//BFS to find shortest path (unweighted graphs, no need for Dijkstra)
+		//TODO try A* with heuristic=manhattan distance to speed up?
 		final Queue<Pair<Pair<Long, Long>, Long>> queue = new LinkedList<>();
 		final Map<Pair<Pair<Long, Long>, Long>, Long> distances = new HashMap<>();
 		//start from source
@@ -62,7 +63,7 @@ class AoC202019 implements Solution {
 					continue;
 				}
 				//first time you see this cell
-				final var cell = ( curr.getSecond() == 0 ) ? n : new Pair<>( n.getFirst(), floor );
+				final var cell = new Pair<>( n.getFirst(), floor );
 				if ( !distances.containsKey( cell ) ) {
 					//add cell to the queue
 					queue.add( cell );
@@ -127,7 +128,7 @@ class AoC202019 implements Solution {
 		final String portal = getPortalName( map, pos, c );
 		final var cells = computeNeighbours( pos, map );
 
-		if ( cells.size() > 0 ) {
+		if ( !cells.isEmpty() ) {
 			final Pair<Long, Long> cell = cells.get( 0 );
 			if ( portals.containsKey( portal ) ) {
 				final Pair<Long, Long> in;
@@ -197,8 +198,9 @@ class AoC202019 implements Solution {
 
 	private List<Pair<Long, Long>> computeNeighbours( final Pair<Long, Long> pos,
 			final Map<Pair<Long, Long>, Character> map ) {
-		final List<Pair<Long, Long>> neighbours = new ArrayList<>();
 		//add all the adjacent cells that can be reached
+		final List<Pair<Long, Long>> neighbours = new ArrayList<>();
+
 		var n = new Pair<>( pos );
 
 		n.setFirst( pos.getFirst() + 1 );
