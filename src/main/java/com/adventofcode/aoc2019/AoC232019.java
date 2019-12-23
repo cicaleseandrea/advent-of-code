@@ -51,14 +51,13 @@ class AoC232019 implements Solution {
 		//initialize NAT
 		in.put( NAT, new LinkedBlockingQueue<>() );
 
-		long res = runComputers( in, out, computers, first );
+		long res = runComputers( in, out, first );
 
 		return itoa( res );
 	}
 
 	private long runComputers( final Map<Integer, BlockingQueue<Long>> receivers,
-			final List<BlockingQueue<Long>> senders, final List<Computer2019> computers,
-			final boolean first ) {
+			final List<BlockingQueue<Long>> senders, final boolean first ) {
 		try {
 			long lastYSent = 0L;
 			while ( true ) {
