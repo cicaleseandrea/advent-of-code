@@ -72,6 +72,8 @@ class AoC102019 implements Solution {
 				it -> -Math.atan2( it.getSecond() - station.getSecond(),
 						it.getFirst() - station.getFirst() ) ) );
 
+		//TODO check
+
 		angles.addAll( asteroids );
 
 		long count = 0;
