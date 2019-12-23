@@ -2,16 +2,17 @@ package com.adventofcode.aoc2019;
 
 import static java.lang.Long.signum;
 import static java.lang.Math.abs;
+import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.toList;
 
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.toLongList;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
@@ -29,23 +30,25 @@ class AoC122019 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final boolean first ) {
-		final List<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>> moons = new ArrayList<>();
+		final List<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>> moons = input.map(
+				this::getMoon ).collect( toList() );
 
-		input.forEach( line -> moons.add( getMoon( line ) ) );
-
+		final var pairs = Sets.combinations( Set.copyOf( moons ), 2 );
 		final int steps = getStepsFirstPart( moons.get( 0 ).getFirst().getFirst() );
 
-		final BigInteger stepsX = BigInteger.valueOf(
-				cycle( first, moons, steps, Triplet::getFirst ) );
-		final BigInteger stepsY = BigInteger.valueOf(
-				cycle( first, moons, steps, Triplet::getSecond ) );
-		final BigInteger stepsZ = BigInteger.valueOf(
-				cycle( first, moons, steps, Triplet::getThird ) );
+		final List<Function<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>, Pair<Long, Long>>> getters = List
+				.of( Triplet::getFirst, Triplet::getSecond, Triplet::getThird );
+		final List<Long> results = getters.parallelStream()
+				.map( getter -> cycle( moons, pairs, steps, getter, first ) )
+				.collect( toList() );
 
 		if ( first ) {
 			return itoa( moons.stream().mapToLong( this::totalEnergy ).sum() );
 		} else {
-			//TODO speed up
+			final BigInteger stepsX = BigInteger.valueOf( results.get( 0 ) );
+			final BigInteger stepsY = BigInteger.valueOf( results.get( 1 ) );
+			final BigInteger stepsZ = BigInteger.valueOf( results.get( 2 ) );
+
 			final BigInteger lcmTwoAxis = stepsX.multiply( stepsY ).divide( stepsX.gcd( stepsY ) );
 			final BigInteger lcmThreeAxis = lcmTwoAxis.multiply( stepsZ )
 					.divide( lcmTwoAxis.gcd( stepsZ ) );
@@ -53,31 +56,33 @@ class AoC122019 implements Solution {
 		}
 	}
 
-	private long cycle( final boolean first,
+	private long cycle(
 			final List<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>> moons,
+			final Set<Set<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>>> pairs,
 			final int steps,
-			final Function<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>, Pair<Long, Long>> axisGetter ) {
+			final Function<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>, Pair<Long, Long>> axisGetter,
+			final boolean first ) {
 		int i = 0;
-		final var initialState = deepCopy( moons, axisGetter );
-		List<Pair<Long, Long>> state;
+		final var initialState = getState( moons, axisGetter, Pair::new );
 		do {
-			computeOneStep( moons, axisGetter );
-			state = moons.stream().map( axisGetter ).collect( toList() );
+			computeOneStep( moons, pairs, axisGetter );
 			i++;
-		} while ( ( first && i < steps ) || ( !first && !initialState.equals( state ) ) );
+		} while ( ( first && i < steps ) || ( !first && !initialState.equals(
+				getState( moons, axisGetter, identity() ) ) ) );
 		return i;
 	}
 
-	private List<Pair<Long, Long>> deepCopy(
+	private List<Pair<Long, Long>> getState(
 			final List<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>> moons,
-			final Function<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>, Pair<Long, Long>> axisGetter ) {
-		return moons.stream().map( axisGetter ).map( Pair::new ).collect( toList() );
+			final Function<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>, Pair<Long, Long>> axisGetter,
+			final UnaryOperator<Pair<Long, Long>> mapper ) {
+		return moons.stream().map( axisGetter ).map( mapper ).collect( toList() );
 	}
 
 	private void computeOneStep(
 			final List<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>> moons,
+			final Set<Set<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>>> pairs,
 			final Function<Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>, Pair<Long, Long>> axisGetter ) {
-		final var pairs = Sets.combinations( Set.copyOf( moons ), 2 );
 
 		for ( final var pair : pairs ) {
 			final var it = pair.iterator();
