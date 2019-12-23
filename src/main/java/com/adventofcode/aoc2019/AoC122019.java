@@ -45,6 +45,7 @@ class AoC122019 implements Solution {
 		if ( first ) {
 			return itoa( moons.stream().mapToLong( this::totalEnergy ).sum() );
 		} else {
+			//TODO speed up
 			final BigInteger lcmTwoAxis = stepsX.multiply( stepsY ).divide( stepsX.gcd( stepsY ) );
 			final BigInteger lcmThreeAxis = lcmTwoAxis.multiply( stepsZ )
 					.divide( lcmTwoAxis.gcd( stepsZ ) );
