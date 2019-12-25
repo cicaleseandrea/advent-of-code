@@ -5,14 +5,12 @@ import static com.adventofcode.Generic.Type.SECOND;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import com.adventofcode.Generic;
 import com.adventofcode.Solution;
 
-@Ignore
 @RunWith(Parameterized.class)
 public class AoC222019Test extends Generic {
 
@@ -25,11 +23,11 @@ public class AoC222019Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                { FIRST, "deal with increment 7\n" + "deal into new stack\n" + "deal into new stack", "7" },
-                { FIRST, "cut 6\n" + "deal with increment 7\n" + "deal into new stack", "6" },
+                { FIRST, "deal with increment 7\n" + "deal into new stack\n" + "deal into new stack", "3" },
+                { FIRST, "cut 6\n" + "deal with increment 7\n" + "deal into new stack", "8" },
                 { FIRST, "deal with increment 7\n" + "deal with increment 9\n" + "cut -2", "9" },
-                { FIRST, "deal into new stack\n" + "cut -2\n" + "deal with increment 7\n" + "cut 8\n" + "cut -4\n" + "deal with increment 7\n" + "cut 3\n" + "deal with increment 9\n" + "deal with increment 3\n" + "cut -1", "6" },
-                { FIRST, getInput( INSTANCE ), "" },
+                { FIRST, "deal into new stack\n" + "cut -2\n" + "deal with increment 7\n" + "cut 8\n" + "cut -4\n" + "deal with increment 7\n" + "cut 3\n" + "deal with increment 9\n" + "deal with increment 3\n" + "cut -1", "0" },
+                { FIRST, getInput( INSTANCE ), "3074" },
                 { SECOND, getInput( INSTANCE ), "" }
         });
     }
