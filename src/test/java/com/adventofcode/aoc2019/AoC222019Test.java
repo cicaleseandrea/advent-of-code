@@ -28,7 +28,11 @@ public class AoC222019Test extends Generic {
                 { FIRST, "deal with increment 7\n" + "deal with increment 9\n" + "cut -2", "9" },
                 { FIRST, "deal into new stack\n" + "cut -2\n" + "deal with increment 7\n" + "cut 8\n" + "cut -4\n" + "deal with increment 7\n" + "cut 3\n" + "deal with increment 9\n" + "deal with increment 3\n" + "cut -1", "0" },
                 { FIRST, getInput( INSTANCE ), "3074" },
-                { SECOND, getInput( INSTANCE ), "" }
+				{ SECOND, "deal with increment 7\n" + "deal into new stack\n" + "deal into new stack", "7" },
+				{ SECOND, "cut 6\n" + "deal with increment 7\n" + "deal into new stack", "6" },
+				{ SECOND, "deal with increment 7\n" + "deal with increment 9\n" + "cut -2", "9" },
+				{ SECOND, "deal into new stack\n" + "cut -2\n" + "deal with increment 7\n" + "cut 8\n" + "cut -4\n" + "deal with increment 7\n" + "cut 3\n" + "deal with increment 9\n" + "deal with increment 3\n" + "cut -1", "6" },
+				{ SECOND, getInput( INSTANCE ), "" }
         });
     }
 }
