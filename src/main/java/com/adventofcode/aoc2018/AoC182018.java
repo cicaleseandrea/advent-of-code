@@ -1,16 +1,30 @@
 package com.adventofcode.aoc2018;
 
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingByConcurrent;
+import static java.util.stream.Collectors.toUnmodifiableList;
+
+import static com.adventofcode.utils.Utils.DOT;
+import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.PIPE;
+import static com.adventofcode.utils.Utils.clearScreen;
+import static com.adventofcode.utils.Utils.itoa;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
 
-import java.util.*;
-import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.*;
-
 class AoC182018 implements Solution {
+
+	private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
 
     private static String solve(final Stream<String> input, long maxIter) {
         var curr = getInitialState(input);
@@ -19,6 +33,7 @@ class AoC182018 implements Solution {
         long iter = 0;
         //stop when you have a cycle or computed all generations
         while (prev.isEmpty() && ++iter <= maxIter) {
+			print( curr );
             final List<List<Character>> next = new ArrayList<>();
             for (int i = 0; i < curr.size(); i++) {
                 final ArrayList<Character> tmp = new ArrayList<>();
@@ -75,6 +90,23 @@ class AoC182018 implements Solution {
             default -> c;
         };
     }
+
+	private static void print( final List<List<Character>> curr ) {
+		if ( PRINT ) {
+			try {
+				clearScreen();
+				Thread.sleep( 100 );
+				for ( final var row : curr ) {
+					for ( final var cell : row ) {
+						System.out.print( cell );
+					}
+					System.out.println();
+				}
+			} catch ( InterruptedException e ) {
+				e.printStackTrace();
+			}
+		}
+	}
 
     @Override
     public String solveFirstPart(final Stream<String> input) {
