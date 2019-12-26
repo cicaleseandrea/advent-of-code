@@ -14,7 +14,7 @@ class AoC182019 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final boolean first ) {
-
+		//TODO
 		return null;
 	}
 }
