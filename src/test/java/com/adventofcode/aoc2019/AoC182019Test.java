@@ -5,14 +5,12 @@ import static com.adventofcode.Generic.Type.SECOND;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import com.adventofcode.Generic;
 import com.adventofcode.Solution;
 
-@Ignore
 @RunWith(Parameterized.class)
 public class AoC182019Test extends Generic {
 
