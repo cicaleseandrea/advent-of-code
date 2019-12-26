@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
 
+//TODO
 class AoC222019 implements Solution {
 
 	private boolean PRINT = false;
@@ -109,7 +110,6 @@ class AoC222019 implements Solution {
 				deal( extractIntegerFromString( line ) );
 			}
 		}
-
 
 		return itoa( posRes );
 	}
