@@ -32,16 +32,19 @@ You can also specify your own JDK path like this:
 `./gradlew clean test -Dorg.gradle.java.home=/path/to/java12`
 
 
-### Enable printing to `stdout`
+## Enable printing to `stdout`
 Print a representation of some puzzles to `stdout`:
 
 `./gradlew clean test -Dprint=true`
 
 
 ## Enable interactive mode
-13th December 2019 has a `main` method that enables a really basic interactive mode. Enjoy! 🕹️
+Following days have a `main` method that enables a basic interactive mode:
+- 13th December 2019
+- 25th December 2019
 
+Enjoy! 🕹️
 
-## TODO
+### TODO
 - try out Kotlin
 - move to JUnit 5
