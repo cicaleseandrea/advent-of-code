@@ -13,15 +13,15 @@ import com.adventofcode.Solution;
 
 class AoC222019 implements Solution {
 
-	private static boolean PRINT = false;
+	private boolean PRINT = false;
 
-	private static int deckSize;
-	private static int posRes;
-	private static int posHead;
-	private static boolean inverted;
-	private static int steps;
+	private long deckSize;
+	private long posRes;
+	private long posHead;
+	private boolean inverted;
+	private long steps;
 
-	private static void deal( final Integer i ) {
+	private void deal( final long i ) {
 		posRes = ( posRes * i ) % deckSize;
 
 		//TODO?
@@ -43,8 +43,10 @@ class AoC222019 implements Solution {
 
 	}
 
-	private static void cut( final Integer i ) {
+	private void cut( final long i ) {
 		posRes = decrementMod( posRes, i, deckSize );
+		//0, 3, 6, 9, 2, 5, 8, 1, 4, 7,
+		//9, 2, 5, 8, 1, 4, 7, 0, 3, 6,
 		if ( !inverted ) {
 			posHead = decrementMod( posHead, -i * steps, deckSize );
 		} else {
@@ -53,8 +55,10 @@ class AoC222019 implements Solution {
 		print();
 	}
 
-	private static void invert() {
-		posRes = ( deckSize - 1 ) - posRes;
+	private void invert() {
+		posRes = decrementMod( -posRes, 1, deckSize );
+		//0, 3, 6, 9, 2, 5, 8, 1, 4, 7,
+
 		inverted = !inverted;
 		if ( !inverted ) {
 			posHead = decrementMod( posHead, -steps, deckSize );
@@ -64,9 +68,9 @@ class AoC222019 implements Solution {
 		print();
 	}
 
-	private static void print() {
+	private void print() {
 		if ( PRINT ) {
-			int e = posHead;
+			long e = posHead;
 			System.out.println( "RES: " + posRes );
 			System.out.println( "steps: " + steps + " inverted: " + inverted );
 			for ( int i = 0; i < deckSize; i++ ) {
@@ -91,7 +95,7 @@ class AoC222019 implements Solution {
 
 	private String solve( final Stream<String> input, final boolean first ) {
 		final List<String> lines = input.collect( toList() );
-		deckSize = lines.size() < 20 ? 10 : 10007;
+		deckSize = lines.size() < 20 ? 10 : first ? 10007 : 119315717514047L;
 		posRes = lines.size() < 20 ? 9 : 2019;
 		posHead = 0;
 		inverted = false;
