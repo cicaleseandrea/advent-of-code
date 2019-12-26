@@ -23,6 +23,7 @@ class AoC242019 implements Solution {
 		return solve( input, true );
 	}
 
+	//TODO
 	public String solveSecondPart( final Stream<String> input ) {
 		return solve( input, false );
 	}
