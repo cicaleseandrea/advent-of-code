@@ -43,7 +43,6 @@ class AoC202019 implements Solution {
 			final Multimap<Pair<Long, Long>, Pair<Pair<Long, Long>, Long>> edges,
 			final Pair<Pair<Long, Long>, Long> src, final Pair<Pair<Long, Long>, Long> dst ) {
 		//BFS to find shortest path (unweighted graphs, no need for Dijkstra)
-		//TODO try A* with heuristic=manhattan distance to speed up?
 		final Queue<Pair<Pair<Long, Long>, Long>> queue = new LinkedList<>();
 		final Map<Pair<Pair<Long, Long>, Long>, Long> distances = new HashMap<>();
 		//start from source
