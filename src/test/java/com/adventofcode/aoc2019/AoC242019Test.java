@@ -30,13 +30,7 @@ public class AoC242019Test extends Generic {
                     "..#..\n" +
                     "#....", "2129920" },
                 { FIRST, getInput( INSTANCE ), "32776479" },
-                { SECOND,
-                    "....#\n" +
-                    "#..#.\n" +
-                    "#..##\n" +
-                    "..#..\n" +
-                    "#....", "99" },
-                { SECOND, getInput( INSTANCE ), "" }
+                { SECOND, getInput( INSTANCE ), "2017" }
         });
     }
 }
