@@ -14,82 +14,87 @@ import com.adventofcode.Solution;
 
 class AoC222019 implements Solution {
 
-	private BigInteger deckSize;
-	private BigInteger positionResult;
-	private BigInteger head;
-	private BigInteger increment;
+	private BigInteger cardPosition; //tracks the position of a specific card (handy for part 1, but not necessary)
 
-	private void deal( final BigInteger n ) {
+	//full representation of the deck at any moment in time
+	private BigInteger top; //the card on top of the deck
+	private BigInteger increment; //the difference between two consecutive cards
+	private BigInteger deckSize;
+
+	private void dealIncrement( final BigInteger n ) {
 		//the position of a card is multiplied by n
-		positionResult = positionResult.multiply( n ).mod( deckSize );
+		cardPosition = cardPosition.multiply( n ).mod( deckSize );
 
 		//from here: https://www.reddit.com/r/adventofcode/comments/ee0rqi/2019_day_22_solutions/fbnkaju/
 		//after "deal n", the ith card becomes the i*nth card
 		//card at position 1 after "deal n", was at position 1/n before "deal n"
 		//using our two variables to describe its position, that card moved
 		//from:
-		//head + old_increment/n
+		//top + old_increment/n
 		//to:
-		//head + new_increment
+		//top + new_increment
 		//which means that increment changed like this:
-		//increment = (increment/n) % size
+		//increment = increment/n
 		increment = increment.multiply( n.modInverse( deckSize ) );
 
-		//head is unchanged
+		//top is unchanged
 	}
 
 	private void cut( final BigInteger n ) {
 		//the position of a card is shifted by n
-		positionResult = positionResult.subtract( n ).mod( deckSize );
+		cardPosition = cardPosition.subtract( n ).mod( deckSize );
 
-		//card at position n becomes new head
-		head = getCardAtPosition( head, increment, n );
+		//card at position n goes on top of the deck
+		top = getCardAtPosition( top, increment, n );
 
 		//increment is unchanged
 	}
 
-	private void invert() {
+	private void dealNew() {
 		//the position of a card is mirrored with respect to the middle
-		positionResult = positionResult.add( BigInteger.ONE ).negate().mod( deckSize );
+		cardPosition = cardPosition.add( BigInteger.ONE ).negate().mod( deckSize );
 
-		//last card (position -1) becomes new head
-		head = getCardAtPosition( head, increment, BigInteger.ONE.negate() );
+		//last card (position - 1) goes on top of the deck
+		top = getCardAtPosition( top, increment, BigInteger.ONE.negate() );
 
-		//increment is inverted
+		//increment is negated so that deck direction is inverted
 		increment = increment.negate();
 	}
 
-	private BigInteger getCardAtPosition( final BigInteger head, final BigInteger increment,
+	private BigInteger getCardAtPosition( final BigInteger top, final BigInteger increment,
 			final BigInteger position ) {
-		return head.add( increment.multiply( position ) ).mod( deckSize );
+		//count "position" cards starting from top and moving by increment
+		return top.add( increment.multiply( position ) ).mod( deckSize );
 	}
 
 	public String solveFirstPart( final Stream<String> input ) {
-		return solve( input, true, () -> itoa( positionResult ) );
+		//we tracked the position of the specific card we wanted
+		//(we could also remove that variable and just look for that card in the current deck)
+		return solve( input, true, () -> itoa( cardPosition ) );
 	}
 
 	public String solveSecondPart( final Stream<String> input ) {
 		return solve( input, false, () -> {
-			//starting from increment and head that are the result of one shuffle
-			//calculate increment and head as a result of many shuffles
+			//starting from increment and top that are the result of one shuffle
+			//calculate increment and top as a result of many shuffles
 			final BigInteger shuffles = BigInteger.valueOf( 101741582076661L );
 
 			//after each shuffle, increment is just multiplied by some constant number
-			//incrementShuffles = increment * increment * increment ... * increment (shuffles times)
+			//incrementShuffles = 1 * increment_const * increment_const * increment_const ... * increment_const (shuffles times)
 			final BigInteger incrementShuffles = increment.modPow( shuffles, deckSize );
 
 			//from here: https://www.reddit.com/r/adventofcode/comments/ee0rqi/2019_day_22_solutions/fbnkaju/
-			//after each shuffle, head is incremented by some constant multiple of the current increment
-			//headShuffles = head*(increment before any shuffle) + head*(increment after 1 shuffle) + head*(increment after 2 shuffles) + ... + head*(increment after shuffles-1 shuffles)
-			//headShuffles = head*1 + head*increment + head*increment^2 + ... + head*increment^(shuffles-1)
-			//headShuffles = head * (1 + increment + increment^2 + ... + increment^(shuffles-1))
+			//after each shuffle, top is incremented by some constant multiple of the increment at the beginning of the shuffle
+			//topShuffles = 0 + top_const*(increment before any shuffle) + top_const*(increment after 1 shuffle) + top_const*(increment after 2 shuffles) + ... + top_const*(increment after shuffles-1 shuffles)
+			//topShuffles = 0 + top_const*1 + top_const*increment_const + top_const*increment_const^2 + ... + top_const*increment_const^(shuffles-1)
+			//topShuffles = top_const * (1 + increment_const + increment_const^2 + ... + increment_const^(shuffles-1))
 			//using geometric series:
-			//headShuffles = head * (1 - increment^shuffles) / (1 - increment)
-			final BigInteger headShuffles = head.multiply(
+			//topShuffles = top_const * (1 - increment_const^shuffles) / (1 - increment_const)
+			final BigInteger topShuffles = top.multiply(
 					BigInteger.ONE.subtract( incrementShuffles ) )
 					.multiply( BigInteger.ONE.subtract( increment ).modInverse( deckSize ) )
 					.mod( deckSize );
-			return getCardAtPosition( headShuffles, incrementShuffles,
+			return getCardAtPosition( topShuffles, incrementShuffles,
 					BigInteger.valueOf( 2020 ) ).toString();
 		} );
 	}
@@ -97,18 +102,18 @@ class AoC222019 implements Solution {
 	private String solve( final Stream<String> input, final boolean first,
 			final Supplier<String> computeResult ) {
 		final List<String> lines = input.collect( toList() );
-		deckSize = lines.size() < 20 ? BigInteger.TEN : first ? BigInteger.valueOf(
-				10007 ) : BigInteger.valueOf( 119315717514047L );
-		positionResult = lines.size() < 20 ? BigInteger.valueOf( 9 ) : BigInteger.valueOf( 2019 );
-		head = BigInteger.ZERO;
+		deckSize = ( lines.size() < 20 ) ? BigInteger.TEN : ( first ? BigInteger.valueOf(
+				10007 ) : BigInteger.valueOf( 119315717514047L ) );
+		cardPosition = lines.size() < 20 ? BigInteger.valueOf( 9 ) : BigInteger.valueOf( 2019 );
+		top = BigInteger.ZERO;
 		increment = BigInteger.ONE;
 		for ( final String line : lines ) {
 			if ( line.startsWith( "cut" ) ) {
 				cut( BigInteger.valueOf( extractIntegerFromString( line ) ) );
-			} else if ( line.startsWith( "deal into" ) ) {
-				invert();
+			} else if ( line.startsWith( "deal with increment" ) ) {
+				dealIncrement( BigInteger.valueOf( extractIntegerFromString( line ) ) );
 			} else {
-				deal( BigInteger.valueOf( extractIntegerFromString( line ) ) );
+				dealNew();
 			}
 		}
 
