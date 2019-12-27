@@ -20,6 +20,7 @@ class AoC222019 implements Solution {
 	private BigInteger increment;
 
 	private void deal( final BigInteger n ) {
+		//the position of a card is multiplied by n
 		positionResult = positionResult.multiply( n ).mod( deckSize );
 
 		//from here: https://www.reddit.com/r/adventofcode/comments/ee0rqi/2019_day_22_solutions/fbnkaju/
@@ -33,18 +34,28 @@ class AoC222019 implements Solution {
 		//which means that increment changed like this:
 		//increment = (increment/n) % size
 		increment = increment.multiply( n.modInverse( deckSize ) );
+
+		//head is unchanged
 	}
 
 	private void cut( final BigInteger n ) {
+		//the position of a card is shifted by n
 		positionResult = positionResult.subtract( n ).mod( deckSize );
 
+		//card at position n becomes new head
 		head = getCardAtPosition( head, increment, n );
+
+		//increment is unchanged
 	}
 
 	private void invert() {
+		//the position of a card is mirrored with respect to the middle
 		positionResult = positionResult.add( BigInteger.ONE ).negate().mod( deckSize );
 
+		//last card (position -1) becomes new head
 		head = getCardAtPosition( head, increment, BigInteger.ONE.negate() );
+
+		//increment is inverted
 		increment = increment.negate();
 	}
 
