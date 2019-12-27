@@ -38,14 +38,14 @@ class AoC222019 implements Solution {
 	private void cut( final BigInteger n ) {
 		positionResult = positionResult.subtract( n ).mod( deckSize );
 
-		head = head.add( increment.multiply( n ) ).mod( deckSize );
+		head = getCardAtPosition( head, increment, n );
 	}
 
 	private void invert() {
 		positionResult = positionResult.add( BigInteger.ONE ).negate().mod( deckSize );
 
+		head = getCardAtPosition( head, increment, BigInteger.ONE.negate() );
 		increment = increment.negate();
-		head = head.add( increment ).mod( deckSize );
 	}
 
 	private BigInteger getCardAtPosition( final BigInteger head, final BigInteger increment,
