@@ -2,6 +2,7 @@ package com.adventofcode.aoc2019;
 
 import static java.lang.Character.isDigit;
 import static java.util.Collections.emptyIterator;
+import static java.util.stream.Collectors.toCollection;
 
 import static com.adventofcode.utils.Utils.MERRY_CHRISTMAS;
 import static com.adventofcode.utils.Utils.getFirstString;
@@ -10,8 +11,10 @@ import static com.adventofcode.utils.Utils.toLongList;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
@@ -26,7 +29,7 @@ import com.adventofcode.utils.Computer2019;
 class AoC252019 implements Solution {
 
 	private static boolean INTERACTIVE = false;
-	private static final List<String> blacklist = List.of( "escape pod", "photons",
+	private static final List<String> BLACKLIST = List.of( "escape pod", "photons",
 			"giant electromagnet", "molten lava", "infinite loop" );
 
 	public String solveSecondPart( final Stream<String> input ) {
@@ -45,8 +48,8 @@ class AoC252019 implements Solution {
 
 		enableGameEnd( out, future );
 
-		final Iterator<String> instructions = INTERACTIVE ? emptyIterator() : getSolution().iterator();
-		return playGame( in, out, instructions, future );
+		final List<String> instructions = INTERACTIVE ? new ArrayList<>() : getSolution();
+		return playGame( in, out, instructions.iterator(), future );
 	}
 
 	private void enableGameEnd( final BlockingQueue<Long> out, final Future<?> future ) {
@@ -63,17 +66,22 @@ class AoC252019 implements Solution {
 		} ).start();
 	}
 
-	private List<String> getSolution() {
+	private static List<String> getSolution() {
 		//TODO this only works for my input...
-		return List.of( "east\n", "east\n", "east\n", "take shell\n", "west\n", "south\n",
+		return Stream.of( "east\n", "east\n", "east\n", "take shell\n", "west\n", "south\n",
 				"take monolith\n", "north\n", "west\n", "north\n", "north\n", "take planetoid\n",
 				"east\n", "take cake\n", "north\n", "south\n", "south\n", "west\n", "west\n",
 				"east\n", "north\n", "take astrolabe\n", "west\n", "east\n", "south\n", "east\n",
 				"north\n", "west\n", "west\n", "take ornament\n", "west\n", "east\n", "south\n",
 				"south\n", "take fuel cell\n", "north\n", "north\n", "east\n", "south\n", "west\n",
 				"take bowl of rice\n", "east\n", "north\n", "east\n", "south\n", "west\n",
-				"north\n", "west\n", "drop bowl of rice\n", "drop shell\n", "drop ornament\n",
-				"drop cake\n", "north\n" );
+				"north\n", "west\n" ).collect( toCollection( ArrayList::new ) );
+	}
+
+	private static List<String> getAllItems() {
+		//TODO this only works for my input...
+		return List.of( "monolith", "bowl of rice", "ornament", "shell", "astrolabe", "planetoid",
+				"fuel cell", "cake" );
 	}
 
 	private void enableInteractiveMode( final BlockingQueue<Long> in, final Future<?> future ) {
@@ -100,6 +108,9 @@ class AoC252019 implements Solution {
 			final Iterator<String> instructions, final Future<?> future ) {
 		final StringBuilder word = new StringBuilder();
 		final StringBuilder password = new StringBuilder();
+		boolean securityCheckpoint = false;
+		final Inventory inventory = new Inventory();
+		Iterator<String> items = emptyIterator();
 		while ( !future.isDone() ) {
 			try {
 				final long current = out.take();
@@ -114,13 +125,15 @@ class AoC252019 implements Solution {
 				} else {
 					word.append( c );
 				}
-				if ( word.toString().equals( "Command?" ) && instructions.hasNext() ) {
-					final String instruction = instructions.next();
-					if ( INTERACTIVE ) {
-						System.out.println();
-						System.out.print( instruction );
-					}
-					sendInstruction( in, instruction );
+				if ( !securityCheckpoint && word.toString().equals( "identity." ) ) {
+					securityCheckpoint = true;
+					getAllItems().forEach( inventory::add );
+					items = inventory.iterator();
+				}
+				if ( word.toString()
+						.equals(
+								"Command?" ) && ( !INTERACTIVE && ( instructions.hasNext() || securityCheckpoint ) ) ) {
+					sendAutomaticInstruction( in, instructions, items );
 				}
 			} catch ( InterruptedException e ) {
 				e.printStackTrace();
@@ -128,6 +141,83 @@ class AoC252019 implements Solution {
 		}
 
 		return password.toString();
+	}
+
+	private void sendAutomaticInstruction( final BlockingQueue<Long> in,
+			final Iterator<String> instructions, final Iterator<String> inventory ) {
+		final String instruction;
+		if ( instructions.hasNext() ) {
+			instruction = instructions.next();
+		} else {
+			instruction = inventory.next();
+		}
+		if ( INTERACTIVE ) {
+			System.out.println();
+			System.out.print( instruction );
+		}
+		sendInstruction( in, instruction );
+	}
+
+	private static class Inventory implements Iterable<String> {
+
+		private final List<String> ALL_ITEMS = new ArrayList<>();
+
+		private void add( final String item ) {
+			ALL_ITEMS.add( item );
+		}
+
+		@Override
+		public Iterator<String> iterator() {
+			return new Iterator<>() {
+				private int i = -1;
+				private boolean move = true;
+				private boolean initialize = true;
+
+				@Override
+				public boolean hasNext() {
+					return i < Math.pow( 2, ALL_ITEMS.size() );
+				}
+
+				@Override
+				public String next() {
+					if ( !hasNext() ) {
+						throw new NoSuchElementException();
+					} else if ( initialize ) {
+						i++;
+						if ( i < ALL_ITEMS.size() ) {
+							return itemInstruction( "drop", ALL_ITEMS.get( i ) );
+						} else {
+							initialize = false;
+							i = 1;
+						}
+					} else if ( move = !move ) {
+						return "north\n";
+					} else {
+						i++;
+					}
+
+					//Using Gray Code to cycle through states by only dropping or taking one item at a time
+					//https://en.wikipedia.org/wiki/Gray_code#Constructing_an_n-bit_Gray_code
+					//Using https://oeis.org/A007814 (http://mathworld.wolfram.com/BinaryCarrySequence.html) to find which bit to flip next
+					final int position = Integer.numberOfTrailingZeros( i );
+					final String item = ALL_ITEMS.get( position );
+					final int gray = i ^ ( i >> 1 );
+					final int bitFlipped = 1 << position;
+					final boolean drop = ( gray & bitFlipped ) == 0;
+					final String instruction;
+					if ( drop ) {
+						instruction = itemInstruction( "drop", item );
+					} else {
+						instruction = itemInstruction( "take", item );
+					}
+					return instruction;
+				}
+
+				private String itemInstruction( final String action, final String item ) {
+					return action + " " + item + "\n";
+				}
+			};
+		}
 	}
 
 	public static void main( String[] args ) throws IOException {
