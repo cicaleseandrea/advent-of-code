@@ -1,9 +1,9 @@
 package com.adventofcode.aoc2019;
 
-import static java.lang.Character.isDigit;
 import static java.util.Collections.emptyIterator;
 import static java.util.stream.Collectors.toCollection;
 
+import static com.adventofcode.utils.Utils.EMPTY;
 import static com.adventofcode.utils.Utils.MERRY_CHRISTMAS;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.toLongList;
@@ -29,6 +29,7 @@ import com.adventofcode.utils.Computer2019;
 class AoC252019 implements Solution {
 
 	private static boolean INTERACTIVE = false;
+	private static boolean SOLVE = true;
 	private static final List<String> BLACKLIST = List.of( "escape pod", "photons",
 			"giant electromagnet", "molten lava", "infinite loop" );
 
@@ -48,8 +49,8 @@ class AoC252019 implements Solution {
 
 		enableGameEnd( out, future );
 
-		final List<String> instructions = INTERACTIVE ? new ArrayList<>() : getSolution();
-		return playGame( in, out, instructions.iterator(), future );
+		final List<String> steps = SOLVE ? getSteps() : new ArrayList<>();
+		return playGame( in, out, steps.iterator(), future );
 	}
 
 	private void enableGameEnd( final BlockingQueue<Long> out, final Future<?> future ) {
@@ -66,7 +67,7 @@ class AoC252019 implements Solution {
 		} ).start();
 	}
 
-	private static List<String> getSolution() {
+	private static List<String> getSteps() {
 		//TODO this only works for my input...
 		return Stream.of( "east\n", "east\n", "east\n", "take shell\n", "west\n", "south\n",
 				"take monolith\n", "north\n", "west\n", "north\n", "north\n", "take planetoid\n",
@@ -76,12 +77,6 @@ class AoC252019 implements Solution {
 				"south\n", "take fuel cell\n", "north\n", "north\n", "east\n", "south\n", "west\n",
 				"take bowl of rice\n", "east\n", "north\n", "east\n", "south\n", "west\n",
 				"north\n", "west\n" ).collect( toCollection( ArrayList::new ) );
-	}
-
-	private static List<String> getAllItems() {
-		//TODO this only works for my input...
-		return List.of( "monolith", "bowl of rice", "ornament", "shell", "astrolabe", "planetoid",
-				"fuel cell", "cake" );
 	}
 
 	private void enableInteractiveMode( final BlockingQueue<Long> in, final Future<?> future ) {
@@ -105,49 +100,77 @@ class AoC252019 implements Solution {
 	}
 
 	private String playGame( final BlockingQueue<Long> in, final BlockingQueue<Long> out,
-			final Iterator<String> instructions, final Future<?> future ) {
-		final StringBuilder word = new StringBuilder();
-		final StringBuilder password = new StringBuilder();
-		boolean securityCheckpoint = false;
+			final Iterator<String> steps, final Future<?> future ) {
+		final StringBuilder line = new StringBuilder();
 		final Inventory inventory = new Inventory();
 		Iterator<String> items = emptyIterator();
-		while ( !future.isDone() ) {
+		String password = EMPTY;
+		boolean securityCheckpoint = false;
+		boolean collect = false;
+		while ( !future.isDone() || !out.isEmpty() ) {
 			try {
-				final long current = out.take();
-				final char c = (char) current;
+				final char c = (char) out.take().longValue();
 				if ( INTERACTIVE ) {
 					System.out.print( c );
 				}
-				if ( isDigit( c ) && word.length() == 0 ) {
-					password.append( c );
-				} else if ( c == ' ' || c == '\n' ) {
-					word.setLength( 0 );
+
+				final String lineStr = line.toString();
+				if ( c == '\n' ) {
+					collect = collectItem( collect, lineStr, inventory, steps );
+					final String tmp = getPassword( lineStr );
+					if ( !tmp.equals( EMPTY ) ) {
+						password = tmp;
+					}
+					line.setLength( 0 );
 				} else {
-					word.append( c );
+					line.append( c );
 				}
-				if ( !securityCheckpoint && word.toString().equals( "identity." ) ) {
+
+				if ( !securityCheckpoint && lineStr.endsWith( "identity." ) ) {
 					securityCheckpoint = true;
-					getAllItems().forEach( inventory::add );
 					items = inventory.iterator();
 				}
-				if ( word.toString()
-						.equals(
-								"Command?" ) && ( !INTERACTIVE && ( instructions.hasNext() || securityCheckpoint ) ) ) {
-					sendAutomaticInstruction( in, instructions, items );
+
+				if ( SOLVE && lineStr.endsWith(
+						"Command?" ) && ( steps.hasNext() || items.hasNext() ) ) {
+					sendAutomaticInstruction( in, steps, items );
 				}
+
 			} catch ( InterruptedException e ) {
 				e.printStackTrace();
 			}
 		}
 
-		return password.toString();
+		return password;
+	}
+
+	private boolean collectItem( boolean collect, final String lineStr, final Inventory inventory,
+			final Iterator<String> steps ) {
+		if ( collect && lineStr.startsWith( "-" ) ) {
+			final String item = lineStr.replaceFirst( "- ", "" );
+			if ( !BLACKLIST.contains( item ) ) {
+				inventory.add( item );
+			}
+		} else {
+			collect = lineStr.equals( "Items here:" ) && steps.hasNext();
+		}
+		return collect;
+	}
+
+	private String getPassword( final String lineStr ) {
+		String password = EMPTY;
+		final List<Long> numbers = toLongList( lineStr );
+		if ( !numbers.isEmpty() ) {
+			password = numbers.get( 0 ).toString();
+		}
+		return password;
 	}
 
 	private void sendAutomaticInstruction( final BlockingQueue<Long> in,
-			final Iterator<String> instructions, final Iterator<String> inventory ) {
+			final Iterator<String> steps, final Iterator<String> inventory ) {
 		final String instruction;
-		if ( instructions.hasNext() ) {
-			instruction = instructions.next();
+		if ( steps.hasNext() ) {
+			instruction = steps.next();
 		} else {
 			instruction = inventory.next();
 		}
