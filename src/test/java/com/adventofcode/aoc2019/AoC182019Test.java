@@ -56,9 +56,24 @@ public class AoC182019Test extends Generic {
                     "###A#B#C################\n" +
                     "###g#h#i################\n" +
                     "########################", "81" },
-                { FIRST, getInput( INSTANCE ), "" },
-                { SECOND, "", "" },
-                { SECOND, getInput( INSTANCE ), "" }
+                { FIRST, getInput( INSTANCE ), "5392" },
+                { SECOND,
+                    "#######\n" +
+                    "#a.#Cd#\n" +
+                    "##...##\n" +
+                    "##.@.##\n" +
+                    "##...##\n" +
+                    "#cB#Ab#\n" +
+                    "#######", "8" },
+                { SECOND,
+                    "###############\n" +
+                    "#d.ABC.#.....a#\n" +
+                    "######...######\n" +
+                    "######.@.######\n" +
+                    "######...######\n" +
+                    "#b.....#.....c#\n" +
+                    "###############", "24" },
+                { SECOND, getInput( INSTANCE ), "1684" }
         });
     }
 }
