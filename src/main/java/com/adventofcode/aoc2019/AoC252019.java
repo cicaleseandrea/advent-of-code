@@ -144,17 +144,17 @@ class AoC252019 implements Solution {
 		return password;
 	}
 
-	private boolean collectItem( boolean collect, final String lineStr, final Inventory inventory,
-			final Iterator<String> steps ) {
+	private boolean collectItem( final boolean collect, final String lineStr,
+			final Inventory inventory, final Iterator<String> steps ) {
 		if ( collect && lineStr.startsWith( "-" ) ) {
 			final String item = lineStr.replaceFirst( "- ", "" );
 			if ( !BLACKLIST.contains( item ) ) {
 				inventory.add( item );
 			}
+			return true;
 		} else {
-			collect = lineStr.equals( "Items here:" ) && steps.hasNext();
+			return lineStr.equals( "Items here:" ) && steps.hasNext();
 		}
-		return collect;
 	}
 
 	private String getPassword( final String lineStr ) {
@@ -213,10 +213,13 @@ class AoC252019 implements Solution {
 							initialize = false;
 							i = 1;
 						}
-					} else if ( move = !move ) {
-						return "north\n";
 					} else {
-						i++;
+						move = !move;
+						if ( move ) {
+							return "north\n";
+						} else {
+							i++;
+						}
 					}
 
 					//Using Gray Code to cycle through states by only dropping or taking one item at a time
@@ -245,6 +248,7 @@ class AoC252019 implements Solution {
 
 	public static void main( String[] args ) throws IOException {
 		INTERACTIVE = true;
+		SOLVE = false;
 		new AoC252019().solveFirstPart( Files.lines(
 				Path.of( "src", "test", "resources", "com.adventofcode.aoc2019",
 						"AoC252019.txt" ) ) );
