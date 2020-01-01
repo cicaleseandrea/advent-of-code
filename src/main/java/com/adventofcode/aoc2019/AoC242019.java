@@ -166,7 +166,7 @@ class AoC242019 implements Solution {
 		return switch ( c ) {
 			case HASH -> bugs == 1 ? HASH : DOT;
 			case DOT -> bugs == 1 || bugs == 2 ? HASH : DOT;
-			default -> c;
+			default -> throw new IllegalArgumentException();
 		};
 	}
 
