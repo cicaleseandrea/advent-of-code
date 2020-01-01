@@ -217,14 +217,10 @@ class AoC172019 implements Solution {
 
 	private boolean isIntersection( final Pair<Long, Long> point,
 			final Map<Pair<Long, Long>, Character> grid ) {
-
-		final var neighbours = List.of( point,
-				new Pair<>( point.getFirst() - 1, point.getSecond() ),
+		return Stream.of( point, new Pair<>( point.getFirst() - 1, point.getSecond() ),
 				new Pair<>( point.getFirst() + 1, point.getSecond() ),
 				new Pair<>( point.getFirst(), point.getSecond() - 1 ),
-				new Pair<>( point.getFirst(), point.getSecond() + 1 ) );
-
-		return neighbours.stream()
+				new Pair<>( point.getFirst(), point.getSecond() + 1 ) )
 				.map( p -> grid.getOrDefault( p, DOT ) )
 				.filter( c -> c != HASH )
 				.findAny()
