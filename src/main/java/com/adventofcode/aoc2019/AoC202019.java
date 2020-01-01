@@ -1,13 +1,13 @@
 package com.adventofcode.aoc2019;
 
 import static java.lang.Character.isLetter;
+import static java.util.stream.Collectors.toList;
 
 import static com.adventofcode.utils.Pair.ZERO;
 import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.itoa;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,8 +75,8 @@ class AoC202019 implements Solution {
 	}
 
 	private Multimap<Pair<Long, Long>, Pair<Pair<Long, Long>, Long>> initialize(
-			final Stream<String> input, final boolean first,
-			final Pair<Pair<Long, Long>, Long> src, final Pair<Pair<Long, Long>, Long> dst ) {
+			final Stream<String> input, final boolean first, final Pair<Pair<Long, Long>, Long> src,
+			final Pair<Pair<Long, Long>, Long> dst ) {
 
 		final Map<Pair<Long, Long>, Character> map = initializeMap( input );
 
@@ -163,32 +163,18 @@ class AoC202019 implements Solution {
 
 	private String getPortalName( final Map<Pair<Long, Long>, Character> map,
 			final Pair<Long, Long> pos, final Character c ) {
+		final Stream<String> a = Stream.of( new Pair<>( pos.getFirst() + 1, pos.getSecond() ),
+				new Pair<>( pos.getFirst(), pos.getSecond() + 1 ) )
+				.filter( n -> isPortal( n, map ) )
+				.map( map::get )
+				.map( n -> concat( c, n ) );
+		final Stream<String> b = Stream.of( new Pair<>( pos.getFirst() - 1, pos.getSecond() ),
+				new Pair<>( pos.getFirst(), pos.getSecond() - 1 ) )
+				.filter( n -> isPortal( n, map ) )
+				.map( map::get )
+				.map( n -> concat( n, c ) );
 
-		var n = new Pair<>( pos );
-
-		n.setFirst( pos.getFirst() + 1 );
-		if ( isPortal( map, n ) ) {
-			return concat( c, map.get( n ) );
-		}
-
-		n.setFirst( pos.getFirst() - 1 );
-		if ( isPortal( map, n ) ) {
-			return concat( map.get( n ), c );
-		}
-
-		n.setFirst( pos.getFirst() );
-
-		n.setSecond( pos.getSecond() + 1 );
-		if ( isPortal( map, n ) ) {
-			return concat( c, map.get( n ) );
-		}
-
-		n.setSecond( pos.getSecond() - 1 );
-		if ( isPortal( map, n ) ) {
-			return concat( map.get( n ), c );
-		}
-
-		throw new IllegalStateException();
+		return Stream.concat( a, b ).findFirst().orElseThrow();
 	}
 
 	private String concat( final Character a, final Character b ) {
@@ -198,42 +184,20 @@ class AoC202019 implements Solution {
 	private List<Pair<Long, Long>> computeNeighbours( final Pair<Long, Long> pos,
 			final Map<Pair<Long, Long>, Character> map ) {
 		//add all the adjacent cells that can be reached
-		final List<Pair<Long, Long>> neighbours = new ArrayList<>();
-
-		var n = new Pair<>( pos );
-
-		n.setFirst( pos.getFirst() + 1 );
-		if ( isCell( map, n ) ) {
-			neighbours.add( new Pair<>( n ) );
-		}
-
-		n.setFirst( pos.getFirst() - 1 );
-		if ( isCell( map, n ) ) {
-			neighbours.add( new Pair<>( n ) );
-		}
-
-		n.setFirst( pos.getFirst() );
-
-		n.setSecond( pos.getSecond() + 1 );
-		if ( isCell( map, n ) ) {
-			neighbours.add( new Pair<>( n ) );
-		}
-
-		n.setSecond( pos.getSecond() - 1 );
-		if ( isCell( map, n ) ) {
-			neighbours.add( new Pair<>( n ) );
-		}
-
-		return neighbours;
+		return Stream.of( new Pair<>( pos.getFirst() + 1, pos.getSecond() ),
+				new Pair<>( pos.getFirst() - 1, pos.getSecond() ),
+				new Pair<>( pos.getFirst(), pos.getSecond() - 1 ),
+				new Pair<>( pos.getFirst(), pos.getSecond() + 1 ) )
+				.filter( n -> isCell( n, map ) )
+				.collect( toList() );
 	}
 
-	private boolean isCell( final Map<Pair<Long, Long>, Character> map,
-			final Pair<Long, Long> n ) {
+	private boolean isCell( final Pair<Long, Long> n, final Map<Pair<Long, Long>, Character> map ) {
 		return map.getOrDefault( n, HASH ) == DOT;
 	}
 
-	private boolean isPortal( final Map<Pair<Long, Long>, Character> map,
-			final Pair<Long, Long> n ) {
+	private boolean isPortal( final Pair<Long, Long> n,
+			final Map<Pair<Long, Long>, Character> map ) {
 		return isLetter( map.getOrDefault( n, HASH ) );
 	}
 }
