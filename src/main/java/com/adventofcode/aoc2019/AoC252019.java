@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -195,6 +196,7 @@ class AoC252019 implements Solution {
 				private int i = -1;
 				private boolean move = true;
 				private boolean initialize = true;
+				private final BitSet ITEMS = new BitSet( ALL_ITEMS.size() );
 
 				@Override
 				public boolean hasNext() {
@@ -227,14 +229,12 @@ class AoC252019 implements Solution {
 					//Using https://oeis.org/A007814 (http://mathworld.wolfram.com/BinaryCarrySequence.html) to find which bit to flip next
 					final int position = Integer.numberOfTrailingZeros( i );
 					final String item = ALL_ITEMS.get( position );
-					final int gray = i ^ ( i >> 1 );
-					final int bitFlipped = 1 << position;
-					final boolean drop = ( gray & bitFlipped ) == 0;
+					ITEMS.flip( position );
 					final String instruction;
-					if ( drop ) {
-						instruction = itemInstruction( "drop", item );
-					} else {
+					if ( ITEMS.get( position ) ) {
 						instruction = itemInstruction( "take", item );
+					} else {
+						instruction = itemInstruction( "drop", item );
 					}
 					return instruction;
 				}
