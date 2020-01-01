@@ -4,21 +4,19 @@ import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
 import static java.lang.Character.toLowerCase;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 import static com.adventofcode.utils.Utils.AT;
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.itoa;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.Set;
 import java.util.function.LongPredicate;
 import java.util.stream.Stream;
 
@@ -36,8 +34,8 @@ class AoC182019 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final boolean first ) {
-		final List<Pair<Pair<Long, Long>, Set<Character>>> sources = new ArrayList<>();
-		final Set<Character> dst = new HashSet<>();
+		final List<Pair<Pair<Long, Long>, BitSet>> sources = new ArrayList<>();
+		final BitSet dst = new BitSet( 26 );
 		final var map = initialize( input, sources, dst, first );
 		long res = 0;
 		for ( final var src : sources ) {
@@ -48,10 +46,10 @@ class AoC182019 implements Solution {
 	}
 
 	private long computeDistance( final Map<Pair<Long, Long>, Character> map,
-			final Pair<Pair<Long, Long>, Set<Character>> src, final Set<Character> dst ) {
+			final Pair<Pair<Long, Long>, BitSet> src, final BitSet dst ) {
 		//BFS to find shortest path (unweighted graphs, no need for Dijkstra)
-		final Queue<Pair<Pair<Long, Long>, Set<Character>>> queue = new LinkedList<>();
-		final Map<Pair<Pair<Long, Long>, Set<Character>>, Long> distances = new HashMap<>();
+		final Queue<Pair<Pair<Long, Long>, BitSet>> queue = new LinkedList<>();
+		final Map<Pair<Pair<Long, Long>, BitSet>, Long> distances = new HashMap<>();
 		//start from source
 		queue.add( src );
 		distances.put( src, 0L );
@@ -75,7 +73,7 @@ class AoC182019 implements Solution {
 	}
 
 	private Map<Pair<Long, Long>, Character> initialize( final Stream<String> input,
-			final List<Pair<Pair<Long, Long>, Set<Character>>> src, final Set<Character> dst,
+			final List<Pair<Pair<Long, Long>, BitSet>> src, final BitSet dst,
 			final boolean first ) {
 
 		final Map<Pair<Long, Long>, Character> map = new HashMap<>();
@@ -85,7 +83,7 @@ class AoC182019 implements Solution {
 			for ( final Character c : line.toCharArray() ) {
 				if ( c == AT ) {
 					src.add( new Pair<>( new Pair<>( curr.getFirst(), curr.getSecond() ),
-							new HashSet<>() ) );
+							new BitSet() ) );
 				}
 				map.put( new Pair<>( curr.getFirst(), curr.getSecond() ), c );
 				curr.setFirst( curr.getFirst() + 1 );
@@ -93,7 +91,7 @@ class AoC182019 implements Solution {
 			curr.setSecond( curr.getSecond() + 1 );
 		} );
 
-		dst.addAll( allKeys( map ) );
+		dst.or( allKeys( map ) );
 
 		//split map in 4 sections. consider keys in other section as already taken
 		if ( !first ) {
@@ -107,41 +105,46 @@ class AoC182019 implements Solution {
 			map.put( new Pair<>( x - 1, y ), HASH );
 			map.put( new Pair<>( x + 1, y ), HASH );
 
-			initializeSource( src, map, x - 1, y - 1, l -> l <= x - 1, l -> l <= y - 1 );
-			initializeSource( src, map, x - 1, y + 1, l -> l <= x - 1, l -> l >= y + 1 );
-			initializeSource( src, map, x + 1, y + 1, l -> l >= x + 1, l -> l >= y + 1 );
-			initializeSource( src, map, x + 1, y - 1, l -> l >= x + 1, l -> l <= y - 1 );
+			initializeSource( src, map, x - 1, y - 1,
+					keys( map, l -> l <= x - 1, l -> l <= y - 1 ) );
+			initializeSource( src, map, x - 1, y + 1,
+					keys( map, l -> l <= x - 1, l -> l >= y + 1 ) );
+			initializeSource( src, map, x + 1, y + 1,
+					keys( map, l -> l >= x + 1, l -> l >= y + 1 ) );
+			initializeSource( src, map, x + 1, y - 1,
+					keys( map, l -> l >= x + 1, l -> l <= y - 1 ) );
 		}
 
 		return map;
 	}
 
-	private void initializeSource( final List<Pair<Pair<Long, Long>, Set<Character>>> src,
+	private void initializeSource( final List<Pair<Pair<Long, Long>, BitSet>> src,
 			final Map<Pair<Long, Long>, Character> map, final long x, final long y,
-			final LongPredicate testX, final LongPredicate testY ) {
+			final BitSet missingKeys ) {
 		final var startingKeys = allKeys( map );
-		startingKeys.removeAll( keys( map, testX, testY ) );
+		startingKeys.andNot( missingKeys );
 		src.add( new Pair<>( new Pair<>( x, y ), startingKeys ) );
 		map.put( new Pair<>( x, y ), AT );
 	}
 
-	private Set<Character> allKeys( final Map<Pair<Long, Long>, Character> map ) {
+	private BitSet allKeys( final Map<Pair<Long, Long>, Character> map ) {
 		return keys( map, l -> true, l -> true );
 	}
 
-	private Set<Character> keys( final Map<Pair<Long, Long>, Character> map,
-			final LongPredicate testX, final LongPredicate testY ) {
+	private BitSet keys( final Map<Pair<Long, Long>, Character> map, final LongPredicate testX,
+			final LongPredicate testY ) {
 		return map.entrySet()
 				.stream()
 				.filter( n -> testX.test( n.getKey().getFirst() ) )
 				.filter( n -> testY.test( n.getKey().getSecond() ) )
 				.map( Map.Entry::getValue )
 				.filter( this::isKey )
-				.collect( toSet() );
+				.map( this::charToBit )
+				.collect( BitSet::new, BitSet::set, BitSet::or );
 	}
 
-	private List<Pair<Pair<Long, Long>, Set<Character>>> computeNeighbours(
-			final Pair<Pair<Long, Long>, Set<Character>> cell,
+	private List<Pair<Pair<Long, Long>, BitSet>> computeNeighbours(
+			final Pair<Pair<Long, Long>, BitSet> cell,
 			final Map<Pair<Long, Long>, Character> map ) {
 		//add all the adjacent cells that can be reached, updating keys
 		var keys = cell.getSecond();
@@ -155,16 +158,16 @@ class AoC182019 implements Solution {
 				.collect( toList() );
 	}
 
-	private Optional<Pair<Pair<Long, Long>, Set<Character>>> getNeighbour(
-			final Pair<Long, Long> pos, final Map<Pair<Long, Long>, Character> map,
-			final Set<Character> keys ) {
+	private Optional<Pair<Pair<Long, Long>, BitSet>> getNeighbour( final Pair<Long, Long> pos,
+			final Map<Pair<Long, Long>, Character> map, final BitSet keys ) {
 		final Character c = map.getOrDefault( pos, HASH );
 		if ( !isBlocked( c, keys ) ) {
-			final Set<Character> newKeys;
+			final BitSet newKeys;
 			if ( isKey( c ) ) {
 				//new key obtained
-				newKeys = new HashSet<>( keys );
-				newKeys.add( c );
+				newKeys = new BitSet();
+				newKeys.or( keys );
+				newKeys.set( charToBit( c ) );
 			} else {
 				newKeys = keys;
 			}
@@ -174,8 +177,8 @@ class AoC182019 implements Solution {
 		}
 	}
 
-	private boolean isBlocked( final Character c, final Set<Character> keys ) {
-		return c == HASH || ( isDoor( c ) && !keys.contains( toLowerCase( c ) ) );
+	private boolean isBlocked( final Character c, final BitSet keys ) {
+		return c == HASH || ( isDoor( c ) && !keys.get( charToBit( toLowerCase( c ) ) ) );
 	}
 
 	private boolean isKey( final Character c ) {
@@ -184,5 +187,9 @@ class AoC182019 implements Solution {
 
 	private boolean isDoor( final Character c ) {
 		return isUpperCase( c );
+	}
+
+	private int charToBit( final Character c ) {
+		return c - 'a';
 	}
 }
