@@ -33,4 +33,5 @@ public class AoC242019Test extends Generic {
                 { SECOND, getInput( INSTANCE ), "2017" }
         });
     }
+
 }
