@@ -31,17 +31,17 @@ class AoC212019 implements Solution {
 		final BlockingDeque<Long> out = new LinkedBlockingDeque<>();
 		final List<Long> program = toLongList( getFirstString( input ) );
 
-		initializeCommands( in, first );
+		final String commands = initializeCommands( in, first );
 
 		//move robot and wait for it to stop
 		Computer2019.runComputer( program, in, out, false );
 
-		printVideoFeed( out );
+		printVideoFeed( out, commands );
 
 		return itoa( out.removeLast() );
 	}
 
-	private void printVideoFeed( final BlockingDeque<Long> out ) {
+	private void printVideoFeed( final BlockingQueue<Long> out, final String commands ) {
 		if ( PRINT ) {
 			final Iterator<Long> iterator = out.iterator();
 			while ( iterator.hasNext() ) {
@@ -51,11 +51,15 @@ class AoC212019 implements Solution {
 				} else {
 					System.out.print( "Damage: " + current );
 				}
+				if ( current == ':' ) {
+					System.out.println();
+					System.out.print( commands );
+				}
 			}
 		}
 	}
 
-	private void initializeCommands( final BlockingQueue<Long> in, final boolean first ) {
+	private String initializeCommands( final BlockingQueue<Long> in, final boolean first ) {
 		final String commands;
 		if ( first ) {
 			//jump if:
@@ -88,6 +92,8 @@ class AoC212019 implements Solution {
 			//@formatter:on
 		}
 		commands.chars().boxed().forEach( c -> in.add( c.longValue() ) );
+
+		return commands;
 	}
 
 }
