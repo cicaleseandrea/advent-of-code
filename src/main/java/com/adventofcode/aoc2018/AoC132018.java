@@ -1,15 +1,24 @@
 package com.adventofcode.aoc2018;
 
+import static com.adventofcode.utils.Direction.LEFT;
+import static com.adventofcode.utils.Direction.RIGHT;
+import static com.adventofcode.utils.Utils.DOT;
+import static com.adventofcode.utils.Utils.PIPE;
+import static com.adventofcode.utils.Utils.clearScreen;
+import static com.adventofcode.utils.Utils.getIterable;
+import static com.adventofcode.utils.Utils.getPairComparator;
+import static com.adventofcode.utils.Utils.incrementMod;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.stream.Stream;
+
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Direction;
 import com.adventofcode.utils.Pair;
-
-import java.util.*;
-import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Direction.LEFT;
-import static com.adventofcode.utils.Direction.RIGHT;
-import static com.adventofcode.utils.Utils.*;
 
 class AoC132018 implements Solution {
 
@@ -82,9 +91,9 @@ class AoC132018 implements Solution {
     private static void print(final Map<Pair<Long, Long>, Character> track, final Map<Pair<Long, Long>, Cart> carts,
                               final Pair<Long, Long> last) {
         clearScreen();
-        for (int i = 0; i < last.getSecond(); i++) {
-            for (int j = 0; j < last.getFirst(); j++) {
-                final Pair<Integer, Integer> p = new Pair<>(j, i);
+        for (long i = 0; i < last.getSecond(); i++) {
+            for (long j = 0; j < last.getFirst(); j++) {
+                final Pair<Long, Long> p = new Pair<>(j, i);
                 if (carts.containsKey(p)) {
                     System.out.print(carts.get(p));
                 } else {
@@ -94,7 +103,7 @@ class AoC132018 implements Solution {
             System.out.println();
         }
         try {
-            Thread.sleep(300);
+            Thread.sleep(700);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
