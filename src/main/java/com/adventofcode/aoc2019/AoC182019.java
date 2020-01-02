@@ -56,6 +56,7 @@ class AoC182019 implements Solution {
 		while ( !queue.isEmpty() ) {
 			//remove current node
 			final var curr = queue.remove();
+			//destination found: all keys
 			if ( curr.getSecond().equals( dst ) ) {
 				return distances.get( curr );
 			}
@@ -91,20 +92,22 @@ class AoC182019 implements Solution {
 			curr.setSecond( curr.getSecond() + 1 );
 		} );
 
+		//destination: all keys
 		dst.or( allKeys( map ) );
 
-		//split map in 4 sections. consider keys in other section as already taken
 		if ( !first ) {
 			final long x = src.get( 0 ).getFirst().getFirst();
 			final long y = src.get( 0 ).getFirst().getSecond();
 			src.clear();
 
+			//split map in 4 sections
 			map.put( new Pair<>( x, y ), HASH );
 			map.put( new Pair<>( x, y - 1 ), HASH );
 			map.put( new Pair<>( x, y + 1 ), HASH );
 			map.put( new Pair<>( x - 1, y ), HASH );
 			map.put( new Pair<>( x + 1, y ), HASH );
 
+			//consider keys in other sections as already collected
 			initializeSource( src, map, x - 1, y - 1,
 					keys( map, l -> l <= x - 1, l -> l <= y - 1 ) );
 			initializeSource( src, map, x - 1, y + 1,
@@ -120,10 +123,10 @@ class AoC182019 implements Solution {
 
 	private void initializeSource( final List<Pair<Pair<Long, Long>, BitSet>> src,
 			final Map<Pair<Long, Long>, Character> map, final long x, final long y,
-			final BitSet missingKeys ) {
-		final var startingKeys = allKeys( map );
-		startingKeys.andNot( missingKeys );
-		src.add( new Pair<>( new Pair<>( x, y ), startingKeys ) );
+			final BitSet keysToBeCollected ) {
+		final var keysCollected = allKeys( map );
+		keysCollected.andNot( keysToBeCollected );
+		src.add( new Pair<>( new Pair<>( x, y ), keysCollected ) );
 		map.put( new Pair<>( x, y ), AT );
 	}
 
@@ -135,24 +138,29 @@ class AoC182019 implements Solution {
 			final LongPredicate testY ) {
 		return map.entrySet()
 				.stream()
+				//filter by position
 				.filter( n -> testX.test( n.getKey().getFirst() ) )
 				.filter( n -> testY.test( n.getKey().getSecond() ) )
 				.map( Map.Entry::getValue )
+				//filter keys
 				.filter( this::isKey )
 				.map( this::charToBit )
+				//collect into BitSet
 				.collect( BitSet::new, BitSet::set, BitSet::or );
 	}
 
 	private List<Pair<Pair<Long, Long>, BitSet>> computeNeighbours(
 			final Pair<Pair<Long, Long>, BitSet> cell,
 			final Map<Pair<Long, Long>, Character> map ) {
-		//add all the adjacent cells that can be reached, updating keys
 		var keys = cell.getSecond();
-
-		return Stream.of( new Pair<>( cell.getFirst().getFirst() + 1, cell.getFirst().getSecond() ),
+		//adjacent cells
+		final Stream<Pair<Long, Long>> neighbours = Stream.of(
+				new Pair<>( cell.getFirst().getFirst() + 1, cell.getFirst().getSecond() ),
 				new Pair<>( cell.getFirst().getFirst() - 1, cell.getFirst().getSecond() ),
 				new Pair<>( cell.getFirst().getFirst(), cell.getFirst().getSecond() - 1 ),
-				new Pair<>( cell.getFirst().getFirst(), cell.getFirst().getSecond() + 1 ) )
+				new Pair<>( cell.getFirst().getFirst(), cell.getFirst().getSecond() + 1 ) );
+		return neighbours
+				//add only cells that can be reached, updating keys collected
 				.map( pos -> getNeighbour( pos, map, keys ) )
 				.flatMap( Optional::stream )
 				.collect( toList() );
@@ -164,7 +172,7 @@ class AoC182019 implements Solution {
 		if ( !isBlocked( c, keys ) ) {
 			final BitSet newKeys;
 			if ( isKey( c ) ) {
-				//new key obtained
+				//new key collected
 				newKeys = new BitSet();
 				newKeys.or( keys );
 				newKeys.set( charToBit( c ) );
