@@ -29,6 +29,7 @@ import com.adventofcode.utils.Computer2019;
 
 class AoC252019 implements Solution {
 
+	private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
 	private static boolean INTERACTIVE = false;
 	private static boolean SOLVE = true;
 	private static final List<String> BLACKLIST = List.of( "escape pod", "photons",
@@ -60,7 +61,7 @@ class AoC252019 implements Solution {
 				future.get();
 			} catch ( InterruptedException | ExecutionException | CancellationException e ) {
 			} finally {
-				if ( INTERACTIVE ) {
+				if ( print() ) {
 					System.out.println( "THE END" );
 				}
 				out.add( (long) ' ' );
@@ -111,7 +112,7 @@ class AoC252019 implements Solution {
 		while ( !future.isDone() || !out.isEmpty() ) {
 			try {
 				final char c = (char) out.take().longValue();
-				if ( INTERACTIVE ) {
+				if ( print() ) {
 					System.out.print( c );
 				}
 
@@ -175,7 +176,7 @@ class AoC252019 implements Solution {
 		} else {
 			instruction = inventory.next();
 		}
-		if ( INTERACTIVE ) {
+		if ( print() ) {
 			System.out.println();
 			System.out.print( instruction );
 		}
@@ -245,6 +246,8 @@ class AoC252019 implements Solution {
 			};
 		}
 	}
+
+	public static boolean print() {return PRINT || INTERACTIVE;}
 
 	public static void main( String[] args ) throws IOException {
 		INTERACTIVE = true;
