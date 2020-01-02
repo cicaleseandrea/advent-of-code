@@ -113,7 +113,7 @@ class AoC232019 implements Solution {
 			if ( from == NAT ) {
 				System.out.println( "IDLE" );
 			}
-			System.out.println( "from: " + from + " to: " + to + " x: " + x + " y: " + y );
+			System.out.println( "from {" + from + "} to {" + to + "}: x = " + x + ", y = " + y );
 		}
 	}
 
