@@ -28,29 +28,28 @@ class AoC102019 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final boolean first ) {
-		final int rows;
 		final int columns;
-		int i = 0;
-		int j = 0;
+		final int rows;
+		int x = 0;
+		int y = 0;
 		final HashSet<Pair<Long, Long>> asteroids = new HashSet<>();
 		for ( final String line : getIterable( input ) ) {
-			final char[] charArray = line.toCharArray();
-			j = 0;
-			while ( j < charArray.length ) {
-				if ( charArray[j] == HASH ) {
-					asteroids.add( new Pair<>( (long) i, (long) j ) );
+			x = 0;
+			for ( final char c : line.toCharArray() ) {
+				if ( c == HASH ) {
+					asteroids.add( new Pair<>( (long) x, (long) y ) );
 				}
-				j++;
+				x++;
 			}
-			i++;
+			y++;
 		}
-		rows = i;
-		columns = j;
+		columns = x;
+		rows = y;
 
 		long max = 0;
 		Pair<Long, Long> station = null;
 		for ( final Pair<Long, Long> asteroid : asteroids ) {
-			long res = computeAsteroidsDetected( asteroid, asteroids, rows, columns );
+			long res = computeAsteroidsDetected( asteroid, asteroids, columns, rows );
 			if ( res > max ) {
 				max = res;
 				station = asteroid;
@@ -60,19 +59,54 @@ class AoC102019 implements Solution {
 		if ( first ) {
 			return itoa( max );
 		} else {
-			final Pair<Long, Long> bet = vaporizeAsteroids( station, asteroids, rows, columns );
-			return itoa( bet.getSecond() * 100 + bet.getFirst() );
+			final Pair<Long, Long> bet = vaporizeAsteroids( station, asteroids, columns, rows );
+			return itoa( bet.getFirst() * 100 + bet.getSecond() );
 		}
 	}
 
+	private long computeAsteroidsDetected( final Pair<Long, Long> station,
+			final HashSet<Pair<Long, Long>> asteroids, final int columns, final int rows ) {
+		final Set<Pair<Long, Long>> visible = new HashSet<>( asteroids );
+		visible.remove( station );
+		long count = 0;
+		while ( !visible.isEmpty() ) {
+			vaporizeAsteroids( station, visible.stream().findAny().orElseThrow(), visible, columns,
+					rows, true );
+			count++;
+		}
+		return count;
+	}
+
 	private Pair<Long, Long> vaporizeAsteroids( final Pair<Long, Long> station,
-			final Set<Pair<Long, Long>> asteroids, final int rows, final int columns ) {
+			final Pair<Long, Long> direction, final Set<Pair<Long, Long>> asteroids,
+			final int columns, final int rows, final boolean all ) {
+		long xDiff = direction.getFirst() - station.getFirst();
+		long yDiff = direction.getSecond() - station.getSecond();
+		long gcd = LongMath.gcd( abs( xDiff ), abs( yDiff ) );
+		if ( gcd != 0 ) {
+			xDiff /= gcd;
+			yDiff /= gcd;
+		}
+		long x = station.getFirst() + xDiff;
+		long y = station.getSecond() + yDiff;
+		boolean vaporized;
+		Pair<Long, Long> vaporize;
+		do {
+			vaporize = new Pair<>( x, y );
+			vaporized = asteroids.remove( vaporize );
+			x += xDiff;
+			y += yDiff;
+		} while ( ( !vaporized || all ) && 0 <= x && x < columns && 0 <= y && y < rows );
+
+		return vaporized ? vaporize : null;
+	}
+
+	private Pair<Long, Long> vaporizeAsteroids( final Pair<Long, Long> station,
+			final Set<Pair<Long, Long>> asteroids, final int columns, final int rows ) {
 
 		final NavigableSet<Pair<Long, Long>> angles = new TreeSet<>( comparingDouble(
-				it -> -Math.atan2( it.getSecond() - station.getSecond(),
-						it.getFirst() - station.getFirst() ) ) );
-
-		//TODO check
+				it -> -Math.atan2( it.getFirst() - station.getFirst(),
+						it.getSecond() - station.getSecond() ) ) );
 
 		angles.addAll( asteroids );
 
@@ -81,7 +115,7 @@ class AoC102019 implements Solution {
 		Iterator<Pair<Long, Long>> iterator = angles.iterator();
 		while ( count < 200 ) {
 			final Pair<Long, Long> direction = iterator.next();
-			res = vaporizeAsteroids( station, direction, asteroids, rows, columns, false );
+			res = vaporizeAsteroids( station, direction, asteroids, columns, rows, false );
 			if ( res != null ) {
 				count++;
 			}
@@ -90,44 +124,6 @@ class AoC102019 implements Solution {
 			}
 		}
 		return res;
-	}
-
-	private long computeAsteroidsDetected( final Pair<Long, Long> station,
-			final HashSet<Pair<Long, Long>> asteroids, final int rows, final int columns ) {
-		final Set<Pair<Long, Long>> visible = new HashSet<>( asteroids );
-		visible.remove( station );
-		long count = 0;
-		while ( !visible.isEmpty() ) {
-			vaporizeAsteroids( station, visible.stream().findAny().orElseThrow(), visible, rows,
-					columns,
-					true );
-			count++;
-		}
-		return count;
-	}
-
-	private Pair<Long, Long> vaporizeAsteroids( final Pair<Long, Long> station,
-			final Pair<Long, Long> direction, final Set<Pair<Long, Long>> asteroids, final int rows,
-			final int columns, final boolean all ) {
-		long iDiff = direction.getFirst() - station.getFirst();
-		long jDiff = direction.getSecond() - station.getSecond();
-		long gcd = LongMath.gcd( abs( iDiff ), abs( jDiff ) );
-		if ( gcd != 0 ) {
-			iDiff /= gcd;
-			jDiff /= gcd;
-		}
-		long i = station.getFirst() + iDiff;
-		long j = station.getSecond() + jDiff;
-		boolean vaporized;
-		Pair<Long, Long> vaporize;
-		do {
-			vaporize = new Pair<>( i, j );
-			vaporized = asteroids.remove( vaporize );
-			i += iDiff;
-			j += jDiff;
-		} while ( ( !vaporized || all ) && 0 <= i && i < rows && 0 <= j && j < columns );
-
-		return vaporized ? vaporize : null;
 	}
 
 }
