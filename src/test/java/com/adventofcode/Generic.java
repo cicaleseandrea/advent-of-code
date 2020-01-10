@@ -1,7 +1,6 @@
 package com.adventofcode;
 
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,22 +11,17 @@ import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.adventofcode.Generic.Type.NONE;
-import static com.adventofcode.utils.Utils.*;
+import static com.adventofcode.utils.Utils.DOT;
+import static com.adventofcode.utils.Utils.splitOnNewLine;
 import static java.lang.ClassLoader.getSystemResource;
 import static org.junit.Assert.assertEquals;
 
-@Ignore
-public class Generic {
+public abstract class Generic {
     private final Solution solution;
     private final Type type;
     private final String input;
     private final String result;
     protected static final String PARAMETERS_MESSAGE = "{index}: {0} = {2}";
-
-    public Generic() {
-        this(null, NONE, EMPTY, EMPTY);
-    }
 
     protected Generic(final Solution solution, final Type type, final String input, final String result) {
         this.solution = solution;
@@ -62,5 +56,5 @@ public class Generic {
         checkSolution(solutionFunction, input, result);
     }
 
-    public enum Type {NONE, FIRST, SECOND}
+    public enum Type {FIRST, SECOND}
 }
