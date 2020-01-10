@@ -42,6 +42,15 @@ public enum Direction {
         return this;
     }
 
+    public void move(final Pair<Long, Long> point) {
+        switch (this) {
+            case UP -> point.setSecond(point.getSecond() + 1L);
+            case DOWN -> point.setSecond(point.getSecond() - 1L);
+            case LEFT -> point.setFirst(point.getFirst() - 1L);
+            case RIGHT -> point.setFirst(point.getFirst() + 1L);
+        }
+    }
+
     public static Direction fromSymbol( final char c ) {
         for ( final Direction d : Direction.values() ) {
             if ( d.getSymbol() == c ) {
