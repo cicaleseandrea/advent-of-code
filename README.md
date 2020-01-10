@@ -25,12 +25,12 @@ Run a specific day:
 
 `./gradlew clean test --tests *132019*`
 
-You need JDK 12.
-By default the project will look for it in `/Library/Java/JavaVirtualMachines/openjdk-12.jdk/Contents/Home`
+You need JDK 13.
+By default the project will look for it in `/Library/Java/JavaVirtualMachines/jdk-13.0.1.jdk/Contents/Home`
 
 You can also specify your own JDK path like this:
 
-`./gradlew clean test -Dorg.gradle.java.home=/path/to/java12`
+`./gradlew clean test -Dorg.gradle.java.home=/path/to/java13`
 
 
 ## Enable printing to `stdout`
