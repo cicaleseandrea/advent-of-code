@@ -26,16 +26,16 @@ class AoC052015 implements Solution {
 			//@formatter:off
 			pattern = Pattern.compile(
 					"(?!.*ab|.*cd|.*pq|.*xy)" //does not contain these substrings
-					+ "(?=.*[aeiou].*[aeiou].*[aeiou])" //at least 3 vowels
-					+ "(?=.*([\\w])\\1)" //at least one double letter
+					+ "(?=(?:.*[aeiou]){3})" //at least 3 vowels
+					+ "(?=.*(.)\\1)" //at least one double letter
 					+ ".*"// whatever
 			);
 			//@formatter:on
 		} else {
 			//@formatter:off
 			pattern = Pattern.compile(
-					"(?=.*([\\w][\\w]).*\\1)" //pair of letters that appears at least twice
-					+ "(?=.*([\\w])[\\w]\\2)" //one letter which repeats with exactly one letter between them
+					"(?=.*(..).*\\1)" //pair of letters that appears at least twice
+					+ "(?=.*(.).\\2)" //one letter which repeats with exactly one letter between them
 					+ ".*" //whatever
 			);
 			//@formatter:on
