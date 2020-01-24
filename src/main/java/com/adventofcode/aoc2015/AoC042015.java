@@ -3,7 +3,7 @@ package com.adventofcode.aoc2015;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
 
-import java.util.function.Predicate;
+import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -25,14 +25,15 @@ class AoC042015 implements Solution {
 
 	private String solve( final String secret, final boolean first ) {
 		final int res = IntStream.range( 0, Integer.MAX_VALUE )
-				.dropWhile( discard( secret, first ? "00000" : "000000" )::test )
+				.dropWhile( discard( secret, first ? "00000" : "000000" ) )
 				.findFirst()
 				.orElseThrow();
 		return itoa( res );
 	}
 
-	private Predicate<Integer> discard( final String secret, final String prefix ) {
-		return Predicate.not( i -> computeHash( secret + i ).startsWith( prefix ) );
+	private IntPredicate discard( final String secret, final String prefix ) {
+		final IntPredicate acceptable = i -> computeHash( secret + i ).startsWith( prefix );
+		return acceptable.negate();
 	}
 
 	private String computeHash( final String message ) {
