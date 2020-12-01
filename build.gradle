@@ -15,18 +15,20 @@ dependencies {
 
 group = 'com.adventofcode'
 version = '1.0-SNAPSHOT'
-sourceCompatibility = '13'
+sourceCompatibility = '15'
 
-tasks.withType(JavaCompile).each {
-    it.options.compilerArgs.add('--enable-preview')
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "--enable-preview"
 }
-
-test {
-    jvmArgs(['--enable-preview'])
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
     systemProperty "print", System.getProperty("print")
 
     testLogging {
         outputs.upToDateWhen {false}
         showStandardStreams = true
     }
+}
+tasks.withType(JavaExec) {
+    jvmArgs += "--enable-preview"
 }
