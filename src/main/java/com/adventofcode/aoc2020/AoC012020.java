@@ -26,13 +26,16 @@ class AoC012020 implements Solution {
 			final long a = entries.get( i );
 			for ( int j = i + 1; j < length; j++ ) {
 				final long b = entries.get( j );
-				if ( first && a + b == 2020 ) {
-					return itoa( a * b );
-				}
-				for ( int k = j + 1; k < length; k++ ) {
-					final long c = entries.get( k );
-					if ( a + b + c == 2020 ) {
-						return itoa( a * b * c );
+				if ( first ) {
+					if ( a + b == 2020 ) {
+						return itoa( a * b );
+					}
+				} else {
+					for ( int k = j + 1; k < length; k++ ) {
+						final long c = entries.get( k );
+						if ( a + b + c == 2020 ) {
+							return itoa( a * b * c );
+						}
 					}
 				}
 			}
