@@ -1,15 +1,15 @@
 package com.adventofcode.aoc2015;
 
-import static com.adventofcode.utils.Utils.getFirstString;
-import static com.adventofcode.utils.Utils.itoa;
+import com.adventofcode.Solution;
+import com.google.common.hash.Hashing;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.adventofcode.Solution;
-import com.google.common.base.Charsets;
-import com.google.common.hash.Hashing;
+import static com.adventofcode.utils.Utils.getFirstString;
+import static com.adventofcode.utils.Utils.itoa;
 
 class AoC042015 implements Solution {
 
@@ -36,7 +36,8 @@ class AoC042015 implements Solution {
 		return acceptable.negate();
 	}
 
+	@SuppressWarnings("deprecation")
 	private String computeHash( final String message ) {
-		return Hashing.md5().hashString( message, Charsets.UTF_8 ).toString();
+		return Hashing.md5().hashString( message, StandardCharsets.UTF_8 ).toString();
 	}
 }

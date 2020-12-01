@@ -7,19 +7,17 @@ My [Advent of Code](https://adventofcode.com/) solutions.
 - have fun
 - learn something new
 - [solve as many puzzles as possible within the time limit](https://www.reddit.com/r/adventofcode/comments/7m9mg8/all_years_all_days_solve_them_within_the_time/)
-- try out (and overuse) the following Java features: `Lambda`, `Stream`,
-  `Optional`, `var`, 
-  [switch expressions](https://openjdk.java.net/jeps/325)
+- try out (and overuse) the following Java features: `Lambda`, `Stream`, `Optional`, `var`, `switch expressions`
 
 
 ## Requirements
-The project uses java 13 with *preview features*.
+The project uses java 15 with *preview features*.
 
-You will need JDK 13. By default the project will look for it in `/Library/Java/JavaVirtualMachines/jdk-13.0.1.jdk/Contents/Home`
+You will need JDK 15. By default the project will look for it in `/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home`
 
 You can also specify your own JDK path like this when using gradle:
 
-`./gradlew <command> -Dorg.gradle.java.home=/path/to/java13`
+`./gradlew <command> -Dorg.gradle.java.home=/path/to/java15`
 
 ## Run Unit Tests
 Run all tests:
