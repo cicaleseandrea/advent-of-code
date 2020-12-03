@@ -1,8 +1,17 @@
 package com.adventofcode.utils;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
+
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.Future;
 import java.util.regex.MatchResult;
@@ -11,10 +20,6 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toUnmodifiableList;
 
 public class Utils {
     public static final String EMPTY = "";
@@ -28,52 +33,54 @@ public class Utils {
     public static final char PIPE = '|';
     public static final char BLACK = '⬛';
     public static final char WHITE = '⬜';
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    public static final Pattern LONG_PATTERN = Pattern.compile("-?\\d+");
-    public static final Pattern POSITIVE_LONG_PATTERN = Pattern.compile("\\d+");
-    public static final Pattern DOUBLE_PATTERN = Pattern.compile("-?\\d+(?:\\.\\d+)?");
-    public static final Pattern WORD_PATTERN = Pattern.compile("[a-zA-Z]+");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
+            "yyyy-MM-dd HH:mm" );
+    public static final Pattern LONG_PATTERN = Pattern.compile( "-?\\d+" );
+    public static final Pattern POSITIVE_LONG_PATTERN = Pattern.compile( "\\d+" );
+    public static final Pattern DOUBLE_PATTERN = Pattern.compile( "-?\\d+(?:\\.\\d+)?" );
+    public static final Pattern WORD_PATTERN = Pattern.compile( "[a-zA-Z]+" );
+    private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
 
     private Utils() {
     }
 
-    public static String getFirstString(final Stream<String> s) {
-        return s.findFirst().orElse(EMPTY);
+    public static String getFirstString( final Stream<String> s ) {
+        return s.findFirst().orElse( EMPTY );
     }
 
-    public static Pair<Long, Long> createPairLong(final long[] tmp) {
-        return new Pair<>(tmp[0], tmp[1]);
+    public static Pair<Long, Long> createPairLong( final long[] tmp ) {
+        return new Pair<>( tmp[0], tmp[1] );
     }
 
-    public static Pair<Long, Long> createPairLong(final String[] tmp) {
-        return new Pair<>(atol(tmp[0].trim()), atol(tmp[1].trim()));
+    public static Pair<Long, Long> createPairLong( final String[] tmp ) {
+        return new Pair<>( atol( tmp[0].trim() ), atol( tmp[1].trim() ) );
     }
 
-    public static Pair<Integer, Integer> createPairInteger(final int[] tmp) {
-        return new Pair<>(tmp[0], tmp[1]);
+    public static Pair<Integer, Integer> createPairInteger( final int[] tmp ) {
+        return new Pair<>( tmp[0], tmp[1] );
     }
 
-    public static Pair<Integer, Integer> createPairInteger(final String[] tmp) {
-        return new Pair<>(atoi(tmp[0].trim()), atoi(tmp[1].trim()));
+    public static Pair<Integer, Integer> createPairInteger( final String[] tmp ) {
+        return new Pair<>( atoi( tmp[0].trim() ), atoi( tmp[1].trim() ) );
     }
 
-    public static long atol(final String s) {
-        return Long.parseLong(s);
+    public static long atol( final String s ) {
+        return Long.parseLong( s );
     }
 
-    public static int atoi(final String s) {
-        return Integer.parseInt(s);
+    public static int atoi( final String s ) {
+        return Integer.parseInt( s );
     }
 
-    public static Pair<String, String> createPairString(final String[] tmp) {
-        return new Pair<>(tmp[0], tmp[1]);
+    public static Pair<String, String> createPairString( final String[] tmp ) {
+        return new Pair<>( tmp[0], tmp[1] );
     }
 
-    public static long boolToLong(final boolean b) {
+    public static long boolToLong( final boolean b ) {
         return b ? 1 : 0;
     }
 
-    public static boolean longToBool(final long i) {
+    public static boolean longToBool( final long i ) {
         return i != 0;
     }
 
@@ -262,10 +269,26 @@ public class Utils {
         return x;
     }
 
-    public static <E> void printMatrix(final List<List<E>> matrix) {
-        for (List<E> row : matrix) {
-            for (E e : row) {
-                System.out.print(e);
+    public static List<List<Character>> getCharMatrix( final Stream<String> input ) {
+        return input.map(
+                row -> row.chars().mapToObj( c -> (char) c ).collect( toUnmodifiableList() ) )
+                .collect( toUnmodifiableList() );
+    }
+
+    public static List<List<Integer>> getDigitsMatrix( final Stream<String> input ) {
+        return input.map(
+                row -> row.chars().mapToObj( Utils::charToInt ).collect( toUnmodifiableList() ) )
+                .collect( toUnmodifiableList() );
+    }
+
+    public static boolean shouldPrint() {
+        return PRINT;
+    }
+
+    public static <E> void printMatrix( final List<List<E>> matrix ) {
+        for ( List<E> row : matrix ) {
+            for ( E e : row ) {
+                System.out.print( e );
             }
             System.out.println();
         }
