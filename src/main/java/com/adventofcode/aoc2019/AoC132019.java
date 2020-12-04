@@ -8,6 +8,7 @@ import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.printMatrix;
 import static com.adventofcode.utils.Utils.readOutput;
+import static com.adventofcode.utils.Utils.shouldPrint;
 import static com.adventofcode.utils.Utils.toLongList;
 
 import java.io.IOException;
@@ -41,7 +42,6 @@ class AoC132019 implements Solution {
 	private static final Map<Long, Character> TILES = Map.of( 0L, EMPTY, 1L, WALL, 2L, BLOCK,
 			3L, PADDLE, 4L, BALL );
 
-	private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
 	private static boolean INTERACTIVE = false;
 
 	public String solveFirstPart( final Stream<String> input ) {
@@ -94,7 +94,7 @@ class AoC132019 implements Solution {
 					if ( !INTERACTIVE && symbol == BALL ) {
 						movePaddle( paddlePosition, in, x );
 					}
-					if ( ( PRINT || INTERACTIVE ) && ( x == COLUMNS - 1 || Objects.equals( symbol,
+					if ( ( shouldPrint() || INTERACTIVE ) && ( x == COLUMNS - 1 || Objects.equals( symbol,
 							BALL ) ) ) {
 						printGame( grid, score );
 					}
@@ -108,7 +108,7 @@ class AoC132019 implements Solution {
 		if ( first ) {
 			return itoa( grid.values().stream().filter( c -> c == BLOCK ).count() );
 		} else {
-            if (PRINT) {
+            if (shouldPrint()) {
                 printResult(grid);
             }
 			return itoa( score );
