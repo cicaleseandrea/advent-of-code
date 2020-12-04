@@ -1,18 +1,23 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
+import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.PIPE;
+import static com.adventofcode.utils.Utils.SPACE;
+import static com.adventofcode.utils.Utils.TILDE;
+import static com.adventofcode.utils.Utils.extractIntegerFromString;
+import static com.adventofcode.utils.Utils.getIterable;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.shouldPrint;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Utils.*;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
 
 class AoC172018 implements Solution {
-
-    private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
 
     private static String solve(final Stream<String> input,
                                 final Predicate<Map.Entry<Pair<Integer, Integer>, Character>> count) {
@@ -23,8 +28,8 @@ class AoC172018 implements Solution {
         final Pair<Integer, Integer> source = new Pair<>(500, 0);
         map.put(source, PIPE);
         fall(map, source, points);
-        if (PRINT) {
-            print(map, points);
+        if ( shouldPrint() ) {
+            print( map, points );
         }
         return itoa(map.entrySet().stream().
                 filter(e -> count.test(e) || e.getValue() == TILDE)
