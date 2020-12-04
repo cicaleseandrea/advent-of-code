@@ -27,14 +27,14 @@ class AoC222019 implements Solution {
 
 		//from here: https://www.reddit.com/r/adventofcode/comments/ee0rqi/2019_day_22_solutions/fbnkaju/
 		//after "deal n", the ith card becomes the i*nth card
-		//card at position 1 after "deal n", was at position 1/n before "deal n"
-		//using our two variables to describe its position, that card moved
-		//from:
-		//top + old_increment/n
-		//to:
-		//top + new_increment
+		//the card at position 1 after "deal n", was at position 1/n before "deal n"
+		//using our two variables to describe that card
+		//before:
+		//card = top + old_increment*old_pos = top + old_increment*1/n = top + old_increment/n
+		//after:
+		//card = top + new_increment*new_pos = top + new_increment*1 = top + new_increment
 		//which means that increment changed like this:
-		//increment = increment/n
+		//new_increment = old_increment/n
 		increment = increment.multiply( n.modInverse( deckSize ) );
 
 		//top is unchanged
@@ -45,7 +45,7 @@ class AoC222019 implements Solution {
 		cardPosition = cardPosition.subtract( n ).mod( deckSize );
 
 		//card at position n goes on top of the deck
-		top = getCardAtPosition( top, increment, n );
+		top = getCardAtPosition( top, increment, n, deckSize );
 
 		//increment is unchanged
 	}
@@ -55,14 +55,14 @@ class AoC222019 implements Solution {
 		cardPosition = cardPosition.add( BigInteger.ONE ).negate().mod( deckSize );
 
 		//last card (position - 1) goes on top of the deck
-		top = getCardAtPosition( top, increment, BigInteger.ONE.negate() );
+		top = getCardAtPosition( top, increment, BigInteger.ONE.negate(), deckSize );
 
 		//increment is negated so that deck direction is inverted
 		increment = increment.negate();
 	}
 
-	private BigInteger getCardAtPosition( final BigInteger top, final BigInteger increment,
-			final BigInteger position ) {
+	private static BigInteger getCardAtPosition( final BigInteger top, final BigInteger increment,
+			final BigInteger position, BigInteger deckSize ) {
 		//count "position" cards starting from top and moving by increment
 		return top.add( increment.multiply( position ) ).mod( deckSize );
 	}
@@ -94,8 +94,8 @@ class AoC222019 implements Solution {
 					BigInteger.ONE.subtract( incrementShuffles ) )
 					.multiply( BigInteger.ONE.subtract( increment ).modInverse( deckSize ) )
 					.mod( deckSize );
-			return getCardAtPosition( topShuffles, incrementShuffles,
-					BigInteger.valueOf( 2020 ) ).toString();
+			return getCardAtPosition( topShuffles, incrementShuffles, BigInteger.valueOf( 2020 ),
+					deckSize ).toString();
 		} );
 	}
 
