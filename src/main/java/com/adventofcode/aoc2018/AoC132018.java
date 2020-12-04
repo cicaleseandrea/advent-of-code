@@ -1,19 +1,27 @@
 package com.adventofcode.aoc2018;
 
+import static com.adventofcode.utils.Direction.LEFT;
+import static com.adventofcode.utils.Direction.RIGHT;
+import static com.adventofcode.utils.Utils.DOT;
+import static com.adventofcode.utils.Utils.PIPE;
+import static com.adventofcode.utils.Utils.clearScreen;
+import static com.adventofcode.utils.Utils.getIterable;
+import static com.adventofcode.utils.Utils.getPairComparator;
+import static com.adventofcode.utils.Utils.incrementMod;
+import static com.adventofcode.utils.Utils.shouldPrint;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.stream.Stream;
+
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Direction;
 import com.adventofcode.utils.Pair;
 
-import java.util.*;
-import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Direction.LEFT;
-import static com.adventofcode.utils.Direction.RIGHT;
-import static com.adventofcode.utils.Utils.*;
-
 class AoC132018 implements Solution {
-
-    private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
 
     private static String solve(final Stream<String> input, final boolean first) {
         final Map<Pair<Long, Long>, Character> track = new HashMap<>();
@@ -47,7 +55,7 @@ class AoC132018 implements Solution {
                 }
             }
             carts = nextCarts;
-            if (PRINT) {
+            if (shouldPrint()) {
                 print(track, carts, lastPoint);
             }
             if (carts.size() == 1) {

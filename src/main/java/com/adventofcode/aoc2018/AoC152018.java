@@ -1,21 +1,36 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
+import static com.adventofcode.utils.Pair.ZERO;
+import static com.adventofcode.utils.Utils.DOT;
+import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.clearScreen;
+import static com.adventofcode.utils.Utils.getIterable;
+import static com.adventofcode.utils.Utils.getPairComparator;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.shouldPrint;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Pair.ZERO;
-import static com.adventofcode.utils.Utils.*;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
 
 class AoC152018 implements Solution {
     private static final int BASE_ATTACK = 3;
     private static final char GOBLIN = 'G';
     private static final char ELF = 'E';
-    private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
+
     private static SortedMap<Pair<Long, Long>, Character> map;
     private static SortedMap<Pair<Long, Long>, Unit> originalElves;
     private static SortedMap<Pair<Long, Long>, Unit> originalGoblins;
@@ -68,7 +83,7 @@ class AoC152018 implements Solution {
                 }
                 units = nextUnits;
                 turns++;
-                if (PRINT) {
+                if (shouldPrint()) {
                     printState(map, units, turns);
                 }
             }

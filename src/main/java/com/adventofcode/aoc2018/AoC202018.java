@@ -1,27 +1,39 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
+import static java.util.Collections.singleton;
 
-import java.util.*;
+import static com.adventofcode.utils.Pair.ZERO;
+import static com.adventofcode.utils.Utils.DOT;
+import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.PIPE;
+import static com.adventofcode.utils.Utils.getFirstString;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.shouldPrint;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.LongSummaryStatistics;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
 import java.util.stream.Stream;
 
-import static com.adventofcode.utils.Pair.ZERO;
-import static com.adventofcode.utils.Utils.*;
-import static java.util.Collections.singleton;
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
 
 class AoC202018 implements Solution {
-
-    private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
 
     private static String solve(final String input, final LongPredicate filter,
                                 final Function<LongSummaryStatistics, Long> computeResult) {
         final Map<Pair<Long, Long>, Character> map = new HashMap<>();
         map.put(ZERO, DOT);
         branch(map, singleton(ZERO), input, 1);
-        if (PRINT) {
+        if (shouldPrint()) {
             print(map);
         }
         return itoa(computeResult(map, filter, computeResult));
