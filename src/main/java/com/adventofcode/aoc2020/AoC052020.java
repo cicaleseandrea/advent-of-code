@@ -28,11 +28,8 @@ class AoC052020 implements Solution {
 	}
 
 	private static Integer decodeSeat( final String seat ) {
-		final String binaryRow = seat.substring( 0, 7 ).replace( "F", "0" ).replace( "B", "1" );
-		final String binaryColumn = seat.substring( 7 ).replace( "L", "0" ).replace( "R", "1" );
-		final int row = Integer.parseInt( binaryRow, 2 );
-		final int column = Integer.parseInt( binaryColumn, 2 );
-		return row * 8 + column;
+		final String binarySeat = seat.replaceAll( "[FL]", "0" ).replaceAll( "[BR]", "1" );
+		return Integer.parseInt( binarySeat, 2 );
 	}
 
 }
