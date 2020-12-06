@@ -7,7 +7,7 @@ My [Advent of Code](https://adventofcode.com/) solutions.
 - have fun
 - learn something new
 - [solve as many puzzles as possible within the time limit](https://www.reddit.com/r/adventofcode/comments/7m9mg8/all_years_all_days_solve_them_within_the_time/)
-- try out (and overuse) the following Java features: `Lambda`, `Stream`, `Optional`, `var`, `switch expressions`
+- (over)use the following Java features: `Lambda`, `Stream`, `Optional`, `var`, `switch expressions`
 
 
 ## Requirements
