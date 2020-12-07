@@ -5,7 +5,7 @@
 ![Stars 2017](https://img.shields.io/static/v1?label=2017&message=20*&color=yellow)
 ![Stars 2018](https://img.shields.io/static/v1?label=2018&message=50*&color=green)
 ![Stars 2019](https://img.shields.io/static/v1?label=2019&message=50*&color=green)
-![Stars 2020](https://img.shields.io/static/v1?label=2020&message=12*&color=yellow)
+![Stars 2020](https://img.shields.io/static/v1?label=2020&message=14*&color=yellow)
 
 My [Advent of Code](https://adventofcode.com/) solutions.
 
