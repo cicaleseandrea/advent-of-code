@@ -38,7 +38,8 @@ public class AoC062020Test extends Generic {
                         a
                         a
                         
-                        b""", "11" },
+                        b
+                        """, "11" },
                 { FIRST, getInput( INSTANCE ), "6457" },
                 { SECOND, """
                         abc
@@ -55,7 +56,8 @@ public class AoC062020Test extends Generic {
                         a
                         a
                         
-                        b""", "6" },
+                        b
+                        """, "6" },
                 { SECOND, getInput( INSTANCE ), "3260" }
         });
     }
