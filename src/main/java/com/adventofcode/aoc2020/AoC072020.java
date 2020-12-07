@@ -69,17 +69,17 @@ class AoC072020 implements Solution {
 
 	private static int countBagsContained(
 			final Multimap<String, Pair<String, Integer>> containsMap, final String input ) {
-		final Map<String, Integer> numberOfBagsContained = new HashMap<>( Map.of( input, 0 ) );
+		final Map<String, Integer> bagsContainedCount = new HashMap<>();
 		for ( final var insideDescription : containsMap.get( input ) ) {
 			final String insideName = insideDescription.getFirst();
 			final int insideNumber = insideDescription.getSecond();
-			final int insideNumberAllLevels = numberOfBagsContained.computeIfAbsent( insideName,
+			final int insideNumberAllLevels = bagsContainedCount.computeIfAbsent( insideName,
 					k -> countBagsContained( containsMap, k ) );
 
-			numberOfBagsContained.merge( input,
+			bagsContainedCount.merge( input,
 					insideNumber + ( insideNumber * insideNumberAllLevels ), Integer::sum );
 		}
-		return numberOfBagsContained.get( input );
+		return bagsContainedCount.getOrDefault( input, 0 );
 	}
 
 }
