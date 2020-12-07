@@ -24,10 +24,8 @@ public class AoC112015Test extends Generic {
     @Parameters(name = "{0}({index})->{2}")
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "111221", "0"},
-                {FIRST, getInput(INSTANCE), "0"},
-                {SECOND, "111221", "0"},
-                {SECOND, getInput(INSTANCE), "0"},
+                {FIRST, getInput(INSTANCE), "hepxxyzz"},
+                {SECOND, getInput(INSTANCE), "heqaabcc"},
         });
     }
 }
