@@ -10,6 +10,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation 'com.google.guava:guava:23.0'
+    implementation 'org.json:json:20201115'
     testImplementation 'junit:junit:4.12'
 }
 
