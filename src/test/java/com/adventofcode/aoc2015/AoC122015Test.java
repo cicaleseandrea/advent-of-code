@@ -28,11 +28,11 @@ public class AoC122015Test extends Generic {
                 {FIRST, "{\"a\":{\"b\":4},\"c\":-1}", "3"},
                 {FIRST, "{\"a\":[-1,1]}", "0"},
                 {FIRST, getInput(INSTANCE), "156366"},
-//                {SECOND, "[1,2,3]", "6"},
-//                {SECOND, "[1,{\"c\":\"red\",\"b\":2},3]", "4"},
+                {SECOND, "[1,2,3]", "6"},
+                {SECOND, "[1,{\"c\":\"red\",\"b\":2},3]", "4"},
                 {SECOND, "{\"d\":\"red\",\"e\":[1,2,3,4],\"f\":5}", "0"},
-//                {SECOND, "[1,\"red\",5]", "6"},
-                {SECOND, getInput(INSTANCE), "0"},
+                {SECOND, "[1,\"red\",5]", "6"},
+                {SECOND, getInput(INSTANCE), "96852"},
         });
     }
 }
