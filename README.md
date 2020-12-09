@@ -1,6 +1,6 @@
 # Advent of Code
 
-[![Stars 2015](https://img.shields.io/static/v1?label=2015&message=26*&color=yellow)](https://adventofcode.com/2015)
+[![Stars 2015](https://img.shields.io/static/v1?label=2015&message=28*&color=yellow)](https://adventofcode.com/2015)
 [![Stars 2016](https://img.shields.io/static/v1?label=2016&message=0*&color=red)](https://adventofcode.com/2016)
 [![Stars 2017](https://img.shields.io/static/v1?label=2017&message=20*&color=yellow)](https://adventofcode.com/2017)
 [![Stars 2018](https://img.shields.io/static/v1?label=2018&message=50*&color=green)](https://adventofcode.com/2018)
