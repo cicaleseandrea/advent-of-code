@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Triplet;
 
@@ -31,7 +29,6 @@ class AoC142015 implements Solution {
 		return solve( input, false );
 	}
 
-	@NotNull
 	private String solve( final Stream<String> input, final boolean first ) {
 		final var reindeer = input.map( line -> {
 			final var matcher = SPEED_REGEX.matcher( line );
