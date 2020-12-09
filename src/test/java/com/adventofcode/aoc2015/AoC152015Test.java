@@ -24,7 +24,10 @@ public class AoC152015Test extends Generic {
     @Parameters(name = "{0}({index})->{2}")
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "", "0"},
+                {FIRST, """
+                        Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
+                        Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3
+                        """, "0"},
                 {FIRST, getInput(INSTANCE), "0"},
                 {SECOND, "", "0"},
                 {SECOND, getInput(INSTANCE), "0"},
