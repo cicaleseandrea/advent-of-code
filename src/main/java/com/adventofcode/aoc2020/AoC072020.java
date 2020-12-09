@@ -20,8 +20,7 @@ import com.google.common.collect.Multimap;
 
 class AoC072020 implements Solution {
 
-	private static final Pattern BAGS_REGEX = Pattern.compile(
-			"((\\d)? ?([a-z]*[^no] [a-z]*)) bag" );
+	private static final Pattern BAGS_REGEX = Pattern.compile( "((\\d?) ?([a-z]* [a-z]*)) bag" );
 
 	@Override
 	public String solveFirstPart( final Stream<String> input ) {
@@ -48,7 +47,8 @@ class AoC072020 implements Solution {
 				.forEach( bags -> {
 					final String outside = bags.get( 0 ).group( 1 );
 					bags.subList( 1, bags.size() ).forEach( insideDescription -> {
-						final int insideNumber = atoi( insideDescription.group( 2 ) );
+						final int insideNumber = atoi( insideDescription.group( 2 )
+								.isEmpty() ? "0" : insideDescription.group( 2 ) );
 						final String insideName = insideDescription.group( 3 );
 						containedMap.put( insideName, outside );
 						containsMap.put( outside, new Pair<>( insideName, insideNumber ) );
