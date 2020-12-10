@@ -116,7 +116,7 @@ public class AoC102020Test extends Generic {
                         10
                         3
                         """, "19208"  },
-                { SECOND, getInput( INSTANCE ), "0" }
+                { SECOND, getInput( INSTANCE ), "14173478093824" }
         });
     }
 }
