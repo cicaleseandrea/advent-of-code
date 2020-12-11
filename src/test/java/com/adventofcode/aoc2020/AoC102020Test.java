@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.adventofcode.Generic;
 import com.adventofcode.Solution;
@@ -20,7 +21,7 @@ public class AoC102020Test extends Generic {
         super(INSTANCE, type, input, result);
     }
 
-    @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
+    @Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
                 { FIRST, """
