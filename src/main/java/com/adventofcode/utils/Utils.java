@@ -285,9 +285,9 @@ public class Utils {
         return PRINT;
     }
 
-    public static <E> void printMatrix( final List<List<E>> matrix ) {
-        for ( List<E> row : matrix ) {
-            for ( E e : row ) {
+    public static <E> void printMatrix( final List<? extends List<E>> matrix ) {
+        for ( final List<E> row : matrix ) {
+            for ( final E e : row ) {
                 System.out.print( e );
             }
             System.out.println();
