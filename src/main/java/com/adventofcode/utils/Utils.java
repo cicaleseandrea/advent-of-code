@@ -48,6 +48,10 @@ public class Utils {
 	private Utils() {
 	}
 
+	public static String reverseString( final String source ) {
+		return new StringBuilder( source ).reverse().toString();
+	}
+
 	public static String getFirstString( final Stream<String> s ) {
 		return s.findFirst().orElse( EMPTY );
 	}
