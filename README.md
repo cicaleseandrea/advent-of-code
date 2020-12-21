@@ -5,7 +5,7 @@
 [![Stars 2017](https://img.shields.io/static/v1?label=2017&message=20*&color=yellow)](https://adventofcode.com/2017)
 [![Stars 2018](https://img.shields.io/static/v1?label=2018&message=50*&color=green)](https://adventofcode.com/2018)
 [![Stars 2019](https://img.shields.io/static/v1?label=2019&message=50*&color=green)](https://adventofcode.com/2019)
-[![Stars 2020](https://img.shields.io/static/v1?label=2020&message=41*&color=yellow)](https://adventofcode.com/2020)
+[![Stars 2020](https://img.shields.io/static/v1?label=2020&message=42*&color=yellow)](https://adventofcode.com/2020)
 
 My [Advent of Code](https://adventofcode.com/) solutions.
 
