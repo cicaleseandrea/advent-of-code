@@ -29,6 +29,9 @@ tasks.withType(Test) {
         outputs.upToDateWhen {false}
         showStandardStreams = true
     }
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    reports.html.enabled = false
+    reports.junitXml.enabled = false
 }
 tasks.withType(JavaExec) {
     jvmArgs += "--enable-preview"
