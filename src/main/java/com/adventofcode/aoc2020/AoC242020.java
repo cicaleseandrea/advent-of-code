@@ -1,5 +1,11 @@
 package com.adventofcode.aoc2020;
 
+import static com.adventofcode.aoc2020.AoC242020.Direction.E;
+import static com.adventofcode.aoc2020.AoC242020.Direction.NE;
+import static com.adventofcode.aoc2020.AoC242020.Direction.NW;
+import static com.adventofcode.aoc2020.AoC242020.Direction.SE;
+import static com.adventofcode.aoc2020.AoC242020.Direction.SW;
+import static com.adventofcode.aoc2020.AoC242020.Direction.W;
 import static com.adventofcode.utils.Utils.getIterable;
 import static com.adventofcode.utils.Utils.itoa;
 
@@ -12,20 +18,12 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Triplet;
+import com.adventofcode.utils.Pair;
 
 class AoC242020 implements Solution {
-	private static final int E = 0;
-	private static final int NE = 1;
-	private static final int NW = 2;
-	private static final int W = 3;
-	private static final int SW = 4;
-	private static final int SE = 5;
-
-	private static final Map<Integer, Triplet<Integer, Integer, Integer>> DIRECTIONS = Map.of( E,
-			new Triplet<>( +1, -1, 0 ), NE, new Triplet<>( +1, 0, -1 ), NW,
-			new Triplet<>( 0, +1, -1 ), W, new Triplet<>( -1, +1, 0 ), SW,
-			new Triplet<>( -1, 0, +1 ), SE, new Triplet<>( 0, -1, +1 ) );
+	private static final Map<Direction, Pair<Integer, Integer>> DIRECTIONS = Map.of( E,
+			new Pair<>( +1, 0 ), NE, new Pair<>( +1, -1 ), NW, new Pair<>( 0, -1 ), W,
+			new Pair<>( -1, 0 ), SW, new Pair<>( -1, +1 ), SE, new Pair<>( 0, +1 ) );
 
 	@Override
 	public String solveFirstPart( final Stream<String> input ) {
@@ -39,16 +37,16 @@ class AoC242020 implements Solution {
 
 	@NotNull
 	private String solve( final Stream<String> input, final boolean first ) {
-		Map<Triplet<Integer, Integer, Integer>, Integer> floor = new HashMap<>();
+		Map<Pair<Integer, Integer>, Integer> floor = new HashMap<>();
 		for ( final var line : getIterable( input ) ) {
-			var tile = new Triplet<>( 0, 0, 0 );
+			var tile = new Pair<>( 0, 0 );
 			for ( final var direction : getDirections( line ) ) {
 				tile = addTiles( tile, DIRECTIONS.get( direction ) );
 			}
 			floor.merge( tile, 1, Integer::sum );
 		}
 		if ( !first ) {
-			Map<Triplet<Integer, Integer, Integer>, Integer> prevFloor;
+			Map<Pair<Integer, Integer>, Integer> prevFloor;
 			for ( int i = 0; i < 100; i++ ) {
 				prevFloor = floor;
 				floor = new HashMap<>();
@@ -68,23 +66,8 @@ class AoC242020 implements Solution {
 		return itoa( floor.values().stream().filter( color -> color % 2 == 1 ).count() );
 	}
 
-	private List<Integer> getDirections( final String line ) {
-		final ArrayList<Integer> directions = new ArrayList<>();
-		for ( int i = 0; i < line.length(); i++ ) {
-			final int direction = switch ( line.charAt( i ) ) {
-				case 'e' -> E;
-				case 'w' -> W;
-				case 'n' -> line.charAt( ++i ) == 'w' ? NW : NE;
-				case 's' -> line.charAt( ++i ) == 'w' ? SW : SE;
-				default -> throw new IllegalStateException();
-			};
-			directions.add( direction );
-		}
-		return directions;
-	}
-
-	private int newColor( final Triplet<Integer, Integer, Integer> tilePos, int tileColor,
-			final Map<Triplet<Integer, Integer, Integer>, Integer> floor ) {
+	private int newColor( final Pair<Integer, Integer> tilePos, int tileColor,
+			final Map<Pair<Integer, Integer>, Integer> floor ) {
 		int neighbours = 0;
 		for ( final var direction : DIRECTIONS.values() ) {
 			final var neighbour = addTiles( tilePos, direction );
@@ -99,11 +82,34 @@ class AoC242020 implements Solution {
 		}
 	}
 
-	private Triplet<Integer, Integer, Integer> addTiles(
-			final Triplet<Integer, Integer, Integer> tileA,
-			final Triplet<Integer, Integer, Integer> tileB ) {
-		return new Triplet<>( tileA.getFirst() + tileB.getFirst(),
-				tileA.getSecond() + tileB.getSecond(), tileA.getThird() + tileB.getThird() );
+	private List<Direction> getDirections( final String line ) {
+		final ArrayList<Direction> directions = new ArrayList<>();
+		for ( int i = 0; i < line.length(); i++ ) {
+			final Direction direction = switch ( line.charAt( i ) ) {
+				case 'e' -> E;
+				case 'w' -> W;
+				case 'n' -> line.charAt( ++i ) == 'w' ? NW : NE;
+				case 's' -> line.charAt( ++i ) == 'w' ? SW : SE;
+				default -> throw new IllegalStateException();
+			};
+			directions.add( direction );
+		}
+		return directions;
+	}
+
+	private Pair<Integer, Integer> addTiles( final Pair<Integer, Integer> tileA,
+			final Pair<Integer, Integer> tileB ) {
+		return new Pair<>( tileA.getFirst() + tileB.getFirst(),
+				tileA.getSecond() + tileB.getSecond() );
+	}
+
+	enum Direction {
+		E,
+		NE,
+		NW,
+		W,
+		SW,
+		SE,
 	}
 
 }
