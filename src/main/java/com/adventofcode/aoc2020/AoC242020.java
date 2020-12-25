@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
 
@@ -35,7 +33,6 @@ class AoC242020 implements Solution {
 		return solve( input, false );
 	}
 
-	@NotNull
 	private String solve( final Stream<String> input, final boolean first ) {
 		Map<Pair<Integer, Integer>, Integer> floor = new HashMap<>();
 		for ( final var line : getIterable( input ) ) {
