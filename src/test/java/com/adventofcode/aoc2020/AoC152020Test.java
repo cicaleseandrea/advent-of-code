@@ -33,12 +33,6 @@ public class AoC152020Test extends Generic {
                 { FIRST, "3,1,2", "1836"  },
                 { FIRST, getInput( INSTANCE ), "240" },
                 { SECOND, "0,3,6", "175594"  },
-                { SECOND, "1,3,2", "2578"  },
-                { SECOND, "2,1,3", "3544142"  },
-                { SECOND, "1,2,3", "261214"  },
-                { SECOND, "2,3,1", "6895259"  },
-                { SECOND, "3,2,1", "18"  },
-                { SECOND, "3,1,2", "362"  },
                 { SECOND, getInput( INSTANCE ), "505" }
         });
     }
