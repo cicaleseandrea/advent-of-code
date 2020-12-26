@@ -75,8 +75,8 @@ class AoC212018 implements Solution {
         long prev = 0;
         long a = 0;
         long b;
-        //TODO this only works for my input...
-        //program optimized
+        // this only works for my input...
+        // program optimized
         while (!crash) {
             prev = a;
             b = a | 65536;
