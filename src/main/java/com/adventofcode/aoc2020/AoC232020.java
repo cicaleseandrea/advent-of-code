@@ -1,19 +1,17 @@
 package com.adventofcode.aoc2020;
 
-import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import static com.adventofcode.utils.Utils.getFirstString;
+import static com.adventofcode.utils.Utils.incrementMod;
 import static com.adventofcode.utils.Utils.itoa;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.LinkedListNode;
 import com.adventofcode.utils.Utils;
 
 class AoC232020 implements Solution {
@@ -30,84 +28,59 @@ class AoC232020 implements Solution {
 
 	private String solve( final Stream<String> input, final boolean first ) {
 		final int maxCups = first ? 9 : 1_000_000;
-		final Map<Integer, LinkedListNode<Integer>> labelToCup = new HashMap<>();
-		var current = initialize( input, maxCups, labelToCup );
+		final int[] cupToNext = initialize( input, maxCups );
+		int current = cupToNext[0];
 		for ( int i = 0; i < ( first ? 100 : 10_000_000 ); i++ ) {
-			// select 3 cups head
-			final var subStart = current.next;
+			// select 3 cups
+			final int cup1 = cupToNext[current];
+			final int cup2 = cupToNext[cup1];
+			final int cup3 = cupToNext[cup2];
 			// detach main list from 3 cups
-			current.next = current.next.next.next.next;
-			// detach and save sublist
-			final HashSet<Integer> subset = new HashSet<>();
-			var subEnd = detachSublist( subset, subStart );
-			final var destination = labelToCup.get(
-					getDestinationLabel( current.getValue(), subset, maxCups ) );
+			cupToNext[current] = cupToNext[cup3];
+			// find destination
+			final int destination = getDestinationLabel( current, maxCups,
+					List.of( cup1, cup2, cup3 ) );
 			// insert 3 cups after destination
-			subEnd.next = destination.next;
-			destination.next = subStart;
+			final int destinationNext = cupToNext[destination];
+			cupToNext[destination] = cup1;
+			cupToNext[cup3] = destinationNext;
 
-			current = current.next;
+			current = cupToNext[current];
 		}
-		while ( current.getValue() != 1 ) {
-			current = current.next;
-		}
+		current = cupToNext[1];
 		if ( first ) {
-			return Stream.generate( current.iterator()::next )
-					.skip( 1 )
-					.limit( maxCups - 1L )
-					.map( LinkedListNode::getValue )
-					.map( Utils::itoa )
-					.collect( joining() );
-		} else {
-			return itoa( (long) current.next.getValue() * current.next.next.getValue() );
-		}
-	}
-
-	private LinkedListNode<Integer> initialize( final Stream<String> input, final int maxCups,
-			final Map<Integer, LinkedListNode<Integer>> labelToCup ) {
-		final var cups = IntStream.concat( getFirstString( input ).chars().map( Utils::charToInt ),
-				IntStream.rangeClosed( 10, maxCups ) );
-		var head = new LinkedListNode<>( 0 );
-		var current = head;
-		for ( final var cup : (Iterable<Integer>) cups::iterator ) {
-			current.next = new LinkedListNode<>( cup );
-			current = current.next;
-			// save nodes for faster retrieval
-			labelToCup.put( cup, current );
-		}
-		head = head.next;
-		// make list circular
-		current.next = head;
-		return head;
-	}
-
-	private LinkedListNode<Integer> detachSublist( final HashSet<Integer> subset,
-			final LinkedListNode<Integer> subStart ) {
-		var subEnd = subStart;
-		final int size = 3;
-		for ( int j = 0; j < size; j++ ) {
-			// save nodes for faster retrieval
-			subset.add( subEnd.getValue() );
-			if ( j < size - 1 ) {
-				subEnd = subEnd.next;
-			} else {
-				// detach 3 cups from main list
-				subEnd.next = null;
+			final StringBuilder result = new StringBuilder();
+			for ( int i = 0; i < maxCups - 1; i++ ) {
+				result.append( current );
+				current = cupToNext[current];
 			}
+			return result.toString();
+		} else {
+			return itoa( (long) current * cupToNext[current] );
 		}
-		return subEnd;
 	}
 
-	private int getDestinationLabel( final int currentLabel, final Collection<Integer> sublist,
-			final int max ) {
-		int destination = currentLabel;
+	private int[] initialize( final Stream<String> input, final int maxCups ) {
+		final int[] cupToNext = new int[maxCups + 1];
+		final List<Integer> cups = IntStream.concat(
+				getFirstString( input ).chars().map( Utils::charToInt ),
+				IntStream.rangeClosed( 10, maxCups ) ).boxed().collect( toList() );
+		for ( int i = 0; i < cups.size(); i++ ) {
+			cupToNext[cups.get( i )] = cups.get( incrementMod( i, maxCups ) );
+		}
+		cupToNext[0] = cups.get( 0 );
+		return cupToNext;
+	}
+
+	private int getDestinationLabel( final int current, final int max,
+			final Collection<Integer> subset ) {
+		int destination = current;
 		do {
-			if ( destination > 1 ) {
-				destination--;
-			} else {
+			destination--;
+			if ( destination == 0 ) {
 				destination = max;
 			}
-		} while ( sublist.contains( destination ) );
+		} while ( subset.contains( destination ) );
 		return destination;
 	}
 
