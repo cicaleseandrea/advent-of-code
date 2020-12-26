@@ -10,9 +10,11 @@ import static com.adventofcode.utils.Utils.getIterable;
 import static com.adventofcode.utils.Utils.itoa;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
@@ -34,53 +36,57 @@ class AoC242020 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final boolean first ) {
-		Map<Pair<Integer, Integer>, Integer> floor = new HashMap<>();
+		Set<Pair<Integer, Integer>> blackTiles = new HashSet<>();
 		for ( final var line : getIterable( input ) ) {
 			var tile = new Pair<>( 0, 0 );
 			for ( final var direction : getDirections( line ) ) {
-				tile = addTiles( tile, DIRECTIONS.get( direction ) );
+				tile = addTiles( tile, direction );
 			}
-			floor.merge( tile, 1, Integer::sum );
+			// flip tile
+			if ( !blackTiles.add( tile ) ) {
+				blackTiles.remove( tile );
+			}
 		}
 		if ( !first ) {
-			Map<Pair<Integer, Integer>, Integer> prevFloor;
 			for ( int i = 0; i < 100; i++ ) {
-				prevFloor = floor;
-				floor = new HashMap<>();
-				for ( final var tile : prevFloor.entrySet() ) {
-					final var tilePos = tile.getKey();
-					floor.put( tilePos, newColor( tilePos, tile.getValue(), prevFloor ) );
-					for ( final var direction : DIRECTIONS.values() ) {
-						final var neighbour = addTiles( tilePos, direction );
-						if ( !prevFloor.containsKey( neighbour ) && !floor.containsKey(
-								neighbour ) ) {
-							floor.put( neighbour, newColor( neighbour, 0, prevFloor ) );
-						}
+				final var prevBlackTiles = blackTiles;
+				blackTiles = new HashSet<>();
+				for ( final var blackTile : prevBlackTiles ) {
+					if ( newColorIsBlack( blackTile, true, prevBlackTiles ) ) {
+						blackTiles.add( blackTile );
 					}
+					DIRECTIONS.values()
+							.stream()
+							.map( direction -> addTiles( blackTile, direction ) )
+							.filter( Predicate.not( prevBlackTiles::contains ) )
+							.filter( Predicate.not( blackTiles::contains ) )
+							.filter( neighbour -> newColorIsBlack( neighbour, false,
+									prevBlackTiles ) )
+							.forEach( blackTiles::add );
 				}
 			}
 		}
-		return itoa( floor.values().stream().filter( color -> color % 2 == 1 ).count() );
+		return itoa( blackTiles.size() );
 	}
 
-	private int newColor( final Pair<Integer, Integer> tilePos, int tileColor,
-			final Map<Pair<Integer, Integer>, Integer> floor ) {
-		int neighbours = 0;
-		for ( final var direction : DIRECTIONS.values() ) {
-			final var neighbour = addTiles( tilePos, direction );
-			neighbours += floor.getOrDefault( neighbour, 0 ) % 2;
-		}
-		if ( tileColor % 2 == 1 && ( neighbours == 0 || neighbours > 2 ) ) {
-			return 0;
-		} else if ( tileColor % 2 == 0 && neighbours == 2 ) {
-			return 1;
+	private static boolean newColorIsBlack( final Pair<Integer, Integer> tilePos,
+			final boolean isBlackTile, final Set<Pair<Integer, Integer>> blackTiles ) {
+		final long blackNeighbours = DIRECTIONS.values()
+				.stream()
+				.map( direction -> addTiles( tilePos, direction ) )
+				.filter( blackTiles::contains )
+				.count();
+		if ( isBlackTile && ( blackNeighbours == 0 || blackNeighbours > 2 ) ) {
+			return false;
+		} else if ( !isBlackTile && blackNeighbours == 2 ) {
+			return true;
 		} else {
-			return tileColor;
+			return isBlackTile;
 		}
 	}
 
-	private List<Direction> getDirections( final String line ) {
-		final ArrayList<Direction> directions = new ArrayList<>();
+	private static List<Pair<Integer, Integer>> getDirections( final String line ) {
+		final List<Pair<Integer, Integer>> directions = new ArrayList<>();
 		for ( int i = 0; i < line.length(); i++ ) {
 			final Direction direction = switch ( line.charAt( i ) ) {
 				case 'e' -> E;
@@ -89,12 +95,12 @@ class AoC242020 implements Solution {
 				case 's' -> line.charAt( ++i ) == 'w' ? SW : SE;
 				default -> throw new IllegalStateException();
 			};
-			directions.add( direction );
+			directions.add( DIRECTIONS.get( direction ) );
 		}
 		return directions;
 	}
 
-	private Pair<Integer, Integer> addTiles( final Pair<Integer, Integer> tileA,
+	private static Pair<Integer, Integer> addTiles( final Pair<Integer, Integer> tileA,
 			final Pair<Integer, Integer> tileB ) {
 		return new Pair<>( tileA.getFirst() + tileB.getFirst(),
 				tileA.getSecond() + tileB.getSecond() );
