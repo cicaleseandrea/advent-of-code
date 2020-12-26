@@ -1,73 +1,70 @@
 package com.adventofcode.aoc2015;
 
+import static java.util.stream.Collectors.toList;
+
+import static com.adventofcode.aoc2015.AoC062015.Instruction.OFF;
+import static com.adventofcode.aoc2015.AoC062015.Instruction.ON;
+import static com.adventofcode.aoc2015.AoC062015.Instruction.TOGGLE;
 import static com.adventofcode.utils.Utils.itoa;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.IntUnaryOperator;
+import java.util.regex.MatchResult;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
 import com.adventofcode.utils.Utils;
 
 class AoC062015 implements Solution {
 
 	@Override
 	public String solveFirstPart( final Stream<String> input ) {
-		return solve( input, true );
+		return solve( input,
+				Map.of( ON, light -> 1, OFF, light -> 0, TOGGLE, light -> light ^ 1 ) );
 	}
 
 	@Override
 	public String solveSecondPart( final Stream<String> input ) {
-		return solve( input, false );
+		return solve( input,
+				Map.of( ON, light -> light + 1, OFF, light -> Math.max( light - 1, 0 ), TOGGLE,
+						light -> light + 2 ) );
 	}
 
-	private String solve( final Stream<String> input, final boolean first ) {
-		//TODO optimize!!
-		final Map<Pair<Long, Long>, Long> lights = new HashMap<>();
+	private String solve( final Stream<String> input,
+			final Map<Instruction, IntUnaryOperator> instructions ) {
+		final int[][] lights = new int[1000][1000];
 		input.forEach( line -> {
-			final List<Long> numbers = Utils.toLongList( line );
-			final Consumer<Pair<Long, Long>> consumer = getConsumer( first, lights, line );
-			for ( long y = numbers.get( 1 ); y <= numbers.get( 3 ); y++ ) {
-				for ( long x = numbers.get( 0 ); x <= numbers.get( 2 ); x++ ) {
-					consumer.accept( new Pair<>( x, y ) );
+			final var numbers = Utils.LONG_PATTERN.matcher( line )
+					.results()
+					.map( MatchResult::group )
+					.map( Utils::atoi )
+					.collect( toList() );
+			final var instruction = getInstruction( line, instructions );
+			for ( int y = numbers.get( 1 ); y <= numbers.get( 3 ); y++ ) {
+				for ( int x = numbers.get( 0 ); x <= numbers.get( 2 ); x++ ) {
+					lights[x][y] = instruction.applyAsInt( lights[x][y] );
 				}
 			}
 		} );
-		return itoa( lights.values().stream().mapToLong( Long::valueOf ).sum() );
+		return itoa( Arrays.stream( lights ).flatMapToInt( Arrays::stream ).sum() );
 	}
 
-	private Consumer<Pair<Long, Long>> getConsumer( final boolean first,
-			final Map<Pair<Long, Long>, Long> lights, final String line ) {
+	private IntUnaryOperator getInstruction( final String line,
+			final Map<Instruction, IntUnaryOperator> instructions ) {
 		if ( line.startsWith( "toggle" ) ) {
-			if ( first ) {
-				return ( pos ) -> toggle( lights, pos );
-			} else {
-				return ( pos ) -> increase( lights, pos, 2L );
-			}
+			return instructions.get( TOGGLE );
+		} else if ( line.contains( "off" ) ) {
+			return instructions.get( OFF );
 		} else {
-			final boolean off = line.contains( "off" );
-			if ( first ) {
-				return ( pos ) -> set( lights, pos, off ? 0L : 1L );
-			} else {
-				return ( pos ) -> increase( lights, pos, off ? -1L : 1L );
-			}
+			return instructions.get( ON );
 		}
 	}
 
-	private void set( final Map<Pair<Long, Long>, Long> lights, final Pair<Long, Long> pos,
-			final Long onOff ) {
-		lights.put( pos, onOff );
+	enum Instruction {
+		TOGGLE,
+		ON,
+		OFF
 	}
 
-	private void toggle( final Map<Pair<Long, Long>, Long> lights, final Pair<Long, Long> pos ) {
-		lights.merge( pos, 1L, ( old, val ) -> old ^ val );
-	}
-
-	private void increase( final Map<Pair<Long, Long>, Long> lights, final Pair<Long, Long> pos,
-			final Long num ) {
-		lights.merge( pos, Math.max( 0, num ), ( old, val ) -> Math.max( 0, old + num ) );
-	}
 }
