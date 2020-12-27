@@ -1,9 +1,14 @@
 package com.adventofcode.aoc2015;
 
+import static java.util.Comparator.naturalOrder;
+
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -23,11 +28,12 @@ class AoC042015 implements Solution {
 	}
 
 	private String solve( final String secret, final int startingZeros ) {
-		return itoa( IntStream.iterate( 0, i -> i + 1 )
+		final Set<Integer> result = Collections.synchronizedSet( new HashSet<>() );
+		IntStream.iterate( 0, i -> result.isEmpty(), i -> i + 1 )
 				.parallel()
 				.filter( i -> startsWithZeros( computeHash( secret + i ), startingZeros ) )
-				.findFirst()
-				.orElseThrow() );
+				.forEach( result::add );
+		return itoa( result.stream().min( naturalOrder() ).orElseThrow() );
 	}
 
 	private boolean startsWithZeros( final byte[] bytes, final int startingZeros ) {
