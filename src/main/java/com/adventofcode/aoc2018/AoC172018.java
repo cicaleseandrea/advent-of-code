@@ -19,154 +19,157 @@ import com.adventofcode.utils.Pair;
 
 class AoC172018 implements Solution {
 
-    private static String solve(final Stream<String> input,
-                                final Predicate<Map.Entry<Pair<Integer, Integer>, Character>> count) {
-        final Map<Pair<Integer, Integer>, Character> map = new HashMap<>();
-        final var points = init(input, map);
-        final int firstY = points.getFirst().getSecond();
-        final int lastY = points.getSecond().getSecond();
-        final Pair<Integer, Integer> source = new Pair<>(500, 0);
-        map.put(source, PIPE);
-        fall(map, source, points);
+    public String solveFirstPart( final Stream<String> input ) {
+        return solve( input, c -> c == TILDE || c == PIPE );
+    }
+
+    public String solveSecondPart( final Stream<String> input ) {
+        return solve( input, c -> c == TILDE );
+    }
+
+    private static String solve( final Stream<String> input, final Predicate<Character> count ) {
+        final var borders = new Pair<>( new Pair<>( 0, 0 ), new Pair<>( 0, 0 ) );
+        final char[][] map = initialize( input, borders );
+        int x = 500;
+        int y = 0;
+        map[x][y] = PIPE;
+        final int lastY = borders.getSecond().getSecond();
+        fall( map, x, y, lastY );
         if ( shouldPrint() ) {
-            print( map, points );
+            print( map, borders );
         }
-        return itoa(map.entrySet().stream().
-                filter(e -> count.test(e) || e.getValue() == TILDE)
-                .filter(e -> e.getKey().getSecond() >= firstY && e.getKey().getSecond() <= lastY)
-                .count());
+        return itoa( countWater( map, borders, count ) );
     }
 
-    private static void fall(final Map<Pair<Integer, Integer>, Character> map, final Pair<Integer, Integer> source,
-                             final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> points) {
-        //never move x, only y
-        final int x = source.getFirst();
-        int y = source.getSecond();
-        Pair<Integer, Integer> curr = new Pair<>(x, y);
-        final int lastY = points.getSecond().getSecond();
-        //fall until you go under the last point or you hit clay (#) or still water (~)
-        while (y <= lastY && canFlow(map, curr)) {
-            //running water
-            map.put(curr, PIPE);
+    private static void fall( final char[][] map, final int x, int y, final int lastY ) {
+        boolean withinBorders;
+        // fall until you go under the last point or you hit clay (#) or still water (~)
+        while ( ( withinBorders = y <= lastY ) && canFlow( map[x][y] ) ) {
+            // running water
+            map[x][y] = PIPE;
             y++;
-            curr = new Pair<>(x, y);
         }
-        //if you did not go under the last point, spread out horizontally
-        if (y <= lastY) {
-            boolean fallLeft;
-            boolean fallRight;
+        // if you did not go under the last point, spread out horizontally
+        if ( withinBorders ) {
+            boolean fall;
             do {
-                //when blocked, go up and fill with running water
+                // when blocked, go up and fill with running water
                 y--;
-                fallLeft = fill(true, map, new Pair<>(x, y), PIPE, points);
-                fallRight = fill(false, map, new Pair<>(x + 1, y), PIPE, points);
-                //if the water is blocked, this level becomes still water
-                if (!fallLeft && !fallRight) {
-                    fill(true, map, new Pair<>(x, y), TILDE, points);
-                    fill(false, map, new Pair<>(x + 1, y), TILDE, points);
+                final boolean fallLeft = fill( true, map, x, y, PIPE, lastY );
+                final boolean fallRight = fill( false, map, x + 1, y, PIPE, lastY );
+                fall = fallLeft || fallRight;
+                // if the water is blocked, this level becomes still water
+                if ( !fall ) {
+                    fill( true, map, x, y, TILDE, lastY );
+                    fill( false, map, x + 1, y, TILDE, lastY );
                 }
-            } while (!fallLeft && !fallRight);
+            } while ( !fall );
         }
     }
 
-    private static boolean fill(final boolean left, final Map<Pair<Integer, Integer>, Character> map,
-                                final Pair<Integer, Integer> source, final char water,
-                                final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> points) {
-        //never move y, only x
-        int y = source.getSecond();
-        int x = source.getFirst();
-        Pair<Integer, Integer> curr = new Pair<>(x, y);
-        Pair<Integer, Integer> under = new Pair<>(x, y + 1);
-        //move until you either fall or hit clay (#) or still water (~)
-        while (!canFlow(map, under) && canFlow(map, curr)) {
-            //fill with water
-            map.put(curr, water);
-            if (left) {
+    private static boolean fill( final boolean left, final char[][] map, int x, int y,
+            final char water, final int lastY ) {
+        boolean fall;
+        // move until you either fall or hit clay (#) or still water (~)
+        while ( !( fall = canFlow( map[x][y + 1] ) ) && canFlow( map[x][y] ) ) {
+            // fill with water
+            map[x][y] = water;
+            if ( left ) {
                 x--;
             } else {
                 x++;
             }
-            curr = new Pair<>(x, y);
-            under = new Pair<>(x, y + 1);
         }
-        //fall
-        final boolean fall = canFlow(map, under);
-        if (fall) {
-            fall(map, curr, points);
+        // fall
+        if ( fall ) {
+            fall( map, x, y, lastY );
         }
         return fall;
     }
 
-    private static boolean canFlow(final Map<Pair<Integer, Integer>, Character> map, final Pair<Integer, Integer> curr) {
-        return map.getOrDefault(curr, PIPE) == PIPE;
+    private static int countWater( final char[][] map,
+            final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> borders,
+            final Predicate<Character> count ) {
+        final int firstX = 0;
+        final int firstY = borders.getFirst().getSecond();
+        final int lastX = borders.getSecond().getFirst();
+        final int lastY = borders.getSecond().getSecond();
+        int res = 0;
+        for ( int y = firstY; y <= lastY; y++ ) {
+            for ( int x = firstX; x <= lastX; x++ ) {
+                if ( count.test( map[x][y] ) ) {
+                    res++;
+                }
+            }
+        }
+        return res;
     }
 
-    private static Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> init(final Stream<String> input,
-                                                                             final Map<Pair<Integer, Integer>, Character> map) {
-        int maxX = 0;
-        int maxY = 0;
-        int minX = Integer.MAX_VALUE;
-        int minY = Integer.MAX_VALUE;
-        for (final String row : getIterable(input)) {
-            final boolean startX = row.charAt(0) == 'x';
-            String[] tmp = row.split("=");
+    private static char[][] initialize( final Stream<String> input,
+            final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> borders ) {
+        final Map<Pair<Integer, Integer>, Character> temporaryMap = new HashMap<>();
+        for ( final String row : getIterable( input ) ) {
+            final boolean startX = row.charAt( 0 ) == 'x';
+            String[] tmp = row.split( "=" );
             int x = 0;
             int y = 0;
             int i = extractIntegerFromString( tmp[1] );
-            if (startX) {
+            if ( startX ) {
                 x = i;
-                maxX = Math.max(maxX, i);
-                minX = Math.min(minX, i);
             } else {
                 y = i;
-                maxY = Math.max(maxY, i);
-                minY = Math.min(minY, i);
             }
-            tmp = tmp[2].split("\\.+");
+            tmp = tmp[2].split( "\\.+" );
             final int min = extractIntegerFromString( tmp[0] );
             final int max = extractIntegerFromString( tmp[1] );
-            for (i = min; i <= max; i++) {
-                if (startX) {
+            for ( i = min; i <= max; i++ ) {
+                if ( startX ) {
                     y = i;
-                    maxY = Math.max(maxY, i);
-                    minY = Math.min(minY, i);
                 } else {
                     x = i;
-                    maxX = Math.max(maxX, i);
-                    minX = Math.min(minX, i);
                 }
-                final Pair<Integer, Integer> position = new Pair<>(x, y);
-                map.put(position, HASH);
+                temporaryMap.put( new Pair<>( x, y ), HASH );
             }
         }
-        final Pair<Integer, Integer> first = new Pair<>(minX, minY);
-        final Pair<Integer, Integer> last = new Pair<>(maxX, maxY);
-        return new Pair<>(first, last);
+        final var statsX = temporaryMap.keySet()
+                .stream()
+                .mapToInt( Pair::getFirst )
+                .summaryStatistics();
+        final var statsY = temporaryMap.keySet()
+                .stream()
+                .mapToInt( Pair::getSecond )
+                .summaryStatistics();
+        borders.getFirst().setFirst( statsX.getMin() );
+        borders.getFirst().setSecond( statsY.getMin() );
+        borders.getSecond().setFirst( statsX.getMax() );
+        borders.getSecond().setSecond( statsY.getMax() );
+        final char[][] map = new char[statsX.getMax() + 1][statsY.getMax() + 1];
+        for ( final var point : temporaryMap.entrySet() ) {
+            map[point.getKey().getFirst()][point.getKey().getSecond()] = point.getValue();
+        }
+        return map;
     }
 
-    private static void print(final Map<Pair<Integer, Integer>, Character> map,
-                              final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> points) {
-        final Pair<Integer, Integer> first = points.getFirst();
-        final Pair<Integer, Integer> last = points.getSecond();
-        for (int y = first.getSecond(); y <= last.getSecond(); y++) {
-            for (int x = first.getFirst(); x <= last.getFirst(); x++) {
-                System.out.print(map.getOrDefault(new Pair<>(x, y), SPACE));
+    private static void print( final char[][] map,
+            final Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> borders ) {
+        final Pair<Integer, Integer> first = borders.getFirst();
+        final Pair<Integer, Integer> last = borders.getSecond();
+        for ( int y = first.getSecond(); y <= last.getSecond(); y++ ) {
+            for ( int x = first.getFirst(); x <= last.getFirst(); x++ ) {
+                final char c = map[x][y];
+                System.out.print( c == 0 ? SPACE : c );
             }
             System.out.println();
         }
         System.out.println();
         try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
+            Thread.sleep( 2000 );
+        } catch ( InterruptedException e ) {
             e.printStackTrace();
         }
     }
 
-    public String solveFirstPart(final Stream<String> input) {
-        return solve(input, e -> e.getValue() == PIPE);
-    }
-
-    public String solveSecondPart(final Stream<String> input) {
-        return solve(input, e -> false);
+    private static boolean canFlow( final char c ) {
+        return c != HASH && c != TILDE;
     }
 }
