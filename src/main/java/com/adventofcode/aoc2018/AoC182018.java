@@ -10,6 +10,7 @@ import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.PIPE;
 import static com.adventofcode.utils.Utils.clearScreen;
 import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.shouldPrint;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,30 +25,28 @@ import com.adventofcode.utils.Utils;
 
 class AoC182018 implements Solution {
 
-	private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
-
-    private static String solve(final Stream<String> input, long maxIter) {
-        var curr = getInitialState(input);
-        final Map<List<List<Character>>, Long> seen = new HashMap<>();
-        Optional<Long> prev = Optional.empty();
-        long iter = 0;
-        //stop when you have a cycle or computed all generations
-        while (prev.isEmpty() && ++iter <= maxIter) {
+	private static String solve( final Stream<String> input, long maxIter ) {
+		var curr = getInitialState( input );
+		final Map<List<List<Character>>, Long> seen = new HashMap<>();
+		Optional<Long> prev = Optional.empty();
+		long iter = 0;
+		//stop when you have a cycle or computed all generations
+		while ( prev.isEmpty() && ++iter <= maxIter ) {
 			print( curr );
-            final List<List<Character>> next = new ArrayList<>();
-            for (int i = 0; i < curr.size(); i++) {
-                final ArrayList<Character> tmp = new ArrayList<>();
-                for (int j = 0; j < curr.get(0).size(); j++) {
-                    //compute cell for next generation
-                    tmp.add(computeCell(curr, i, j));
-                }
-                //store next generation
-                next.add(tmp);
-            }
-            curr = next;
-            //check if we have a cycle
-            prev = Optional.ofNullable(seen.put(next, iter));
-        }
+			final List<List<Character>> next = new ArrayList<>();
+			for ( int i = 0; i < curr.size(); i++ ) {
+				final ArrayList<Character> tmp = new ArrayList<>();
+				for ( int j = 0; j < curr.get( 0 ).size(); j++ ) {
+					//compute cell for next generation
+					tmp.add( computeCell( curr, i, j ) );
+				}
+				//store next generation
+				next.add( tmp );
+			}
+			curr = next;
+			//check if we have a cycle
+			prev = Optional.ofNullable( seen.put( next, iter ) );
+		}
         var res = curr;
         if (prev.isPresent()) {
             //in case of cycle compute the result
@@ -92,7 +91,7 @@ class AoC182018 implements Solution {
     }
 
 	private static void print( final List<List<Character>> curr ) {
-		if ( PRINT ) {
+		if ( shouldPrint() ) {
 			try {
 				clearScreen();
 				Thread.sleep( 100 );
