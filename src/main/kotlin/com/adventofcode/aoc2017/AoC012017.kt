@@ -9,7 +9,7 @@ object AoC012017 : Solution {
     private fun String.computeSum(nextIndex: (Int) -> Int): String =
         asSequence()
             .filterIndexed { i, ch -> ch == this[nextIndex(i)] }
-            .sumBy(::charToInt)
+            .sumOf(::charToInt)
             .run { toString() }
 
     override fun solveFirstPart(input: Stream<String>): String =

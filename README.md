@@ -20,13 +20,11 @@ My [Advent of Code](https://adventofcode.com/) solutions.
 
 
 ## Requirements
-The project uses java 15 with *preview features*.
-
-You will need JDK 15. By default the project will look for it in `/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home`
+You will need JDK 17. By default the project will look for it in `/Library/Java/JavaVirtualMachines/temurin-17.0.1/Contents/Home`
 
 You can also specify your own JDK path like this when using gradle:
 
-`./gradlew <command> -Dorg.gradle.java.home=/path/to/java15`
+`./gradlew <command> -Dorg.gradle.java.home=/path/to/java17`
 
 ## Run Unit Tests
 Run all tests:
