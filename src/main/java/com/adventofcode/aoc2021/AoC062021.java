@@ -1,9 +1,8 @@
 package com.adventofcode.aoc2021;
 
 import static com.adventofcode.utils.Utils.itoa;
-import static com.adventofcode.utils.Utils.toLongList;
+import static com.adventofcode.utils.Utils.toLongStream;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -27,13 +26,10 @@ class AoC062021 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final int days ) {
-		final var ages = new ArrayList<>( toLongList( input.findFirst().orElseThrow() ) );
-		long result = 0;
-		for ( final long age : ages ) {
-			result += solve( age, days );
-		}
+		final var ages = toLongStream( input.findFirst().orElseThrow() );
+		final long numberOfFish = ages.mapToLong( age -> solve( age, days ) ).sum();
 
-		return itoa( result );
+		return itoa( numberOfFish );
 	}
 
 	private long solve( final long age, final long days ) {
