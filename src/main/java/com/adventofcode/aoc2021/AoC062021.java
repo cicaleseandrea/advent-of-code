@@ -26,10 +26,10 @@ class AoC062021 implements Solution {
 
 		for ( int i = 0; i < days; i++ ) {
 			final long spawn = ages[0];
-			for ( int j = 0; j < 8; j++ ) {
-				// age decreases
-				ages[j] = ages[j + 1];
-			}
+
+			// age decreases
+			System.arraycopy( ages, 1, ages, 0, 8 );
+
 			ages[6] += spawn;
 			ages[8] = spawn;
 		}
