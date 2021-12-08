@@ -2,7 +2,7 @@ package com.adventofcode.utils;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toSet;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.BlockingDeque;
@@ -146,7 +147,7 @@ public class Utils {
 				.map( String::toCharArray )
 				.peek( Arrays::sort )
 				.map( String::new )
-				.collect( toUnmodifiableList() ) );
+				.toList() );
 	}
 
 	public static Stream<String> splitOnNewLine( final String s ) {
@@ -230,7 +231,7 @@ public class Utils {
 
 	public static <K> long decrementMapElement( final Map<K, Long> map, final K key,
 			final boolean remove ) {
-		final Long res = map.merge( key, -1L, Long::sum );
+		final long res = map.merge( key, -1L, Long::sum );
 		if ( remove && res == 0 ) {
 			return map.remove( key );
 		}
@@ -275,16 +276,16 @@ public class Utils {
 		return x;
 	}
 
+	public static Set<Character> stringToCharacterSet( final String string ) {
+		return string.chars().mapToObj( c -> (char) c ).collect( toSet() );
+	}
+
 	public static List<List<Character>> getCharMatrix( final Stream<String> input ) {
-		return input.map(
-				row -> row.chars().mapToObj( c -> (char) c ).collect( toUnmodifiableList() ) )
-				.collect( toUnmodifiableList() );
+		return input.map( row -> row.chars().mapToObj( c -> (char) c ).toList() ).toList();
 	}
 
 	public static List<List<Integer>> getDigitsMatrix( final Stream<String> input ) {
-		return input.map(
-				row -> row.chars().mapToObj( Utils::charToInt ).collect( toUnmodifiableList() ) )
-				.collect( toUnmodifiableList() );
+		return input.map( row -> row.chars().mapToObj( Utils::charToInt ).toList() ).toList();
 	}
 
 	public static boolean shouldPrint() {
