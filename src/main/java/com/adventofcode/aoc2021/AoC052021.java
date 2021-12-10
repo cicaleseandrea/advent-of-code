@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
-import com.google.common.base.Predicates;
 
 class AoC052021 implements Solution {
 
@@ -28,7 +27,7 @@ class AoC052021 implements Solution {
 
 	@Override
 	public String solveSecondPart( final Stream<String> input ) {
-		return solve( input, Predicates.alwaysTrue() );
+		return solve( input, line -> true );
 	}
 
 	private String solve( final Stream<String> input, final Predicate<Line> considerLine ) {
@@ -72,7 +71,7 @@ class AoC052021 implements Solution {
 		return line.start.x == line.end.x || line.start.y == line.end.y;
 	}
 
-	private static record Line(Point start, Point end) {}
+	private record Line(Point start, Point end) {}
 
-	private static record Point(long x, long y) {}
+	private record Point(long x, long y) {}
 }
