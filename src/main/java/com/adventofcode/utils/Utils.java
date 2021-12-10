@@ -44,6 +44,9 @@ public class Utils {
 	public static final Pattern POSITIVE_LONG_PATTERN = Pattern.compile( "\\d+" );
 	public static final Pattern DOUBLE_PATTERN = Pattern.compile( "-?\\d+(?:\\.\\d+)?" );
 	public static final Pattern WORD_PATTERN = Pattern.compile( "[a-zA-Z]+" );
+	public static final List<Pair<Integer, Integer>> NEIGHBOURS = List.of( new Pair<>( -1, 0 ),
+			new Pair<>( 1, 0 ), new Pair<>( 0, -1 ), new Pair<>( 0, 1 ) );
+
 	private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
 
 	private Utils() {
@@ -221,6 +224,14 @@ public class Utils {
 		return List.of( s.split( "\\s+" ) );
 	}
 
+	public static <K> K listGetOrDefault( final List<K> list, final int i, final K defaultValue ) {
+		if ( i >= 0 && i < list.size() ) {
+			return list.get( i );
+		} else {
+			return defaultValue;
+		}
+	}
+
 	public static <K> long incrementMapElement( final Map<K, Long> map, final K key ) {
 		return map.merge( key, 1L, Long::sum );
 	}
@@ -285,7 +296,8 @@ public class Utils {
 	}
 
 	public static List<List<Integer>> getDigitsMatrix( final Stream<String> input ) {
-		return input.map( row -> row.chars().mapToObj( Utils::charToInt ).toList() ).toList();
+		return input.map( row -> row.chars().mapToObj( Utils::charToInt ).collect( toList() ) )
+				.collect( toList() );
 	}
 
 	public static boolean shouldPrint() {
