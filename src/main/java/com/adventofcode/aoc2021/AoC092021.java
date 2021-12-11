@@ -61,12 +61,12 @@ class AoC092021 implements Solution {
 	}
 
 	private int findBasinSize( final List<List<Integer>> heightmap, final Point point ) {
-		final Integer pointValue = listGetOrDefault(
-				listGetOrDefault( heightmap, point.x, List.of() ), point.y, null );
-		if ( pointValue == null || pointValue == 9 ) {
+		final int pointValue = listGetOrDefault( listGetOrDefault( heightmap, point.x, List.of() ),
+				point.y, 9 );
+		if ( pointValue == 9 ) {
 			return 0;
 		} else {
-			heightmap.get( point.x ).set( point.y, null );
+			heightmap.get( point.x ).set( point.y, 9 );
 			return 1 + NEIGHBOURS_4.stream()
 					.mapToInt( neighbourOffset -> findBasinSize( heightmap,
 							new Point( point.x + neighbourOffset.getFirst(),
