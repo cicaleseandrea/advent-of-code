@@ -42,7 +42,7 @@ class AoC052016 implements Solution {
 			final IntPredicate acceptCharacter, final ToIntFunction<byte[]> getCharacter ) {
 		final Map<Integer, Character> password = new ConcurrentHashMap<>();
 		final String id = getFirstString( input );
-		IntStream.iterate( 0, i -> password.size() < 8, i -> i + 1 ).parallel().forEach( i -> {
+		IntStream.iterate( 0, i -> password.size() < 8, i -> i + 1 ).forEach( i -> {
 			final var bytes = computeHash( id + i );
 			final int character = bytes[2];
 			if ( bytes[0] == 0 && bytes[1] == 0 && acceptCharacter.test( character ) ) {
