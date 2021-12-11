@@ -23,4 +23,4 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Build with Gradle
-        run: ./gradlew test
+        run: ./gradlew test -Dorg.gradle.java.home=$JAVA_HOME
