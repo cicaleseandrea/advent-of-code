@@ -24,20 +24,7 @@ jobs:
           distribution: 'temurin'
       - name: Build with Gradle
         run: ./gradlew test -Dorg.gradle.java.home=$JAVA_HOME
-      - name: Publish Unit Test Results 1
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          files: 'build/test-results/**/*.xml'
-      - name: Publish Unit Test Results 2
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: JUnit Test Report 2
-          path: build/test-results/**/*.xml
-          reporter: java-junit
-          only-summary: 'true'
-      - name: Publish Unit Test Results 3
+      - name: Publish Unit Test Results
         uses: mikepenz/action-junit-report@v2
         if: always()
         with:
