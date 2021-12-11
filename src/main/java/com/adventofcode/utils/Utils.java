@@ -44,8 +44,11 @@ public class Utils {
 	public static final Pattern POSITIVE_LONG_PATTERN = Pattern.compile( "\\d+" );
 	public static final Pattern DOUBLE_PATTERN = Pattern.compile( "-?\\d+(?:\\.\\d+)?" );
 	public static final Pattern WORD_PATTERN = Pattern.compile( "[a-zA-Z]+" );
-	public static final List<Pair<Integer, Integer>> NEIGHBOURS = List.of( new Pair<>( -1, 0 ),
+	public static final List<Pair<Integer, Integer>> NEIGHBOURS_4 = List.of( new Pair<>( -1, 0 ),
 			new Pair<>( 1, 0 ), new Pair<>( 0, -1 ), new Pair<>( 0, 1 ) );
+	public static final List<Pair<Integer, Integer>> NEIGHBOURS_8 = List.of( new Pair<>( -1, 0 ),
+			new Pair<>( 1, 0 ), new Pair<>( 0, -1 ), new Pair<>( 0, 1 ), new Pair<>( -1, -1 ),
+			new Pair<>( 1, -1 ), new Pair<>( -1, 1 ), new Pair<>( 1, 1 ) );
 
 	private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
 
@@ -105,8 +108,8 @@ public class Utils {
 	}
 
 	public static Comparator<Pair<Long, Long>> getPairComparator() {
-		return Comparator.<Pair<Long, Long>>comparingLong( Pair::getSecond ).thenComparingLong(
-				Pair::getFirst );
+		return Comparator.<Pair<Long, Long>>comparingLong( Pair::getSecond )
+				.thenComparingLong( Pair::getFirst );
 	}
 
 	public static long incrementMod( final long i, final long mod ) {
