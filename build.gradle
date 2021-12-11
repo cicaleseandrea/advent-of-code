@@ -27,8 +27,6 @@ tasks.withType(Test) {
         showStandardStreams = true
     }
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
-    reports.html.required = false
-    reports.junitXml.required = false
 }
 /*
 uncomment this section if you want preview features
