@@ -29,4 +29,10 @@ jobs:
         if: always()
         with:
           files: 'build/test-results/**/*.xml'
-          time_unit: milliseconds
+      - name: Publish Unit Test Results
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Unit Test Results
+          path: build/test-results/**/*.xml
+          reporter: java-junit
