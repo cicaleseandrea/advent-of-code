@@ -29,3 +29,5 @@ jobs:
         if: always()
         with:
           report_paths: 'build/test-results/**/*.xml'
+          summary: true
+          fail_on_failure: true
