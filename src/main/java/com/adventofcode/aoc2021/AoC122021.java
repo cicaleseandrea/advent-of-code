@@ -1,17 +1,13 @@
 package com.adventofcode.aoc2021;
 
 import static java.lang.Character.isLowerCase;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toSet;
 
+import static com.adventofcode.utils.Utils.incrementMapElement;
 import static com.adventofcode.utils.Utils.itoa;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
@@ -42,12 +38,12 @@ class AoC122021 implements Solution {
 		return itoa( findPaths( START, new Path(), caves, maxSmallCavesVisits ).size() );
 	}
 
-	private Set<Path> findPaths( final String currentCave, final Path pathSoFar,
+	private List<Path> findPaths( final String currentCave, final Path pathSoFar,
 			final Graph<String> caves, final int maxSmallCavesVisits ) {
 		final var updatedPath = new Path( pathSoFar ).addNode( currentCave );
 
 		if ( currentCave.equals( END ) ) {
-			return Set.of( updatedPath );
+			return List.of( updatedPath );
 		}
 
 		return caves.adjacentNodes( currentCave )
@@ -56,16 +52,13 @@ class AoC122021 implements Solution {
 				.filter( adjacentCave -> !isSmallCave( adjacentCave ) || !updatedPath.contains(
 						adjacentCave ) || moreSmallCavesAllowed( updatedPath,
 						maxSmallCavesVisits ) )
-				.map( adjacentCave -> findPaths( adjacentCave, updatedPath, caves,
-						maxSmallCavesVisits ) )
-				.flatMap( Collection::stream )
-				.collect( toSet() );
+				.flatMap( adjacentCave -> findPaths( adjacentCave, updatedPath, caves,
+						maxSmallCavesVisits ).stream() )
+				.toList();
 	}
 
 	private boolean moreSmallCavesAllowed( final Path currentPath, final int maxSmallCavesVisits ) {
-		return currentPath.nodes.stream()
-				.collect( groupingBy( identity(), counting() ) )
-				.entrySet()
+		return currentPath.nodes.entrySet()
 				.stream()
 				.noneMatch( entry -> isSmallCave(
 						entry.getKey() ) && entry.getValue() >= maxSmallCavesVisits );
@@ -75,22 +68,22 @@ class AoC122021 implements Solution {
 		return isLowerCase( cave.charAt( 0 ) );
 	}
 
-	private record Path(List<String> nodes) {
+	private record Path(Map<String, Long> nodes) {
 		public Path() {
-			this( new ArrayList<>() );
+			this( new HashMap<>() );
 		}
 
 		public Path( final Path path ) {
-			this( new ArrayList<>( path.nodes ) );
+			this( new HashMap<>( path.nodes ) );
 		}
 
 		public Path addNode( final String node ) {
-			nodes.add( node );
+			incrementMapElement( nodes, node );
 			return this;
 		}
 
 		public boolean contains( final String cave ) {
-			return nodes.contains( cave );
+			return nodes.containsKey( cave );
 		}
 	}
 }
