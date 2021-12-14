@@ -236,7 +236,12 @@ public class Utils {
 	}
 
 	public static <K> long incrementMapElement( final Map<K, Long> map, final K key ) {
-		return map.merge( key, 1L, Long::sum );
+		return incrementMapElement( map, key, 1L );
+	}
+
+	public static <K> long incrementMapElement( final Map<K, Long> map, final K key,
+			final long increment ) {
+		return map.merge( key, increment, Long::sum );
 	}
 
 	public static <K> long decrementMapElement( final Map<K, Long> map, final K key ) {
