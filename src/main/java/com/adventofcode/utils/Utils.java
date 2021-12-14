@@ -300,7 +300,8 @@ public class Utils {
 	}
 
 	public static List<List<Character>> getCharMatrix( final Stream<String> input ) {
-		return input.map( row -> row.chars().mapToObj( c -> (char) c ).toList() ).toList();
+		return input.map( row -> row.chars().mapToObj( c -> (char) c ).collect( toList() ) )
+				.collect( toList() );
 	}
 
 	public static List<List<Integer>> getDigitsMatrix( final Stream<String> input ) {
