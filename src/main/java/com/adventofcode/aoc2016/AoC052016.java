@@ -40,15 +40,17 @@ class AoC052016 implements Solution {
 
 	private String solve( final Stream<String> input, final IntBinaryOperator getPosition,
 			final IntPredicate acceptCharacter, final ToIntFunction<byte[]> getCharacter ) {
-		final Map<Integer, Character> password = new ConcurrentHashMap<>();
+		final Map<Integer, Map<Integer, Character>> password = new ConcurrentHashMap<>();
 		final String id = getFirstString( input );
-		IntStream.iterate( 0, i -> password.size() < 8, i -> i + 1 ).forEach( i -> {
+		IntStream.iterate( 0, i -> password.size() < 8, i -> i + 1 ).parallel().forEach( i -> {
 			final var bytes = computeHash( id + i );
 			final int character = bytes[2];
 			if ( bytes[0] == 0 && bytes[1] == 0 && acceptCharacter.test( character ) ) {
 				final int position = getPosition.applyAsInt( i, character );
-				password.putIfAbsent( position,
-						Integer.toHexString( getCharacter.applyAsInt( bytes ) ).charAt( 0 ) );
+
+				password.computeIfAbsent( position, k -> new ConcurrentHashMap<>() )
+						.put( i, Integer.toHexString( getCharacter.applyAsInt( bytes ) )
+								.charAt( 0 ) );
 			}
 		} );
 		return password.entrySet()
@@ -56,6 +58,11 @@ class AoC052016 implements Solution {
 				.sorted( comparingInt( Map.Entry::getKey ) )
 				.limit( 8 )
 				.map( Map.Entry::getValue )
+				.map( m -> m.entrySet()
+						.stream()
+						.min( comparingInt( Map.Entry::getKey ) )
+						.map( Map.Entry::getValue )
+						.orElseThrow() )
 				.map( Object::toString )
 				.collect( joining() );
 	}
