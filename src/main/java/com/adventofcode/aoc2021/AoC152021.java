@@ -1,18 +1,16 @@
 package com.adventofcode.aoc2021;
 
 import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.toMap;
 
 import static com.adventofcode.utils.Utils.NEIGHBOURS_4;
 import static com.adventofcode.utils.Utils.charToInt;
 import static com.adventofcode.utils.Utils.itoa;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Queue;
-import java.util.TreeMap;
+import java.util.PriorityQueue;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
@@ -27,29 +25,6 @@ class AoC152021 implements Solution {
 	@Override
 	public String solveSecondPart( final Stream<String> input ) {
 		return solve( input, 5 );
-	}
-
-	private void updatePriorityQueueDistance(
-			final NavigableMap<Integer, Queue<Point>> priorityQueue, final Point neighbour,
-			final int newDistance, final int oldDistance ) {
-		// remove old distance from the queue
-		if ( priorityQueue.get( oldDistance ).remove( neighbour ) && priorityQueue.get(
-				oldDistance ).isEmpty() ) {
-			priorityQueue.remove( oldDistance );
-		}
-		// update distance in the queue
-		priorityQueue.computeIfAbsent( newDistance, k -> new LinkedList<>() ).add( neighbour );
-	}
-
-	private Point removePointWithShortestDistance(
-			final NavigableMap<Integer, Queue<Point>> priorityQueue ) {
-		// remove position with shortest distance
-		final var closestPositions = priorityQueue.firstEntry().getValue();
-		final Point curr = closestPositions.remove();
-		if ( closestPositions.isEmpty() ) {
-			priorityQueue.pollFirstEntry();
-		}
-		return curr;
 	}
 
 	private String solve( final Stream<String> input, final int repetitions ) {
@@ -67,15 +42,16 @@ class AoC152021 implements Solution {
 
 		// TODO this is too slooooooooooooooooooooooooooooow
 		// Dijkstra to find shortest path to the target
-		final NavigableMap<Integer, Queue<Point>> priorityQueue = new TreeMap<>();
-		priorityQueue.put( Integer.MAX_VALUE, new LinkedList<>( grid.keySet() ) );
-		priorityQueue.firstEntry().getValue().remove( START );
-		// start from source
-		priorityQueue.put( 0, new LinkedList<>( List.of( START ) ) );
-		final Map<Point, Integer> distances = new HashMap<>( Map.of( START, 0 ) );
+		final Map<Point, Integer> distances = grid.entrySet()
+				.stream()
+				.collect( toMap( Map.Entry::getKey, e -> Integer.MAX_VALUE ) );
+		distances.put( START, 0 );
+		final PriorityQueue<Point> priorityQueue = new PriorityQueue<>(
+				comparingInt( distances::get ) );
+		priorityQueue.addAll( grid.keySet() );
 
 		while ( !priorityQueue.isEmpty() ) {
-			final var curr = removePointWithShortestDistance( priorityQueue );
+			final var curr = priorityQueue.poll();
 			if ( curr.equals( END ) ) {
 				// target found
 				return itoa( distances.get( curr ) );
@@ -93,9 +69,9 @@ class AoC152021 implements Solution {
 								Integer.MAX_VALUE );
 						// distance improved
 						if ( newDistance < oldDistance ) {
-							updatePriorityQueueDistance( priorityQueue, neighbour, newDistance,
-									oldDistance );
 							distances.put( neighbour, newDistance );
+							priorityQueue.remove( neighbour );
+							priorityQueue.add( neighbour );
 						}
 					} );
 		}
