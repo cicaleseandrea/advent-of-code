@@ -40,7 +40,6 @@ class AoC152021 implements Solution {
 		final var START = new Point( 0, 0 );
 		final var END = new Point( rows - 1, columns - 1 );
 
-		// TODO this is too slooooooooooooooooooooooooooooow
 		// Dijkstra to find shortest path to the target
 		final Map<Point, Integer> distances = grid.entrySet()
 				.stream()
@@ -48,7 +47,7 @@ class AoC152021 implements Solution {
 		distances.put( START, 0 );
 		final PriorityQueue<Point> priorityQueue = new PriorityQueue<>(
 				comparingInt( distances::get ) );
-		priorityQueue.addAll( grid.keySet() );
+		priorityQueue.add( START );
 
 		while ( !priorityQueue.isEmpty() ) {
 			final var curr = priorityQueue.poll();
