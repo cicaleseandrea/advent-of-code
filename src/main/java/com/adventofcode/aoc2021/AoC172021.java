@@ -31,8 +31,8 @@ class AoC172021 implements Solution {
 
 		int highestY = 0;
 		int count = 0;
-		for ( int velocityX = 0; velocityX < 1000; velocityX++ ) {
-			for ( int velocityY = -1000; velocityY < 1000; velocityY++ ) {
+		for ( int velocityX = 0; velocityX <= targetArea.getSecond().x; velocityX++ ) {
+			for ( int velocityY = targetArea.getSecond().y; velocityY < -targetArea.getSecond().y; velocityY++ ) {
 				final var hit = launchProbe( new Pair<>( velocityX, velocityY ), targetArea );
 				if ( hit.isPresent() ) {
 					highestY = max( highestY, hit.get() );
