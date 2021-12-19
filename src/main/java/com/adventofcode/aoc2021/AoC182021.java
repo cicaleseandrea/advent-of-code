@@ -1,11 +1,13 @@
 package com.adventofcode.aoc2021;
 
 import static java.lang.Math.max;
+import static java.util.Optional.ofNullable;
 
 import static com.adventofcode.utils.Utils.charToInt;
 import static com.adventofcode.utils.Utils.itoa;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntPredicate;
 import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
@@ -20,20 +22,20 @@ class AoC182021 implements Solution {
 
 	@Override
 	public String solveSecondPart( final Stream<String> input ) {
-		final var numbers = input.toList();
+		final var numbers = input.map( this::parseNumber ).toList();
 		var maxMagnitude = 0;
-		for ( final String number1 : numbers ) {
-			for ( final String number2 : numbers ) {
-				final var sum = sum( parseNumber( number1 ), parseNumber( number2 ) );
+		for ( final var left : numbers ) {
+			for ( final var right : numbers ) {
+				final var sum = sum( new Tree( left ), new Tree( right ) );
 				maxMagnitude = max( maxMagnitude, getMagnitude( sum ) );
 			}
 		}
 		return itoa( maxMagnitude );
 	}
 
-	private Tree sum( final Tree number1, final Tree number2 ) {
+	private Tree sum( final Tree left, final Tree right ) {
 		// addition
-		final var sum = new Tree( number1, number2 );
+		final var sum = new Tree( left, right );
 		while ( reduce( sum ) ) {
 			// reduction
 		}
@@ -55,7 +57,7 @@ class AoC182021 implements Solution {
 	}
 
 	private boolean split( final Tree number ) {
-		final var split = getLeftmost( number, 10 );
+		final var split = getLeftmost( number, n -> n >= 10 );
 
 		if ( split == null ) {
 			return false;
@@ -72,30 +74,29 @@ class AoC182021 implements Solution {
 	}
 
 	private Tree explode( final Tree number, final int levels ) {
-		if ( number == null ) {
+		if ( number == null || ( levels == 0 && number.value != null ) ) {
+			// not a pair
 			return null;
 		} else if ( levels == 0 ) {
-			if ( number.value == null ) {
-				number.value = 0;
-				return number;
-			}
-			return null;
+			// it's a pair. explode
+			number.value = 0;
+			return number;
 		}
 
 		final boolean explodedLeft;
 		var exploded = explode( number.left, levels - 1 );
-		if ( exploded == null ) {
+		if ( exploded != null ) {
+			explodedLeft = true;
+		} else {
 			explodedLeft = false;
 			exploded = explode( number.right, levels - 1 );
-		} else {
-			explodedLeft = true;
 		}
 
 		if ( exploded != null ) {
 			if ( ( explodedLeft && exploded.right != null ) || ( !explodedLeft && exploded.left != null ) ) {
-				final var first = explodedLeft ? getLeftmost( number.right ) : getRightmost(
+				final var nextNumber = explodedLeft ? getLeftmost( number.right ) : getRightmost(
 						number.left );
-				first.value += explodedLeft ? exploded.right.value : exploded.left.value;
+				nextNumber.value += explodedLeft ? exploded.right.value : exploded.left.value;
 				exploded.right = explodedLeft ? null : exploded.right;
 				exploded.left = explodedLeft ? exploded.left : null;
 			}
@@ -103,17 +104,18 @@ class AoC182021 implements Solution {
 		return exploded;
 	}
 
-	private Tree getMost( final Tree number, final int min, final boolean left ) {
+	private Tree getOuter( final Tree number, final IntPredicate accept, final boolean left ) {
 		if ( number == null ) {
 			return null;
 		} else if ( number.value != null ) {
-			return number.value >= min ? number : null;
+			return accept.test( number.value ) ? number : null;
 		}
-		final var most = getMost( left ? number.left : number.right, min, left );
-		if ( most != null ) {
-			return most;
+
+		final var outer = getOuter( left ? number.left : number.right, accept, left );
+		if ( outer != null ) {
+			return outer;
 		} else {
-			return getMost( left ? number.right : number.left, min, left );
+			return getOuter( left ? number.right : number.left, accept, left );
 		}
 	}
 
@@ -141,15 +143,15 @@ class AoC182021 implements Solution {
 	}
 
 	private Tree getLeftmost( final Tree number ) {
-		return getLeftmost( number, 0 );
-	}
-
-	private Tree getLeftmost( final Tree number, final int min ) {
-		return getMost( number, min, true );
+		return getLeftmost( number, n -> true );
 	}
 
 	private Tree getRightmost( final Tree number ) {
-		return getMost( number, 0, false );
+		return getOuter( number, n -> true, false );
+	}
+
+	private Tree getLeftmost( final Tree number, final IntPredicate accept ) {
+		return getOuter( number, accept, true );
 	}
 
 	private static final class Tree {
@@ -162,6 +164,11 @@ class AoC182021 implements Solution {
 			this.left = left;
 			this.right = right;
 			this.value = value;
+		}
+
+		Tree( final Tree tree ) {
+			this( ofNullable( tree.left ).map( Tree::new ).orElse( null ),
+					ofNullable( tree.right ).map( Tree::new ).orElse( null ), tree.value );
 		}
 
 		Tree( final Integer value ) {
