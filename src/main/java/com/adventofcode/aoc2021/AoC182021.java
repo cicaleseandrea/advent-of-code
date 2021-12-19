@@ -1,10 +1,10 @@
 package com.adventofcode.aoc2021;
 
+import static java.lang.Math.max;
+
 import static com.adventofcode.utils.Utils.charToInt;
 import static com.adventofcode.utils.Utils.itoa;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -14,86 +14,61 @@ class AoC182021 implements Solution {
 
 	@Override
 	public String solveFirstPart( final Stream<String> input ) {
-		return solve( input );
+		final var sum = input.map( this::parseNumber ).reduce( this::sum ).orElseThrow();
+		return itoa( getMagnitude( sum ) );
 	}
 
 	@Override
 	public String solveSecondPart( final Stream<String> input ) {
 		final var numbers = input.toList();
-		var max = Long.MIN_VALUE;
-		for ( int i = 0; i < numbers.size(); i++ ) {
-			for ( int j = i + 1; j < numbers.size(); j++ ) {
-				var result = new Tree( parseNumber( numbers.get( i ) ),
-						parseNumber( numbers.get( j ) ) );
-				Optional<Tree> reduced;
-				do {
-					// reduction
-					reduced = reduce( result );
-				} while ( reduced.isPresent() );
-				long magnitude = magnitude( result );
-				if ( magnitude >= max ) {
-					max = magnitude;
-				}
-				result = new Tree( parseNumber( numbers.get( j ) ),
-						parseNumber( numbers.get( i ) ) );
-				do {
-					// reduction
-					reduced = reduce( result );
-				} while ( reduced.isPresent() );
-				magnitude = magnitude( result );
-				if ( magnitude >= max ) {
-					max = magnitude;
-				}
+		var maxMagnitude = 0;
+		for ( final String number1 : numbers ) {
+			for ( final String number2 : numbers ) {
+				final var sum = sum( parseNumber( number1 ), parseNumber( number2 ) );
+				maxMagnitude = max( maxMagnitude, getMagnitude( sum ) );
 			}
 		}
-		return itoa( max );
+		return itoa( maxMagnitude );
 	}
 
-	private String solve( final Stream<String> input ) {
-		final var numbers = input.map( this::parseNumber ).toList();
-
-		var result = numbers.get( 0 );
-		for ( final var number : numbers.subList( 1, numbers.size() ) ) {
-			// addition
-			result = new Tree( result, number );
-			Optional<Tree> reduced;
-			do {
-				// reduction
-				reduced = reduce( result );
-			} while ( reduced.isPresent() );
+	private Tree sum( final Tree number1, final Tree number2 ) {
+		// addition
+		final var sum = new Tree( number1, number2 );
+		while ( reduce( sum ) ) {
+			// reduction
 		}
-		final var magnitude = magnitude( result );
-		return itoa( magnitude );
+		return sum;
 	}
 
-	private long magnitude( final Tree result ) {
-		if ( result == null ) {
+	private int getMagnitude( final Tree number ) {
+		if ( number == null ) {
 			return 0;
-		} else if ( result.value != null ) {
-			return result.value;
+		} else if ( number.value != null ) {
+			return number.value;
+		} else {
+			return 3 * getMagnitude( number.left ) + 2 * getMagnitude( number.right );
 		}
-		return 3 * magnitude( result.left ) + 2 * magnitude( result.right );
 	}
 
-	private Optional<Tree> reduce( final Tree number ) {
-		// explode
-		final Tree exploded = explode( number, 4 );
-		if ( exploded != null ) {
-			return Optional.of( exploded );
-		}
-		// split
-		return Optional.ofNullable( split( number ) );
+	private boolean reduce( final Tree number ) {
+		return explode( number ) || split( number );
 	}
 
-	private Tree split( final Tree number ) {
-		var split = leftmost( number.left, 10 );
-		split = ( split != null ) ? split : leftmost( number.right, 10 );
-		if ( split != null ) {
-			split.left = new Tree( ( split.value / 2 ) );
-			split.right = new Tree( (int) Math.ceil( (double) split.value / 2 ) );
+	private boolean split( final Tree number ) {
+		final var split = getLeftmost( number, 10 );
+
+		if ( split == null ) {
+			return false;
+		} else {
+			split.left = new Tree( split.value / 2 );
+			split.right = new Tree( (int) Math.ceil( split.value / 2.0 ) );
 			split.value = null;
+			return true;
 		}
-		return split;
+	}
+
+	private boolean explode( final Tree number ) {
+		return explode( number, 4 ) != null;
 	}
 
 	private Tree explode( final Tree number, final int levels ) {
@@ -107,69 +82,49 @@ class AoC182021 implements Solution {
 			return null;
 		}
 
-		var explode = explode( number.left, levels - 1 );
-		if ( explode != null ) {
-			if ( explode.right != null ) {
-				final var firstRight = leftmost( number.right );
-				firstRight.value += explode.right.value;
-				explode.right = null;
-			}
-			return explode;
+		final boolean explodedLeft;
+		var exploded = explode( number.left, levels - 1 );
+		if ( exploded == null ) {
+			explodedLeft = false;
+			exploded = explode( number.right, levels - 1 );
+		} else {
+			explodedLeft = true;
 		}
-		explode = explode( number.right, levels - 1 );
-		if ( explode != null ) {
-			if ( explode.left != null ) {
-				final var leftRight = rightmost( number.left );
-				leftRight.value += explode.left.value;
-				explode.left = null;
+
+		if ( exploded != null ) {
+			if ( ( explodedLeft && exploded.right != null ) || ( !explodedLeft && exploded.left != null ) ) {
+				final var first = explodedLeft ? getLeftmost( number.right ) : getRightmost(
+						number.left );
+				first.value += explodedLeft ? exploded.right.value : exploded.left.value;
+				exploded.right = explodedLeft ? null : exploded.right;
+				exploded.left = explodedLeft ? exploded.left : null;
 			}
-			return explode;
 		}
-		return null;
+		return exploded;
 	}
 
-	private Tree leftmost( final Tree number ) {
-		return leftmost( number, 0 );
-	}
-
-	private Tree leftmost( final Tree number, final int min ) {
+	private Tree getMost( final Tree number, final int min, final boolean left ) {
 		if ( number == null ) {
 			return null;
 		} else if ( number.value != null ) {
 			return number.value >= min ? number : null;
 		}
-		final var left = leftmost( number.left, min );
-		if ( left != null ) {
-			return left;
+		final var most = getMost( left ? number.left : number.right, min, left );
+		if ( most != null ) {
+			return most;
 		} else {
-			return leftmost( number.right, min );
+			return getMost( left ? number.right : number.left, min, left );
 		}
 	}
 
-	private Tree rightmost( final Tree number ) {
-		if ( number == null || number.value != null ) {
-			return number;
-		}
-		final var right = rightmost( number.right );
-		if ( right != null ) {
-			return right;
-		} else {
-			return rightmost( number.left );
-		}
-	}
-
-	private Tree parseNumber( final String line ) {
-		return parseNumber( line, new AtomicInteger() );
-	}
-
-	private Tree parseNumber( final String line, final AtomicInteger index ) {
-		Tree right = null;
+	private Tree parseNumber( final String expression, final AtomicInteger index ) {
 		Tree left = null;
-		while ( index.get() < line.length() ) {
-			final char c = line.charAt( index.getAndIncrement() );
+		Tree right = null;
+		while ( index.get() < expression.length() ) {
+			final var c = expression.charAt( index.getAndIncrement() );
 			switch ( c ) {
-			case '[' -> left = parseNumber( line, index );
-			case ',' -> right = parseNumber( line, index );
+			case '[' -> left = parseNumber( expression, index );
+			case ',' -> right = parseNumber( expression, index );
 			case ']' -> {
 				return new Tree( left, right );
 			}
@@ -181,7 +136,24 @@ class AoC182021 implements Solution {
 		throw new IllegalStateException();
 	}
 
+	private Tree parseNumber( final String expression ) {
+		return parseNumber( expression, new AtomicInteger() );
+	}
+
+	private Tree getLeftmost( final Tree number ) {
+		return getLeftmost( number, 0 );
+	}
+
+	private Tree getLeftmost( final Tree number, final int min ) {
+		return getMost( number, min, true );
+	}
+
+	private Tree getRightmost( final Tree number ) {
+		return getMost( number, 0, false );
+	}
+
 	private static final class Tree {
+
 		Tree left;
 		Tree right;
 		Integer value;
@@ -192,8 +164,8 @@ class AoC182021 implements Solution {
 			this.value = value;
 		}
 
-		Tree( final Integer number ) {
-			this( null, null, number );
+		Tree( final Integer value ) {
+			this( null, null, value );
 		}
 
 		Tree( final Tree left, final Tree right ) {
@@ -208,25 +180,5 @@ class AoC182021 implements Solution {
 				return "[" + left + "," + right + "]";
 			}
 		}
-
-		@Override
-		public boolean equals( Object obj ) {
-			if ( obj == this ) {
-				return true;
-			}
-			if ( obj == null || obj.getClass() != this.getClass() ) {
-				return false;
-			}
-			var that = (Tree) obj;
-			return Objects.equals( this.left, that.left ) && Objects.equals( this.right,
-					that.right ) && Objects.equals( this.value, that.value );
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash( left, right, value );
-		}
-
 	}
-
 }
