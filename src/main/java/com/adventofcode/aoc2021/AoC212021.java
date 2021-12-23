@@ -5,6 +5,7 @@ import static java.lang.Math.min;
 
 import static com.adventofcode.utils.Utils.itoa;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -19,69 +20,60 @@ class AoC212021 implements Solution {
 	private static final Map<Integer, Integer> ROLLS_COMBINATIONS = Map.of( 3, 1, 4, 3, 5, 6, 6, 7,
 			7, 6, 8, 3, 9, 1 );
 
+	// used for memoization
+	private static final Map<Game, Pair<Long, Long>> CACHE = new HashMap<>();
+
 	@Override
 	public String solveFirstPart( final Stream<String> input ) {
-		final var players = getPlayers( input.toList() );
-		var playerOne = players.getFirst();
-		var playerTwo = players.getSecond();
-
+		var game = getGame( input.toList() );
 		var rolls = 0;
-		var turnOne = true;
 		final var winningValue = 1000;
-		while ( playerOne.score < winningValue && playerTwo.score < winningValue ) {
+		while ( game.playerOne.score < winningValue && game.playerTwo.score < winningValue ) {
 			final var rollValue = ( ( rolls + 2 ) * 3 ) % 10;
-			if ( turnOne ) {
-				playerOne = playerOne.rollDie( rollValue );
-			} else {
-				playerTwo = playerTwo.rollDie( rollValue );
-			}
-			turnOne = !turnOne;
+			game = game.rollDie( rollValue );
 			rolls += 3;
 		}
-		return itoa( min( playerOne.score, playerTwo.score ) * rolls );
+
+		return itoa( min( game.playerOne.score, game.playerTwo.score ) * rolls );
 	}
 
 	@Override
 	public String solveSecondPart( final Stream<String> input ) {
-		final var players = getPlayers( input.toList() );
-		var playerOne = players.getFirst();
-		var playerTwo = players.getSecond();
-
-		final var victories = play( playerOne, playerTwo, true );
+		final var game = getGame( input.toList() );
+		final var victories = play( game );
 
 		return itoa( max( victories.getFirst(), victories.getSecond() ) );
 	}
 
-	private Pair<Long, Long> play( final Player playerOne, final Player playerTwo,
-			final boolean turnOne ) {
+	private Pair<Long, Long> play( final Game game ) {
 		final var winningValue = 21;
-		if ( playerOne.score >= winningValue ) {
-			return new Pair<>( 1L, 0L );
-		} else if ( playerTwo.score >= winningValue ) {
-			return new Pair<>( 0L, 1L );
+		if ( game.playerOne.score >= winningValue ) {
+			CACHE.put( game, new Pair<>( 1L, 0L ) );
+		} else if ( game.playerTwo.score >= winningValue ) {
+			CACHE.put( game, new Pair<>( 0L, 1L ) );
 		}
 
-		final var totalVictories = new Pair<>( 0L, 0L );
+		if ( CACHE.containsKey( game ) ) {
+			return CACHE.get( game );
+		}
+
+		var totalVictoriesOne = 0L;
+		var totalVictoriesTwo = 0L;
 		for ( final var roll : ROLLS_COMBINATIONS.entrySet() ) {
 			final var rollValue = roll.getKey();
-			var nextPlayerOne = playerOne;
-			var nextPlayerTwo = playerTwo;
-			if ( turnOne ) {
-				nextPlayerOne = playerOne.rollDie( rollValue );
-			} else {
-				nextPlayerTwo = playerTwo.rollDie( rollValue );
-			}
+			final var nextGame = game.rollDie( rollValue );
 
-			final var victories = play( nextPlayerOne, nextPlayerTwo, !turnOne );
-			totalVictories.setFirst(
-					totalVictories.getFirst() + roll.getValue() * victories.getFirst() );
-			totalVictories.setSecond(
-					totalVictories.getSecond() + roll.getValue() * victories.getSecond() );
+			final var victories = play( nextGame );
+			totalVictoriesOne += roll.getValue() * victories.getFirst();
+			totalVictoriesTwo += roll.getValue() * victories.getSecond();
 		}
+
+		final var totalVictories = new Pair<>( totalVictoriesOne, totalVictoriesTwo );
+		CACHE.put( game, totalVictories );
 		return totalVictories;
 	}
 
-	private Pair<Player, Player> getPlayers( final List<String> input ) {
+	private Game getGame( final List<String> input ) {
 		final var matcherOne = PLAYER_POSITION_REGEX.matcher( input.get( 0 ) );
 		final var matcherTwo = PLAYER_POSITION_REGEX.matcher( input.get( 1 ) );
 		if ( !matcherOne.matches() || !matcherTwo.matches() ) {
@@ -89,7 +81,7 @@ class AoC212021 implements Solution {
 		}
 		final var playerOne = new Player( Integer.parseInt( matcherOne.group( 2 ) ) );
 		final var playerTwo = new Player( Integer.parseInt( matcherTwo.group( 2 ) ) );
-		return new Pair<>( playerOne, playerTwo );
+		return new Game( playerOne, playerTwo );
 	}
 
 	private record Player(long position, long score) {
@@ -103,6 +95,25 @@ class AoC212021 implements Solution {
 				nextPosition = 10;
 			}
 			return new Player( nextPosition, score + nextPosition );
+		}
+	}
+
+	private record Game(Player playerOne, Player playerTwo, boolean turnOne) {
+		Game( Player playerOne, Player playerTwo ) {
+			this( playerOne, playerTwo, true );
+		}
+
+		Game rollDie( long rollValue ) {
+			final Player nextPlayerOne;
+			final Player nextPlayerTwo;
+			if ( turnOne ) {
+				nextPlayerOne = playerOne.rollDie( rollValue );
+				nextPlayerTwo = playerTwo;
+			} else {
+				nextPlayerOne = playerOne;
+				nextPlayerTwo = playerTwo.rollDie( rollValue );
+			}
+			return new Game( nextPlayerOne, nextPlayerTwo, !turnOne );
 		}
 	}
 }
