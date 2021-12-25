@@ -19,6 +19,9 @@ import com.adventofcode.utils.Utils;
 class AoC242021 implements Solution {
 	private static final Pattern INSTRUCTION_REGEX = Pattern.compile( "(\\w+) (\\w) ?(-?\\w*)" );
 
+	// TODO this only works for my input...
+	// Program decoded manually
+
 	@Override
 	public String solveFirstPart( final Stream<String> input ) {
 		final var modelNumber = "94992994195998";
