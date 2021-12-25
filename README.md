@@ -8,7 +8,7 @@
 [![Stars 2018](https://img.shields.io/static/v1?label=2018&message=50⭐&color=dodgerblue)](https://adventofcode.com/2018)
 [![Stars 2019](https://img.shields.io/static/v1?label=2019&message=50⭐&color=dodgerblue)](https://adventofcode.com/2019)
 [![Stars 2020](https://img.shields.io/static/v1?label=2020&message=50⭐&color=dodgerblue)](https://adventofcode.com/2020)
-[![Stars 2021](https://img.shields.io/static/v1?label=2021&message=42⭐&color=orangered)](https://adventofcode.com/2021)
+[![Stars 2021](https://img.shields.io/static/v1?label=2021&message=44⭐&color=orangered)](https://adventofcode.com/2021)
 [![Tests](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml/badge.svg)](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml)
 
 My [Advent of Code](https://adventofcode.com/) solutions.
