@@ -37,5 +37,4 @@ public class AoC212021Test extends Generic {
         });
     }
 
-    private record Point(long x, long y) {}
 }
