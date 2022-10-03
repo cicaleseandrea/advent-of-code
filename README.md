@@ -24,7 +24,9 @@ My [Advent of Code](https://adventofcode.com/) solutions.
 
 
 ## Requirements
-You will need JDK 17. By default the project will look for it in `/Library/Java/JavaVirtualMachines/temurin-17.0.1/Contents/Home`
+You will need JDK 17.
+
+By default the project will look for it in your `JAVA_HOME`.
 
 You can also specify your own JDK path like this when using gradle:
 
