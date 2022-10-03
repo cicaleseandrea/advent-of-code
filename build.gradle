@@ -17,10 +17,15 @@ group = 'com.adventofcode'
 version = '1.0-SNAPSHOT'
 sourceCompatibility = '17'
 
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 tasks.withType(Test) {
 //  uncomment below if you want preview features
 //  jvmArgs += "--enable-preview"
     systemProperty "print", System.getProperty("print")
+    systemProperty "file.encoding", "UTF-8"
 
     testLogging {
         outputs.upToDateWhen {false}
