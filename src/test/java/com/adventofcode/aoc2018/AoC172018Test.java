@@ -23,23 +23,25 @@ public class AoC172018Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "x=495, y=2..7\n" +
-                        "y=7, x=495..501\n" +
-                        "x=501, y=3..7\n" +
-                        "x=498, y=2..4\n" +
-                        "x=506, y=1..2\n" +
-                        "x=498, y=10..13\n" +
-                        "x=504, y=10..13\n" +
-                        "y=13, x=498..504", "57"},
+                {FIRST, """
+                        x=495, y=2..7
+                        y=7, x=495..501
+                        x=501, y=3..7
+                        x=498, y=2..4
+                        x=506, y=1..2
+                        x=498, y=10..13
+                        x=504, y=10..13
+                        y=13, x=498..504""", "57"},
                 {FIRST, getInput(INSTANCE), "27042"},
-                {SECOND, "x=495, y=2..7\n" +
-                        "y=7, x=495..501\n" +
-                        "x=501, y=3..7\n" +
-                        "x=498, y=2..4\n" +
-                        "x=506, y=1..2\n" +
-                        "x=498, y=10..13\n" +
-                        "x=504, y=10..13\n" +
-                        "y=13, x=498..504", "29"},
+                {SECOND, """
+                        x=495, y=2..7
+                        y=7, x=495..501
+                        x=501, y=3..7
+                        x=498, y=2..4
+                        x=506, y=1..2
+                        x=498, y=10..13
+                        x=504, y=10..13
+                        y=13, x=498..504""", "29"},
                 {SECOND, getInput(INSTANCE), "22214"}
         });
     }

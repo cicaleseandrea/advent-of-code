@@ -23,21 +23,23 @@ public class AoC072018Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "Step C must be finished before step A can begin.\n" +
-                        "Step C must be finished before step F can begin.\n" +
-                        "Step A must be finished before step B can begin.\n" +
-                        "Step A must be finished before step D can begin.\n" +
-                        "Step B must be finished before step E can begin.\n" +
-                        "Step D must be finished before step E can begin.\n" +
-                        "Step F must be finished before step E can begin.", "CABDFE"},
+                {FIRST, """
+                        Step C must be finished before step A can begin.
+                        Step C must be finished before step F can begin.
+                        Step A must be finished before step B can begin.
+                        Step A must be finished before step D can begin.
+                        Step B must be finished before step E can begin.
+                        Step D must be finished before step E can begin.
+                        Step F must be finished before step E can begin.""", "CABDFE"},
                 {FIRST, getInput(INSTANCE), "JMQZELVYXTIGPHFNSOADKWBRUC"},
-                {SECOND, "Step C must be finished before step A can begin.\n" +
-                        "Step C must be finished before step F can begin.\n" +
-                        "Step A must be finished before step B can begin.\n" +
-                        "Step A must be finished before step D can begin.\n" +
-                        "Step B must be finished before step E can begin.\n" +
-                        "Step D must be finished before step E can begin.\n" +
-                        "Step F must be finished before step E can begin.", "15"},
+                {SECOND, """
+                        Step C must be finished before step A can begin.
+                        Step C must be finished before step F can begin.
+                        Step A must be finished before step B can begin.
+                        Step A must be finished before step D can begin.
+                        Step B must be finished before step E can begin.
+                        Step D must be finished before step E can begin.
+                        Step F must be finished before step E can begin.""", "15"},
                 {SECOND, getInput(INSTANCE), "1133"},
         });
     }

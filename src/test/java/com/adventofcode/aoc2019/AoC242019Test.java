@@ -24,11 +24,12 @@ public class AoC242019Test extends Generic {
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
                 { FIRST,
-                    "....#\n" +
-                    "#..#.\n" +
-                    "#..##\n" +
-                    "..#..\n" +
-                    "#....", "2129920" },
+                        """
+                        ....#
+                        #..#.
+                        #..##
+                        ..#..
+                        #....""", "2129920" },
                 { FIRST, getInput( INSTANCE ), "32776479" },
                 { SECOND, getInput( INSTANCE ), "2017" }
         });

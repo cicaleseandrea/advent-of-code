@@ -23,10 +23,29 @@ public class AoC222019Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                { FIRST, "deal with increment 7\n" + "deal into new stack\n" + "deal into new stack", "3" },
-                { FIRST, "cut 6\n" + "deal with increment 7\n" + "deal into new stack", "8" },
-                { FIRST, "deal with increment 7\n" + "deal with increment 9\n" + "cut -2", "9" },
-                { FIRST, "deal into new stack\n" + "cut -2\n" + "deal with increment 7\n" + "cut 8\n" + "cut -4\n" + "deal with increment 7\n" + "cut 3\n" + "deal with increment 9\n" + "deal with increment 3\n" + "cut -1", "0" },
+                { FIRST, """
+                        deal with increment 7
+                        deal into new stack
+                        deal into new stack""", "3" },
+                { FIRST, """
+                        cut 6
+                        deal with increment 7
+                        deal into new stack""", "8" },
+                { FIRST, """
+                        deal with increment 7
+                        deal with increment 9
+                        cut -2""", "9" },
+                { FIRST, """
+                        deal into new stack
+                        cut -2
+                        deal with increment 7
+                        cut 8
+                        cut -4
+                        deal with increment 7
+                        cut 3
+                        deal with increment 9
+                        deal with increment 3
+                        cut -1""", "0" },
                 { FIRST, getInput( INSTANCE ), "3074" },
 				{ SECOND, getInput( INSTANCE ), "104073967000066" }
         });

@@ -66,12 +66,15 @@ class AoC212019 implements Solution {
 			// (NOT ground in A OR NOT ground in C) //jump as soon as possible (C) or if needed (A)
 			// AND ground in D //jump if you land on ground (D)
 			//@formatter:off
+			//!(A && C) = (!A || !C)
 			commands =
-				"OR A J\n" +
-				"AND C J\n" +
-				"NOT J J\n" + //!(A && C) = (!A || !C)
-				"AND D J\n" +
-				"WALK\n";
+			"""
+			OR A J
+			AND C J
+			NOT J J
+			AND D J
+			WALK
+			""";
 			//@formatter:on
 		} else {
 			//jump if:
@@ -79,16 +82,19 @@ class AoC212019 implements Solution {
 			// AND ground in D //jump if you land on ground (D)
 			// AND (ground in E OR ground in H) //jump if you land on a tile from which you can walk (E) or jump (H)
 			//@formatter:off
+			//!(A && B && C) = (!A || !B || !C)
 			commands =
-				"OR A J\n" +
-				"AND B J\n" +
-				"AND C J\n" +
-				"NOT J J\n" + //!(A && B && C) = (!A || !B || !C)
-				"AND D J\n" +
-				"OR E T\n" +
-				"OR H T\n" +
-				"AND T J\n" +
-				"RUN\n";
+			"""
+			OR A J
+			AND B J
+			AND C J
+			NOT J J
+			AND D J
+			OR E T
+			OR H T
+			AND T J
+			RUN
+			""";
 			//@formatter:on
 		}
 		commands.chars().boxed().forEach( c -> in.add( c.longValue() ) );

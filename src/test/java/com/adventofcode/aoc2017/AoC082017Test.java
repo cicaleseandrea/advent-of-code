@@ -23,15 +23,17 @@ public class AoC082017Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "b inc 5 if a > 1\n" +
-                        "a inc 1 if b < 5\n" +
-                        "c dec -10 if a >= 1\n" +
-                        "c inc -20 if c == 10", "1"},
+                {FIRST, """
+                        b inc 5 if a > 1
+                        a inc 1 if b < 5
+                        c dec -10 if a >= 1
+                        c inc -20 if c == 10""", "1"},
                 {FIRST, getInput(INSTANCE), "3745"},
-                {SECOND, "b inc 5 if a > 1\n" +
-                        "a inc 1 if b < 5\n" +
-                        "c dec -10 if a >= 1\n" +
-                        "c inc -20 if c == 10", "10"},
+                {SECOND, """
+                        b inc 5 if a > 1
+                        a inc 1 if b < 5
+                        c dec -10 if a >= 1
+                        c inc -20 if c == 10""", "10"},
                 {SECOND, getInput(INSTANCE), "4644"}
         });
     }

@@ -24,9 +24,15 @@ public class AoC022017Test extends Generic {
     @Parameters(name = "{0}({index})->{2}")
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "5 1 9 5\n" + "7 5 3\n" + "2 4 6 8", "18"},
+                {FIRST, """
+                        5 1 9 5
+                        7 5 3
+                        2 4 6 8""", "18"},
                 {FIRST, getInput(INSTANCE), "21845"},
-                {SECOND, "5 9 2 8\n" + "9 4 7 3\n" + "3 8 6 5", "9"},
+                {SECOND, """
+                        5 9 2 8
+                        9 4 7 3
+                        3 8 6 5""", "9"},
                 {SECOND, getInput(INSTANCE), "191"},
         });
     }

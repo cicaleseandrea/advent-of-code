@@ -23,20 +23,22 @@ public class AoC132018Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "/->-\\        \n" +
-                        "|   |  /----\\\n" +
-                        "| /-+--+-\\  |\n" +
-                        "| | |  | v  |\n" +
-                        "\\-+-/  \\-+--/\n" +
-                        "  \\------/   ", "7,3"},
+                {FIRST, """
+                        /->-\\       \s
+                        |   |  /----\\
+                        | /-+--+-\\  |
+                        | | |  | v  |
+                        \\-+-/  \\-+--/
+                          \\------/  \s""", "7,3"},
                 //{FIRST, getInput(INSTANCE), "123,18"},
-                {SECOND, "/>-<\\  \n" +
-                        "|   |  \n" +
-                        "| /<+-\\\n" +
-                        "| | | v\n" +
-                        "\\>+</ |\n" +
-                        "  |   ^\n" +
-                        "  \\<->/", "6,4"},
+                {SECOND, """
+                        />-<\\ \s
+                        |   | \s
+                        | /<+-\\
+                        | | | v
+                        \\>+</ |
+                          |   ^
+                          \\<->/""", "6,4"},
                 {SECOND, getInput(INSTANCE), "71,123"}
         });
     }

@@ -23,13 +23,14 @@ public class AoC162018Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "Before: [3, 2, 1, 1]\n" +
-                        "9 2 1 2\n" +
-                        "After:  [3, 2, 2, 1]\n" +
-                        "\n" +
-                        "Before: [3, 2, 1, 1]\n" +
-                        "9 2 1 2\n" +
-                        "After:  [3, 2, 2, 1]", "2"},
+                {FIRST, """
+                        Before: [3, 2, 1, 1]
+                        9 2 1 2
+                        After:  [3, 2, 2, 1]
+                        
+                        Before: [3, 2, 1, 1]
+                        9 2 1 2
+                        After:  [3, 2, 2, 1]""", "2"},
                 {FIRST, getInput(INSTANCE), "590"},
                 {SECOND, getInput(INSTANCE), "475"}
         });

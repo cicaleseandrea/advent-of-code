@@ -22,16 +22,17 @@ public class AoC182018Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, ".#.#...|#.\n" +
-                        ".....#|##|\n" +
-                        ".|..|...#.\n" +
-                        "..|#.....#\n" +
-                        "#.#|||#|#|\n" +
-                        "...#.||...\n" +
-                        ".|....|...\n" +
-                        "||...#|.#|\n" +
-                        "|.||||..|.\n" +
-                        "...#.|..|.", "1147"},
+                {FIRST, """
+                        .#.#...|#.
+                        .....#|##|
+                        .|..|...#.
+                        ..|#.....#
+                        #.#|||#|#|
+                        ...#.||...
+                        .|....|...
+                        ||...#|.#|
+                        |.||||..|.
+                        ...#.|..|.""", "1147"},
                 {FIRST, getInput(INSTANCE), "589931"},
                 {SECOND, getInput(INSTANCE), "222332"}
         });

@@ -23,19 +23,21 @@ public class AoC062018Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "1, 1\n" +
-                        "1, 6\n" +
-                        "8, 3\n" +
-                        "3, 4\n" +
-                        "5, 5\n" +
-                        "8, 9", "17"},
+                {FIRST, """
+                        1, 1
+                        1, 6
+                        8, 3
+                        3, 4
+                        5, 5
+                        8, 9""", "17"},
                 {FIRST, getInput(INSTANCE), "4589"},
-                {SECOND, "1, 1\n" +
-                        "1, 6\n" +
-                        "8, 3\n" +
-                        "3, 4\n" +
-                        "5, 5\n" +
-                        "8, 9", "16"},
+                {SECOND, """
+                        1, 1
+                        1, 6
+                        8, 3
+                        3, 4
+                        5, 5
+                        8, 9""", "16"},
                 {SECOND, getInput(INSTANCE), "40252"},
         });
     }

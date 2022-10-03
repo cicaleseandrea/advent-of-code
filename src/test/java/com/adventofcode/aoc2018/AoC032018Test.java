@@ -23,13 +23,15 @@ public class AoC032018Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "#1 @ 1,3: 4x4\n" +
-                        "#2 @ 3,1: 4x4\n" +
-                        "#3 @ 5,5: 2x2", "4"},
+                {FIRST, """
+                        #1 @ 1,3: 4x4
+                        #2 @ 3,1: 4x4
+                        #3 @ 5,5: 2x2""", "4"},
                 {FIRST, getInput(INSTANCE), "113966"},
-                {SECOND, "#1 @ 1,3: 4x4\n" +
-                        "#2 @ 3,1: 4x4\n" +
-                        "#3 @ 5,5: 2x2", "3"},
+                {SECOND, """
+                        #1 @ 1,3: 4x4
+                        #2 @ 3,1: 4x4
+                        #3 @ 5,5: 2x2""", "3"},
                 {SECOND, getInput(INSTANCE), "235"},
         });
     }

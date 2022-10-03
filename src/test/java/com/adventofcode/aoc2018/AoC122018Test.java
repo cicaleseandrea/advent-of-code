@@ -23,22 +23,23 @@ public class AoC122018Test extends Generic {
     @Parameterized.Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-                {FIRST, "initial state: #..#.#..##......###...###\n" +
-                        "\n" +
-                        "...## => #\n" +
-                        "..#.. => #\n" +
-                        ".#... => #\n" +
-                        ".#.#. => #\n" +
-                        ".#.## => #\n" +
-                        ".##.. => #\n" +
-                        ".#### => #\n" +
-                        "#.#.# => #\n" +
-                        "#.### => #\n" +
-                        "##.#. => #\n" +
-                        "##.## => #\n" +
-                        "###.. => #\n" +
-                        "###.# => #\n" +
-                        "####. => #", "325"},
+                {FIRST, """
+                        initial state: #..#.#..##......###...###
+                        
+                        ...## => #
+                        ..#.. => #
+                        .#... => #
+                        .#.#. => #
+                        .#.## => #
+                        .##.. => #
+                        .#### => #
+                        #.#.# => #
+                        #.### => #
+                        ##.#. => #
+                        ##.## => #
+                        ###.. => #
+                        ###.# => #
+                        ####. => #""", "325"},
                 {FIRST, getInput(INSTANCE), "3405"},
                 {SECOND, getInput(INSTANCE), "3350000000000"}
         });

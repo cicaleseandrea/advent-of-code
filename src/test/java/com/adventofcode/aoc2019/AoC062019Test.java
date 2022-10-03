@@ -24,11 +24,35 @@ public class AoC062019Test extends Generic {
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
                 { FIRST,
-                  "COM)B\n" + "B)C\n" + "C)D\n" + "D)E\n" + "E)F\n" + "B)G\n" + "G)H\n" + "D)I\n" + "E)J\n" + "J)K\n" + "K)L",
+                        """
+                        COM)B
+                        B)C
+                        C)D
+                        D)E
+                        E)F
+                        B)G
+                        G)H
+                        D)I
+                        E)J
+                        J)K
+                        K)L""",
                   "42" },
                 { FIRST, getInput( INSTANCE ), "117672" },
                 { SECOND,
-                  "COM)B\n" + "B)C\n" + "C)D\n" + "D)E\n" + "E)F\n" + "B)G\n" + "G)H\n" + "D)I\n" + "E)J\n" + "J)K\n" + "K)L\n" + "K)YOU\n" + "I)SAN",
+                        """
+                        COM)B
+                        B)C
+                        C)D
+                        D)E
+                        E)F
+                        B)G
+                        G)H
+                        D)I
+                        E)J
+                        J)K
+                        K)L
+                        K)YOU
+                        I)SAN""",
                   "4" },
                 { SECOND, getInput(INSTANCE), "277" }
         });
