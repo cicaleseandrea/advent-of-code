@@ -51,7 +51,7 @@ class AoC082016 implements Solution {
 		} else {
 			return Arrays.stream( screen )
 					.map( row -> Arrays.stream( row ).map( Object::toString ).collect( joining() ) )
-					.collect( joining( System.lineSeparator() ) );
+					.collect( joining( "\n" ) );
 		}
 	}
 

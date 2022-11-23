@@ -40,7 +40,7 @@ class AoC132021 implements Solution {
 					.filter( c -> (char) c == BLACK )
 					.count() );
 		} else {
-			return origami.collect( joining( System.lineSeparator() ) );
+			return origami.collect( joining( "\n" ) );
 		}
 	}
 
