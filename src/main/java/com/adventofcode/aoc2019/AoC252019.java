@@ -71,14 +71,14 @@ class AoC252019 implements Solution {
 
 	private static List<String> getSteps() {
 		//TODO this only works for my input...
-		return Stream.of( "east\n", "east\n", "east\n", "take shell\n", "west\n", "south\n",
-				"take monolith\n", "north\n", "west\n", "north\n", "north\n", "take planetoid\n",
-				"east\n", "take cake\n", "north\n", "south\n", "south\n", "west\n", "west\n",
-				"east\n", "north\n", "take astrolabe\n", "west\n", "east\n", "south\n", "east\n",
-				"north\n", "west\n", "west\n", "take ornament\n", "west\n", "east\n", "south\n",
-				"south\n", "take fuel cell\n", "north\n", "north\n", "east\n", "south\n", "west\n",
-				"take bowl of rice\n", "east\n", "north\n", "east\n", "south\n", "west\n",
-				"north\n", "west\n" ).collect( toCollection( ArrayList::new ) );
+		return Stream.of("east", "east", "east", "take shell", "west", "south",
+				"take monolith", "north", "west", "north", "north", "take planetoid",
+				"east", "take cake", "north", "south", "south", "west", "west",
+				"east", "north", "take astrolabe", "west", "east", "south", "east",
+				"north", "west", "west", "take ornament", "west", "east", "south",
+				"south", "take fuel cell", "north", "north", "east", "south", "west",
+				"take bowl of rice", "east", "north", "east", "south", "west",
+				"north", "west").toList();
 	}
 
 	private void enableInteractiveMode( final BlockingQueue<Long> in, final Future<?> future ) {
@@ -91,7 +91,7 @@ class AoC252019 implements Solution {
 					future.cancel( true );
 					return;
 				} else {
-					sendInstruction( in, instruction + "\n" );
+					sendInstruction( in, instruction );
 				}
 			}
 		} ).start();
@@ -99,6 +99,7 @@ class AoC252019 implements Solution {
 
 	private void sendInstruction( final BlockingQueue<Long> in, final String instruction ) {
 		instruction.chars().boxed().forEach( c -> in.add( c.longValue() ) );
+		in.add((long) '\n');
 	}
 
 	private String playGame( final BlockingQueue<Long> in, final BlockingQueue<Long> out,
@@ -219,7 +220,7 @@ class AoC252019 implements Solution {
 					} else {
 						move = !move;
 						if ( move ) {
-							return "north\n";
+							return "north";
 						} else {
 							i++;
 						}
@@ -241,7 +242,7 @@ class AoC252019 implements Solution {
 				}
 
 				private String itemInstruction( final String action, final String item ) {
-					return action + " " + item + "\n";
+					return action + " " + item;
 				}
 			};
 		}
