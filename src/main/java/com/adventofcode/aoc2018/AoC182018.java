@@ -1,17 +1,17 @@
 package com.adventofcode.aoc2018;
 
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingByConcurrent;
-import static java.util.stream.Collectors.toUnmodifiableList;
-
 import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.PIPE;
 import static com.adventofcode.utils.Utils.clearScreen;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.shouldPrint;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingByConcurrent;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,9 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Utils;
 
 class AoC182018 implements Solution {
 
@@ -62,7 +59,7 @@ class AoC182018 implements Solution {
     }
 
     private static List<List<Character>> getInitialState(final Stream<String> input) {
-        return input.map(row -> row.chars().mapToObj(c -> (char) c).collect(toUnmodifiableList())).collect(toUnmodifiableList());
+        return input.map(row -> row.chars().mapToObj(c -> (char) c).toList()).toList();
     }
 
     private static long computeResult(final List<List<Character>> curr) {

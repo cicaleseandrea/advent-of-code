@@ -1,13 +1,17 @@
 package com.adventofcode.aoc2018;
 
+import static com.adventofcode.utils.Utils.EMPTY;
+import static com.adventofcode.utils.Utils.atol;
+import static com.adventofcode.utils.Utils.createPairInteger;
+import static com.adventofcode.utils.Utils.getIterable;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.matrixToLongStream;
+import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
+
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
-
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
 
 class AoC032018 implements Solution {
 
@@ -22,7 +26,7 @@ class AoC032018 implements Solution {
     }
 
     public String solveSecondPart(final Stream<String> input) {
-        final Iterable<String> list = input.collect(Collectors.toUnmodifiableList());
+        final Iterable<String> list = input.toList();
         final long[][] matrix = createMatrix(list);
         long res = -1;
         for (final String fabric : list) {

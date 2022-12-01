@@ -1,14 +1,24 @@
 package com.adventofcode.aoc2018;
 
+import static com.adventofcode.utils.Utils.AT;
+import static com.adventofcode.utils.Utils.DOT;
+import static com.adventofcode.utils.Utils.decrementMapElement;
+import static com.adventofcode.utils.Utils.incrementMapElement;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
+
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
-import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC072018 implements Solution {
 
@@ -113,11 +123,11 @@ class AoC072018 implements Solution {
     }
 
     public String solveFirstPart(final Stream<String> input) {
-        return solve(input.collect(toUnmodifiableList()), 1, (tasks, steps) -> tasks);
+        return solve(input.toList(), 1, (tasks, steps) -> tasks);
     }
 
     public String solveSecondPart(final Stream<String> input) {
-        final List<String> list = input.collect(toUnmodifiableList());
+        final List<String> list = input.toList();
         return solve(list, isSolutionInput(list) ? 5 : 2, (tasks, steps) -> steps);
     }
 }

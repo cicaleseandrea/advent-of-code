@@ -1,18 +1,18 @@
 package com.adventofcode.aoc2018;
 
+import static com.adventofcode.utils.Utils.boolToLong;
+import static com.adventofcode.utils.Utils.itoa;
+import static java.util.function.UnaryOperator.identity;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.boolToLong;
-import static com.adventofcode.utils.Utils.itoa;
-import static java.util.function.UnaryOperator.identity;
-import static java.util.stream.Collectors.*;
 
 class AoC022018 implements Solution {
     private static Pair<Long, Long> accumulateResults(final Pair<Long, Long> p, final Pair<Long, Long> r) {
@@ -32,7 +32,7 @@ class AoC022018 implements Solution {
     }
 
     public String solveSecondPart(final Stream<String> input) {
-        final List<String> list = input.collect(toUnmodifiableList());
+        final List<String> list = input.toList();
         final String first = list.get(0);
         for (int i = 0; i < first.length(); i++) {
             final Set<String> set = new HashSet<>();

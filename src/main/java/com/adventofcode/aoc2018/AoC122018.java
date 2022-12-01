@@ -1,15 +1,16 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
+import static com.adventofcode.utils.Utils.DOT;
+import static com.adventofcode.utils.Utils.HASH;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
 
+import com.adventofcode.Solution;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
-import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC122018 implements Solution {
 
@@ -86,10 +87,10 @@ class AoC122018 implements Solution {
     }
 
     public String solveFirstPart(final Stream<String> input) {
-        return solve(input.collect(toUnmodifiableList()), 20L);
+        return solve(input.toList(), 20L);
     }
 
     public String solveSecondPart(final Stream<String> input) {
-        return solve(input.collect(toUnmodifiableList()), 50000000000L);
+        return solve(input.toList(), 50000000000L);
     }
 }

@@ -1,13 +1,12 @@
 package com.adventofcode.aoc2018;
 
-import static java.util.stream.Collectors.toUnmodifiableList;
-
 import static com.adventofcode.utils.Utils.EMPTY;
 import static com.adventofcode.utils.Utils.atol;
 import static com.adventofcode.utils.Utils.extractIntegerFromString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
 
+import com.adventofcode.Solution;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -21,8 +20,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
 
 class AoC242018 implements Solution {
 
@@ -207,12 +204,12 @@ class AoC242018 implements Solution {
 
     @Override
     public String solveFirstPart(final Stream<String> input) {
-        return solve(input.collect(toUnmodifiableList()), b -> true);
+        return solve(input.toList(), b -> true);
     }
 
     @Override
     public String solveSecondPart(final Stream<String> input) {
-        return solve(input.collect(toUnmodifiableList()), b -> b);
+        return solve(input.toList(), b -> b);
     }
 
     private static class Group {

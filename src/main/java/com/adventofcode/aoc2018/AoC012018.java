@@ -1,8 +1,11 @@
 package com.adventofcode.aoc2018;
 
+import static com.adventofcode.utils.Utils.atol;
+import static com.adventofcode.utils.Utils.incrementMod;
+import static com.adventofcode.utils.Utils.itoa;
+
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,9 +13,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
-import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC012018 implements Solution {
 
@@ -22,7 +22,7 @@ class AoC012018 implements Solution {
     }
 
     private static String solve(final Stream<String> input, final BiPredicate<Long, Integer> checkNextItem) {
-        final List<String> numbers = input.collect(toUnmodifiableList());
+        final List<String> numbers = input.toList();
         final int size = numbers.size();
         long sum = 0;
         int i = 0;

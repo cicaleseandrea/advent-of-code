@@ -1,13 +1,18 @@
 package com.adventofcode.aoc2018;
 
+import static com.adventofcode.utils.Utils.EMPTY;
+import static com.adventofcode.utils.Utils.atoi;
+import static com.adventofcode.utils.Utils.itoa;
+
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Operation2018;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
-import static java.util.stream.Collectors.toUnmodifiableList;
 
 class AoC162018 implements Solution {
 
@@ -86,11 +91,11 @@ class AoC162018 implements Solution {
     }
 
     public String solveFirstPart(final Stream<String> input) {
-        return solve(input.collect(toUnmodifiableList()), false);
+        return solve(input.toList(), false);
     }
 
     public String solveSecondPart(final Stream<String> input) {
-        return solve(input.collect(toUnmodifiableList()), true);
+        return solve(input.toList(), true);
     }
 
 }
