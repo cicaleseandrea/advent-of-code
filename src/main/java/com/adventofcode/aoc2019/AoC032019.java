@@ -21,14 +21,14 @@ class AoC032019 implements Solution {
 	public String solveFirstPart( final Stream<String> input ) {
 		return solve( input,
 				//distance from center
-				( a, b ) -> ( intersection ) -> manhattanDistance( Pair.ZERO,
+				( a, b ) -> intersection -> manhattanDistance( Pair.ZERO,
 						intersection ) );
 	}
 
 	public String solveSecondPart( final Stream<String> input ) {
 		return solve( input,
 				//sum of steps
-				( firstWireSteps, secondWireSteps ) -> ( intersection ) -> firstWireSteps.get(
+				( firstWireSteps, secondWireSteps ) -> intersection -> firstWireSteps.get(
 						intersection ) + secondWireSteps.get( intersection ) );
 	}
 

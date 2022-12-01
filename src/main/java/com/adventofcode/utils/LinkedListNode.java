@@ -1,12 +1,12 @@
 package com.adventofcode.utils;
 
-import java.util.Iterator;
-
 import com.google.common.base.MoreObjects;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class LinkedListNode<T> implements Iterable<LinkedListNode<T>> {
 	private final T value;
-	public LinkedListNode<T> next;
+	private LinkedListNode<T> next;
 
 	public LinkedListNode( final T value ) {
 		this.value = value;
@@ -33,6 +33,9 @@ public class LinkedListNode<T> implements Iterable<LinkedListNode<T>> {
 
 			@Override
 			public LinkedListNode<T> next() {
+				if ( !hasNext() ) {
+					throw new NoSuchElementException();
+				}
 				final var res = curr;
 				curr = curr.next;
 				return res;

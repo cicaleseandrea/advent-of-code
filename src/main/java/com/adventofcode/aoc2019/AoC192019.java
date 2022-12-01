@@ -5,15 +5,14 @@ import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.matrixToLongStream;
 import static com.adventofcode.utils.Utils.toLongList;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Computer2019;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Computer2019;
 
 class AoC192019 implements Solution {
 
@@ -49,13 +48,17 @@ class AoC192019 implements Solution {
 			long number;
 			do {
 				number = getNumber( program, in, out, x, y );
-			} while ( number == 0L && ++x == x /* move to the right only if number is 0. if 1, will retry the same x on the next row */ );
+				if ( number == 0 ) {
+					/* move to the right only if number is 0. if 1, will retry the same x on the next row */
+					x++;
+				}
+			} while ( number == 0 );
 
 			//if top right corner of the square is inside the beam
 			if ( getNumber( program, in, out, x + ( size - 1 ), y - ( size - 1 ) ) == 1L ) {
 				//find the top left corner of the square
 				y -= ( size - 1 );
-				return itoa( x * 10000 + y );
+				return itoa( x * 10000L + y );
 			}
 
 			//move to next row

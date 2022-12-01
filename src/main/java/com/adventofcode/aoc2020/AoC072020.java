@@ -40,7 +40,7 @@ class AoC072020 implements Solution {
 			final Multimap<String, Pair<String, Integer>> containsMap ) {
 		input.map( BAGS_REGEX::matcher )
 				.map( Matcher::results )
-				.map( resultStream -> resultStream.toList() )
+				.map( Stream::toList )
 				.forEach( bags -> {
 					final String outside = bags.get( 0 ).group( 1 );
 					bags.subList( 1, bags.size() ).forEach( insideDescription -> {

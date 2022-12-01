@@ -1,7 +1,5 @@
 package com.adventofcode.aoc2018;
 
-import static java.util.Collections.singleton;
-
 import static com.adventofcode.utils.Pair.ZERO;
 import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.HASH;
@@ -9,7 +7,10 @@ import static com.adventofcode.utils.Utils.PIPE;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.shouldPrint;
+import static java.util.Collections.singleton;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,17 +20,14 @@ import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.LongPredicate;
+import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
 
 class AoC202018 implements Solution {
 
     private static String solve(final String input, final LongPredicate filter,
-                                final Function<LongSummaryStatistics, Long> computeResult) {
+                                final ToLongFunction<LongSummaryStatistics> computeResult) {
         final Map<Pair<Long, Long>, Character> map = new HashMap<>();
         map.put(ZERO, DOT);
         branch(map, singleton(ZERO), input, 1);
@@ -75,7 +73,7 @@ class AoC202018 implements Solution {
     }
 
     private static Number computeResult(final Map<Pair<Long, Long>, Character> map, final LongPredicate filter,
-                                        final Function<LongSummaryStatistics, Long> computeResult) {
+                                        final ToLongFunction<LongSummaryStatistics> computeResult) {
         //BFS to find shortest path to every room (unweighted graphs, no need for Dijkstra)
         final Queue<Pair<Pair<Long, Long>, Long>> queue = new LinkedList<>();
         final Set<Pair<Long, Long>> seen = new HashSet<>();
@@ -100,7 +98,7 @@ class AoC202018 implements Solution {
             }
         }
         final LongSummaryStatistics stats = distances.stream().mapToLong(Long::longValue).filter(filter).summaryStatistics();
-        return computeResult.apply(stats);
+        return computeResult.applyAsLong(stats);
     }
 
     private static List<Pair<Long, Long>> computeNeighbours(final Pair<Long, Long> pos,

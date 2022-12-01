@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
@@ -133,8 +134,8 @@ class AoC122019 implements Solution {
 
 	private long getEnergy(
 			final Triplet<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>> moon,
-			final Function<Pair<Long, Long>, Long> getter ) {
-		return abs( getter.apply( moon.getFirst() ) ) + abs(
-				getter.apply( moon.getSecond() ) ) + abs( getter.apply( moon.getThird() ) );
+			final ToLongFunction<Pair<Long, Long>> getter ) {
+		return abs( getter.applyAsLong( moon.getFirst() ) ) + abs(
+				getter.applyAsLong( moon.getSecond() ) ) + abs( getter.applyAsLong( moon.getThird() ) );
 	}
 }

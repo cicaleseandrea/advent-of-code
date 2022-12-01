@@ -1,13 +1,13 @@
 package com.adventofcode.aoc2019;
 
-import static java.util.Collections.emptyIterator;
-import static java.util.stream.Collectors.toCollection;
-
 import static com.adventofcode.utils.Utils.EMPTY;
 import static com.adventofcode.utils.Utils.MERRY_CHRISTMAS;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.toLongList;
+import static java.util.Collections.emptyIterator;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Computer2019;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,9 +23,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Computer2019;
 
 class AoC252019 implements Solution {
 

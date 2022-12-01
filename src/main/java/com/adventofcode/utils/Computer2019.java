@@ -4,6 +4,7 @@ import static com.adventofcode.utils.Computer2019.OpCode.HALT;
 import static com.adventofcode.utils.Computer2019.OpCode.NOP;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.google.common.base.Strings;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
-
-import com.google.common.base.Strings;
 
 public class Computer2019 implements Runnable {
 	public Map<Long, Long> memory;
@@ -269,7 +268,7 @@ public class Computer2019 implements Runnable {
                 final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
                 final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
                 if ( first != 0 ) {
-                    computer.pointer = second.intValue() - 1; //after executing an instruction, computer always advances the pointer
+                    computer.pointer = second.intValue() - 1L; //after executing an instruction, computer always advances the pointer
                 }
             }
 
@@ -291,7 +290,7 @@ public class Computer2019 implements Runnable {
                 final Long first = computer.getNextParameter( computer.getMode( instruction, 1 ) );
                 final Long second = computer.getNextParameter( computer.getMode( instruction, 2 ) );
                 if ( first == 0 ) {
-                    computer.pointer = second.intValue() - 1; //after executing an instruction, computer always advances the pointer
+                    computer.pointer = second.intValue() - 1L; //after executing an instruction, computer always advances the pointer
                 }
             }
 

@@ -3,6 +3,7 @@ package com.adventofcode.aoc2020;
 import static com.adventofcode.utils.Utils.atoi;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -11,8 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
 
 class AoC082020 implements Solution {
 
@@ -73,8 +72,9 @@ class AoC082020 implements Solution {
 			final String operation = instruction.group( 1 );
 			final int argument = atoi( instruction.group( 2 ) );
 			switch ( operation ) {
-			case ACC -> accumulator += argument;
-			case JMP -> pos += ( argument - 1 );
+				case ACC -> accumulator += argument;
+				case JMP -> pos += ( argument - 1 );
+				default -> {/*nop*/}
 			}
 			pos++;
 		}

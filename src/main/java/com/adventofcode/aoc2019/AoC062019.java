@@ -3,14 +3,13 @@ package com.adventofcode.aoc2019;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.splitOnRegex;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Node;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Node;
 
 class AoC062019 implements Solution {
 
@@ -24,7 +23,7 @@ class AoC062019 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final Map<String, Node<String>> nodes,
-			final Function<Node<String>, Long> computeResult ) {
+			final ToLongFunction<Node<String>> computeResult ) {
 		final Node<String> COM = new Node<>( "COM" );
 		nodes.put( "COM", COM );
 
@@ -33,15 +32,12 @@ class AoC062019 implements Solution {
 			getOrAddNode( nodes, connection[0] ).addChild( getOrAddNode( nodes, connection[1] ) );
 		} );
 
-		return itoa( computeResult.apply( COM ) );
+		return itoa( computeResult.applyAsLong( COM ) );
 	}
 
 	private Node<String> getOrAddNode( final Map<String, Node<String>> nodes,
 			final String nodeStr ) {
-		if ( !nodes.containsKey( nodeStr ) ) {
-			nodes.put( nodeStr, new Node<>( nodeStr ) );
-		}
-		return nodes.get( nodeStr );
+		return nodes.computeIfAbsent( nodeStr, Node::new );
 	}
 
 	private long countOrbits( final Node<String> node ) {

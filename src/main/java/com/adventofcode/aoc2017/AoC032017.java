@@ -1,15 +1,19 @@
 package com.adventofcode.aoc2017;
 
-import com.adventofcode.Solution;
+import static com.adventofcode.utils.Utils.atoi;
+import static com.adventofcode.utils.Utils.getFirstString;
+import static com.adventofcode.utils.Utils.incrementMod;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.manhattanDistance;
+import static com.adventofcode.utils.Utils.sumNeighbors8;
 
+import com.adventofcode.Solution;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
 import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
 
 class AoC032017 implements Solution {
     private static String solveFirstPartAlternative(final int inputNumber) {
@@ -58,6 +62,7 @@ class AoC032017 implements Solution {
                 case 1 -> j--; //left
                 case 2 -> i++; //down
                 case 3 -> j++; //right
+                default -> throw new IllegalStateException( "Unexpected value: " + direction );
             }
             //change direction
             if (steps == max) {

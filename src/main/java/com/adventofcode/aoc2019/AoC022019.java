@@ -4,11 +4,10 @@ import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.toLongList;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Computer2019;
+import java.util.List;
+import java.util.stream.Stream;
 
 class AoC022019 implements Solution {
 
@@ -22,7 +21,7 @@ class AoC022019 implements Solution {
 		for ( int noun = 0; noun <= 99; noun++ ) {
 			for ( int verb = 0; verb <= 99; verb++ ) {
 				if ( computeResult( program, noun, verb ).equals( 19690720L ) ) {
-					return itoa( 100 * noun + verb );
+					return itoa( 100L * noun + verb );
 				}
 			}
 		}

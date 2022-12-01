@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
 class AoC242019 implements Solution {
@@ -30,7 +30,7 @@ class AoC242019 implements Solution {
 	}
 
 	private static String solve( final Stream<String> input, final boolean first,
-			final Function<List<Character[][]>, Long> computeResult ) {
+			final ToLongFunction<List<Character[][]>> computeResult ) {
 		final var seen = new HashSet<>();
 		var curr = getInitialState( input );
 		List<Character[][]> levels = new ArrayList<>();
@@ -47,7 +47,7 @@ class AoC242019 implements Solution {
 			print( levels.get( 0 ), first );
 		}
 
-		return itoa( computeResult.apply( levels ) );
+		return itoa( computeResult.applyAsLong( levels ) );
 	}
 
 	private static List<Character[][]> nextGeneration( final List<Character[][]> levels,
