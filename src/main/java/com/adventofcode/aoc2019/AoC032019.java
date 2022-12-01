@@ -1,12 +1,13 @@
 package com.adventofcode.aoc2019;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.extractIntegerFromString;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.manhattanDistance;
 import static com.adventofcode.utils.Utils.splitOnRegex;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
+import com.google.common.collect.Sets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -14,10 +15,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
-import com.google.common.collect.Sets;
 
 class AoC032019 implements Solution {
 
@@ -37,7 +34,7 @@ class AoC032019 implements Solution {
 
 	private String solve( final Stream<String> input,
 			final BiFunction<Map<Pair<Long, Long>, Long>, Map<Pair<Long, Long>, Long>, ToLongFunction<Pair<Long, Long>>> computeResult ) {
-		final var directions = input.collect( toList() );
+		final var directions = input.toList();
 
 		final Map<Pair<Long, Long>, Long> firstWireSteps = new HashMap<>();
 		initializeWire( directions.get( 0 ), firstWireSteps );

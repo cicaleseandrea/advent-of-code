@@ -1,16 +1,13 @@
 package com.adventofcode.aoc2020;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.atoi;
 import static com.adventofcode.utils.Utils.itoa;
-
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Direction;
 import com.adventofcode.utils.Pair;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 class AoC122020 implements Solution {
 
@@ -28,7 +25,7 @@ class AoC122020 implements Solution {
 		final Pair<Integer, Integer> ship = new Pair<>( 0, 0 );
 		var direction = Direction.RIGHT;
 		final Pair<Integer, Integer> waypoint = new Pair<>( 10, 1 );
-		for ( final String line : input.collect( toList() ) ) {
+		for ( final String line : input.toList() ) {
 			final char action = line.charAt( 0 );
 			final int value = atoi( line.substring( 1 ) );
 			final Pair<Integer, Integer> move = new Pair<>( 0, 0 );

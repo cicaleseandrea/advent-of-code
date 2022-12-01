@@ -1,11 +1,15 @@
 package com.adventofcode.aoc2020;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.reverseString;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Utils;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,13 +21,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Utils;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 
 class AoC202020 implements Solution {
 	//@formatter:off
@@ -189,11 +186,11 @@ class AoC202020 implements Solution {
 		final var bordersA = Stream.of( getTopBorder( tileA ), getRightBorder( tileA ),
 				getBottomBorder( tileA ), getLeftBorder( tileA ) )
 				.flatMap( s -> Stream.of( s, reverseString( s ) ) )
-				.collect( toList() );
+				.toList();
 		final var bordersB = Stream.of( getTopBorder( tileB ), getRightBorder( tileB ),
 				getBottomBorder( tileB ), getLeftBorder( tileB ) )
 				.flatMap( s -> Stream.of( s, reverseString( s ) ) )
-				.collect( toList() );
+				.toList();
 
 		String[] orientedCorner = corner;
 		boolean oriented = false;
@@ -272,7 +269,7 @@ class AoC202020 implements Solution {
 				getBottomBorder( image ), getLeftBorder( image ) );
 		borders.putAll( tile, bordersList );
 		borders.putAll( tile,
-				bordersList.stream().map( Utils::reverseString ).collect( toList() ) );
+				bordersList.stream().map( Utils::reverseString ).toList() );
 	}
 
 	private String[] getTileFromInput( final Iterator<String> it ) {

@@ -1,16 +1,13 @@
 package com.adventofcode.aoc2019;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.extractIntegerFromString;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
 
 class AoC222019 implements Solution {
 
@@ -101,7 +98,7 @@ class AoC222019 implements Solution {
 
 	private String solve( final Stream<String> input, final boolean first,
 			final Supplier<String> computeResult ) {
-		final List<String> lines = input.collect( toList() );
+		final List<String> lines = input.toList();
 		deckSize = ( lines.size() < 20 ) ? BigInteger.TEN : ( first ? BigInteger.valueOf(
 				10007 ) : BigInteger.valueOf( 119315717514047L ) );
 		cardPosition = lines.size() < 20 ? BigInteger.valueOf( 9 ) : BigInteger.valueOf( 2019 );

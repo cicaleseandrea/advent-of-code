@@ -1,15 +1,12 @@
 package com.adventofcode.aoc2016;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.itoa;
-
-import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 class AoC032016 implements Solution {
 
@@ -20,7 +17,7 @@ class AoC032016 implements Solution {
 
 	@Override
 	public String solveSecondPart( final Stream<String> input ) {
-		final var lines = input.collect( toList() );
+		final var lines = input.toList();
 		long count = IntStream.iterate( 0, i -> i < lines.size(), i -> i + 3 )
 				.boxed()
 				.flatMap( i -> IntStream.range( 0, 3 )

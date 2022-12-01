@@ -1,11 +1,11 @@
 package com.adventofcode.aoc2016;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.SPACE;
 import static com.adventofcode.utils.Utils.atoi;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,9 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
 
 class AoC102016 implements Solution {
 	private static final String BOT = "bot ";
@@ -32,7 +29,7 @@ class AoC102016 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final boolean first ) {
-		final var inputList = input.collect( toList() );
+		final var inputList = input.toList();
 		final Map<String, Set<Integer>> bots = new HashMap<>();
 		final Map<String, Integer> outputs = new HashMap<>();
 		final Map<String, Pair<String, String>> botGives = new HashMap<>();

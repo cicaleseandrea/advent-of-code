@@ -1,18 +1,15 @@
 package com.adventofcode.aoc2020;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.incrementMod;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Utils;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Utils;
 
 class AoC232020 implements Solution {
 
@@ -64,7 +61,7 @@ class AoC232020 implements Solution {
 		final int[] cupToNext = new int[maxCups + 1];
 		final List<Integer> cups = IntStream.concat(
 				getFirstString( input ).chars().map( Utils::charToInt ),
-				IntStream.rangeClosed( 10, maxCups ) ).boxed().collect( toList() );
+				IntStream.rangeClosed( 10, maxCups ) ).boxed().toList();
 		for ( int i = 0; i < cups.size(); i++ ) {
 			cupToNext[cups.get( i )] = cups.get( incrementMod( i, maxCups ) );
 		}

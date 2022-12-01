@@ -1,20 +1,17 @@
 package com.adventofcode.aoc2019;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.clearScreen;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
 
 class AoC242019 implements Solution {
 
@@ -46,7 +43,7 @@ class AoC242019 implements Solution {
 			levels = nextGeneration( levels, first );
 			cycle = first && !seen.add( Arrays.stream( levels.get( 0 ) )
 					.flatMap( Arrays::stream )
-					.collect( toList() ) );
+					.toList() );
 			print( levels.get( 0 ), first );
 		}
 

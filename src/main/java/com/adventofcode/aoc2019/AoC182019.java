@@ -1,14 +1,14 @@
 package com.adventofcode.aoc2019;
 
-import static java.lang.Character.isLowerCase;
-import static java.lang.Character.isUpperCase;
-import static java.lang.Character.toLowerCase;
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.AT;
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.itoa;
+import static java.lang.Character.isLowerCase;
+import static java.lang.Character.isUpperCase;
+import static java.lang.Character.toLowerCase;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -21,9 +21,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.function.IntPredicate;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
 
 class AoC182019 implements Solution {
 
@@ -170,7 +167,7 @@ class AoC182019 implements Solution {
 				// add only cells that can be reached, updating keys collected
 				.map( pos -> getNeighbour( x + pos.getFirst(), y + pos.getSecond(), map, keys ) )
 				.flatMap( Optional::stream )
-				.collect( toList() );
+				.toList();
 	}
 
 	private Optional<Pair<Pair<Integer, Integer>, BitSet>> getNeighbour( final int x, final int y,

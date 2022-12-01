@@ -1,12 +1,9 @@
 package com.adventofcode.aoc2016;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.DOT;
 
-import java.util.stream.Stream;
-
 import com.adventofcode.Solution;
+import java.util.stream.Stream;
 
 class AoC022016 implements Solution {
 
@@ -32,7 +29,7 @@ class AoC022016 implements Solution {
 
 	private String solve( final Stream<String> input, final char[][] keypad, int x, int y ) {
 		final var code = new StringBuilder();
-		for ( final String line : input.collect( toList() ) ) {
+		for ( final String line : input.toList() ) {
 			for ( final char c : line.toCharArray() ) {
 				if ( c == 'D' && y < keypad.length - 1 && keypad[y + 1][x] != DOT ) {
 					y += 1;

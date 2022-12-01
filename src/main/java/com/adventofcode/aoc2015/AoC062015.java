@@ -1,20 +1,17 @@
 package com.adventofcode.aoc2015;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.aoc2015.AoC062015.Instruction.OFF;
 import static com.adventofcode.aoc2015.AoC062015.Instruction.ON;
 import static com.adventofcode.aoc2015.AoC062015.Instruction.TOGGLE;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Utils;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.IntUnaryOperator;
 import java.util.regex.MatchResult;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Utils;
 
 class AoC062015 implements Solution {
 
@@ -39,7 +36,7 @@ class AoC062015 implements Solution {
 					.results()
 					.map( MatchResult::group )
 					.map( Utils::atoi )
-					.collect( toList() );
+					.toList();
 			final var instruction = getInstruction( line, instructions );
 			for ( int y = numbers.get( 1 ); y <= numbers.get( 3 ); y++ ) {
 				for ( int x = numbers.get( 0 ); x <= numbers.get( 2 ); x++ ) {

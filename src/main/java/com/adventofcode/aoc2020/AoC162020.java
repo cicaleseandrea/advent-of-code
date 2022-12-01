@@ -1,10 +1,13 @@
 package com.adventofcode.aoc2020;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.atol;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Utils;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,12 +15,6 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Utils;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 class AoC162020 implements Solution {
 	private static final Pattern FIELDS_REGEX = Pattern.compile(
@@ -34,7 +31,7 @@ class AoC162020 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final boolean first ) {
-		final var inputList = input.collect( toList() );
+		final var inputList = input.toList();
 		final Multimap<String, Predicate<Long>> fields = ArrayListMultimap.create();
 		final List<List<Long>> tickets = new ArrayList<>();
 		final Multimap<String, Integer> fieldsToPos = HashMultimap.create();
@@ -139,7 +136,7 @@ class AoC162020 implements Solution {
 				fieldsToPos.put( existingField, fieldsSize - 1 );
 			}
 			fieldsToPos.putAll( field,
-					IntStream.range( 0, fieldsSize ).boxed().collect( toList() ) );
+					IntStream.range( 0, fieldsSize ).boxed().toList() );
 		}
 	}
 

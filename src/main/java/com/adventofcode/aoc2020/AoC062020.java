@@ -1,10 +1,9 @@
 package com.adventofcode.aoc2020;
 
-import static java.util.stream.Collectors.toList;
+import static com.adventofcode.utils.Utils.itoa;
 import static java.util.stream.Collectors.toSet;
 
-import static com.adventofcode.utils.Utils.itoa;
-
+import com.adventofcode.Solution;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,8 +11,6 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
 
 class AoC062020 implements Solution {
 
@@ -37,7 +34,7 @@ class AoC062020 implements Solution {
 				.map( String::chars )
 				.map( IntStream::boxed )
 				.map( line -> line.collect( toSet() ) )
-				.collect( toList() );
+				.toList();
 
 		final var answersToCount = new HashSet<>( lines.get( 0 ) );
 		lines.forEach( line -> collector.accept( answersToCount, line ) );

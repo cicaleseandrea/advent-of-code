@@ -1,10 +1,12 @@
 package com.adventofcode.aoc2020;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.atoi;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,11 +14,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 
 class AoC072020 implements Solution {
 
@@ -43,7 +40,7 @@ class AoC072020 implements Solution {
 			final Multimap<String, Pair<String, Integer>> containsMap ) {
 		input.map( BAGS_REGEX::matcher )
 				.map( Matcher::results )
-				.map( resultStream -> resultStream.collect( toList() ) )
+				.map( resultStream -> resultStream.toList() )
 				.forEach( bags -> {
 					final String outside = bags.get( 0 ).group( 1 );
 					bags.subList( 1, bags.size() ).forEach( insideDescription -> {

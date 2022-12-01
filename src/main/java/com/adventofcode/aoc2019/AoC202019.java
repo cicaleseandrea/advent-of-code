@@ -1,24 +1,21 @@
 package com.adventofcode.aoc2019;
 
-import static java.lang.Character.isLetter;
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Pair.ZERO;
 import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.itoa;
+import static java.lang.Character.isLetter;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 class AoC202019 implements Solution {
 
@@ -189,7 +186,7 @@ class AoC202019 implements Solution {
 				new Pair<>( pos.getFirst(), pos.getSecond() - 1 ),
 				new Pair<>( pos.getFirst(), pos.getSecond() + 1 ) )
 				.filter( n -> isCell( n, map ) )
-				.collect( toList() );
+				.toList();
 	}
 
 	private boolean isCell( final Pair<Long, Long> n, final Map<Pair<Long, Long>, Character> map ) {

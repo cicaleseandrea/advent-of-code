@@ -1,10 +1,9 @@
 package com.adventofcode.aoc2020;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.atol;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
 
 class AoC142020 implements Solution {
 
@@ -31,7 +28,7 @@ class AoC142020 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final boolean first ) {
-		final var list = input.collect( toList() );
+		final var list = input.toList();
 		final Map<Long, Long> memory = new HashMap<>();
 		long andMask = 1L;
 		long orMask = 0L;
@@ -78,6 +75,6 @@ class AoC142020 implements Solution {
 				.filter( i -> bitmask.charAt( i ) == 'X' )
 				.map( i -> bitmask.length() - i - 1 )
 				.boxed()
-				.collect( toList() );
+				.toList();
 	}
 }

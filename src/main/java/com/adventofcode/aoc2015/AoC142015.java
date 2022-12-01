@@ -1,19 +1,16 @@
 package com.adventofcode.aoc2015;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.atoi;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Triplet;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Triplet;
 
 class AoC142015 implements Solution {
 	private static final Pattern SPEED_REGEX = Pattern.compile(
@@ -39,7 +36,7 @@ class AoC142015 implements Solution {
 			final int runTime = atoi( matcher.group( 2 ) );
 			final int restTime = atoi( matcher.group( 3 ) );
 			return new Triplet<>( speed, runTime, restTime );
-		} ).collect( toList() );
+		} ).toList();
 
 		final int seconds = reindeer.size() < 3 ? 1000 : 2503;
 		if ( first ) {
@@ -61,7 +58,7 @@ class AoC142015 implements Solution {
 			final int i ) {
 		return reindeer.stream()
 				.map( r -> computeScore( i, r.getFirst(), r.getSecond(), r.getThird() ) )
-				.collect( toList() );
+				.toList();
 	}
 
 	private int computeScore( final int seconds, final int speed, final int runTime,

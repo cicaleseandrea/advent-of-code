@@ -1,17 +1,14 @@
 package com.adventofcode.aoc2020;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.HASH;
 import static com.adventofcode.utils.Utils.itoa;
 
+import com.adventofcode.Solution;
 import java.nio.CharBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
 
 class AoC172020 implements Solution {
 	private static final char ACTIVE = HASH;
@@ -29,7 +26,7 @@ class AoC172020 implements Solution {
 	}
 
 	private String solve( final Stream<String> input, final boolean first ) {
-		var hypercube = getHypercube( input.collect( toList() ), !first );
+		var hypercube = getHypercube( input.toList(), !first );
 		var prevHypercube = hypercube;
 		final int cubesNumber = hypercube.length;
 		final int cubeSize = hypercube[0].length;
