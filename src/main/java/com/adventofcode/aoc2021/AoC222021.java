@@ -1,15 +1,13 @@
 package com.adventofcode.aoc2021;
 
+import static com.adventofcode.utils.Utils.itoa;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import static com.adventofcode.utils.Utils.itoa;
-
+import com.adventofcode.Solution;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import com.adventofcode.Solution;
 
 class AoC222021 implements Solution {
 	private static final Pattern STEP_REGEX = Pattern.compile(
@@ -42,6 +40,7 @@ class AoC222021 implements Solution {
 
 	@Override
 	public String solveSecondPart( final Stream<String> input ) {
+		// TODO
 		final var steps = input.map( this::getStep ).toList();
 		final var cubes = new HashSet<>();
 
