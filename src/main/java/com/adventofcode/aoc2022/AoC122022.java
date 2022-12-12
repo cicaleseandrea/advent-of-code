@@ -2,13 +2,18 @@ package com.adventofcode.aoc2022;
 
 import static com.adventofcode.utils.Utils.NEIGHBOURS_4;
 import static com.adventofcode.utils.Utils.itoa;
+import static java.util.stream.Collectors.toSet;
 import static java.util.stream.IntStream.range;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.function.IntPredicate;
 import java.util.stream.Stream;
 
 class AoC122022 implements Solution {
@@ -29,21 +34,22 @@ class AoC122022 implements Solution {
     final var src = srcDst.getFirst();
     final var dst = srcDst.getSecond();
 
-    final Stream<Pair<Integer, Integer>> sources;
+    final List<Integer> distances;
     if ( first ) {
-      sources = Stream.of( src );
+      distances = computeDistances( map, src, List.of( dst ), diff -> diff <= 1 );
     } else {
-      sources = range( 0, map.length ).boxed().flatMap(
+      final var lowPoints = range( 0, map.length ).boxed().flatMap(
           i -> range( 0, map[0].length ).filter( j -> map[i][j] == 'a' )
-              .mapToObj( j -> new Pair<>( i, j ) ) );
+              .mapToObj( j -> new Pair<>( i, j ) ) ).collect( toSet() );
+      distances = computeDistances( map, dst, lowPoints, diff -> diff >= -1 );
     }
-
-    final var steps = sources.mapToInt( s -> computeDistance( map, s, dst ) ).min().orElseThrow();
-    return itoa( steps );
+    return itoa( Collections.min( distances ) );
   }
 
-  private int computeDistance(final char[][] map, final Pair<Integer, Integer> src,
-      final Pair<Integer, Integer> dst) {
+  private List<Integer> computeDistances(final char[][] map, final Pair<Integer, Integer> src,
+      final Collection<Pair<Integer, Integer>> destinations, final IntPredicate climbable) {
+    final var result = new ArrayList<Integer>();
+
     //BFS to find shortest path (unweighted graph, no need for Dijkstra)
     final var queue = new LinkedList<Pair<Integer, Integer>>();
     final var distances = new HashMap<Pair<Integer, Integer>, Integer>();
@@ -53,11 +59,11 @@ class AoC122022 implements Solution {
 
     while ( !queue.isEmpty() ) {
       final var curr = queue.remove();
-      if ( curr.equals( dst ) ) {
-        return distances.get( dst );
+      if ( destinations.contains( curr ) ) {
+        result.add( distances.get( curr ) );
       }
 
-      for ( final var neighbour : findNeighbours( curr, map ) ) {
+      for ( final var neighbour : findNeighbours( curr, map, climbable ) ) {
         if ( !distances.containsKey( neighbour ) ) {
           //add to the queue
           queue.add( neighbour );
@@ -67,11 +73,11 @@ class AoC122022 implements Solution {
       }
     }
 
-    return Integer.MAX_VALUE;
+    return result;
   }
 
   private Collection<Pair<Integer, Integer>> findNeighbours(final Pair<Integer, Integer> point,
-      final char[][] map) {
+      final char[][] map, final IntPredicate climbable) {
     final var height = map[point.getFirst()][point.getSecond()];
     final var y = point.getFirst();
     final var x = point.getSecond();
@@ -80,9 +86,9 @@ class AoC122022 implements Solution {
         .map( neighbour -> new Pair<>( y + neighbour.getFirst(), x + neighbour.getSecond() ) )
         // add only cells that can be reached
         .filter( neighbour -> neighbour.getFirst() >= 0 && neighbour.getSecond() >= 0
-            && neighbour.getFirst() < map.length && neighbour.getSecond() < map[0].length )
-        .filter( neighbour -> map[neighbour.getFirst()][neighbour.getSecond()] - height <= 1 )
-        .toList();
+            && neighbour.getFirst() < map.length && neighbour.getSecond() < map[0].length ).filter(
+            neighbour -> climbable.test(
+                map[neighbour.getFirst()][neighbour.getSecond()] - height ) ).toList();
   }
 
   private Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getSourceAndDestination(
