@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.IntPredicate;
 import java.util.stream.Stream;
 
 class AoC122022 implements Solution {
@@ -34,18 +33,18 @@ class AoC122022 implements Solution {
 
     final int distance;
     if ( first ) {
-      distance = computeDistance( map, src, List.of( dst ), diff -> diff <= 1 );
+      distance = computeDistance( map, dst, List.of( src ) );
     } else {
       final var lowPoints = range( 0, map.length ).boxed().flatMap(
           i -> range( 0, map[0].length ).filter( j -> map[i][j] == 'a' )
               .mapToObj( j -> new Pair<>( i, j ) ) ).collect( toSet() );
-      distance = computeDistance( map, dst, lowPoints, diff -> diff >= -1 );
+      distance = computeDistance( map, dst, lowPoints );
     }
     return itoa( distance );
   }
 
   private int computeDistance(final char[][] map, final Pair<Integer, Integer> src,
-      final Collection<Pair<Integer, Integer>> destinations, final IntPredicate climbable) {
+      final Collection<Pair<Integer, Integer>> destinations) {
     //BFS to find shortest path (unweighted graph, no need for Dijkstra)
     final var queue = new LinkedList<Pair<Integer, Integer>>();
     final var distances = new HashMap<Pair<Integer, Integer>, Integer>();
@@ -59,7 +58,7 @@ class AoC122022 implements Solution {
         return distances.get( curr );
       }
 
-      for ( final var neighbour : findNeighbours( curr, map, climbable ) ) {
+      for ( final var neighbour : findNeighbours( curr, map ) ) {
         if ( !distances.containsKey( neighbour ) ) {
           //add to the queue
           queue.add( neighbour );
@@ -73,7 +72,7 @@ class AoC122022 implements Solution {
   }
 
   private Collection<Pair<Integer, Integer>> findNeighbours(final Pair<Integer, Integer> point,
-      final char[][] map, final IntPredicate climbable) {
+      final char[][] map) {
     final var height = map[point.getFirst()][point.getSecond()];
     final var y = point.getFirst();
     final var x = point.getSecond();
@@ -82,9 +81,9 @@ class AoC122022 implements Solution {
         .map( neighbour -> new Pair<>( y + neighbour.getFirst(), x + neighbour.getSecond() ) )
         // add only cells that can be reached
         .filter( neighbour -> neighbour.getFirst() >= 0 && neighbour.getSecond() >= 0
-            && neighbour.getFirst() < map.length && neighbour.getSecond() < map[0].length ).filter(
-            neighbour -> climbable.test(
-                map[neighbour.getFirst()][neighbour.getSecond()] - height ) ).toList();
+            && neighbour.getFirst() < map.length && neighbour.getSecond() < map[0].length )
+        .filter( neighbour -> height - map[neighbour.getFirst()][neighbour.getSecond()] <= 1 )
+        .toList();
   }
 
   private Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getSourceAndDestination(
