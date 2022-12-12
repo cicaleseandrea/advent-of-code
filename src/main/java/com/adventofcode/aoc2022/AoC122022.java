@@ -7,9 +7,7 @@ import static java.util.stream.IntStream.range;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,22 +32,20 @@ class AoC122022 implements Solution {
     final var src = srcDst.getFirst();
     final var dst = srcDst.getSecond();
 
-    final List<Integer> distances;
+    final int distance;
     if ( first ) {
-      distances = computeDistances( map, src, List.of( dst ), diff -> diff <= 1 );
+      distance = computeDistance( map, src, List.of( dst ), diff -> diff <= 1 );
     } else {
       final var lowPoints = range( 0, map.length ).boxed().flatMap(
           i -> range( 0, map[0].length ).filter( j -> map[i][j] == 'a' )
               .mapToObj( j -> new Pair<>( i, j ) ) ).collect( toSet() );
-      distances = computeDistances( map, dst, lowPoints, diff -> diff >= -1 );
+      distance = computeDistance( map, dst, lowPoints, diff -> diff >= -1 );
     }
-    return itoa( Collections.min( distances ) );
+    return itoa( distance );
   }
 
-  private List<Integer> computeDistances(final char[][] map, final Pair<Integer, Integer> src,
+  private int computeDistance(final char[][] map, final Pair<Integer, Integer> src,
       final Collection<Pair<Integer, Integer>> destinations, final IntPredicate climbable) {
-    final var result = new ArrayList<Integer>();
-
     //BFS to find shortest path (unweighted graph, no need for Dijkstra)
     final var queue = new LinkedList<Pair<Integer, Integer>>();
     final var distances = new HashMap<Pair<Integer, Integer>, Integer>();
@@ -60,7 +56,7 @@ class AoC122022 implements Solution {
     while ( !queue.isEmpty() ) {
       final var curr = queue.remove();
       if ( destinations.contains( curr ) ) {
-        result.add( distances.get( curr ) );
+        return distances.get( curr );
       }
 
       for ( final var neighbour : findNeighbours( curr, map, climbable ) ) {
@@ -73,7 +69,7 @@ class AoC122022 implements Solution {
       }
     }
 
-    return result;
+    throw new IllegalStateException();
   }
 
   private Collection<Pair<Integer, Integer>> findNeighbours(final Pair<Integer, Integer> point,
