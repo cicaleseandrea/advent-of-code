@@ -416,11 +416,11 @@ public class Utils {
 	public static void clearScreen() {
 		try {
 			if ( System.getProperty( "os.name" ).contains( "Windows" ) ) {
-				new ProcessBuilder( "cmd", "/c", "cls" ).inheritIO().start().waitFor();
+				System.out.print( "\033[2J" );
 			} else {
 				Runtime.getRuntime().exec( "clear" );
 			}
-		} catch ( InterruptedException | IOException e ) {
+		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
 	}
