@@ -40,6 +40,13 @@ class AoC142022 implements Solution {
     final var maxY = (map[0].length - 1) - FLOOR_DISTANCE;
     final var start = new Pair<>( START_X, 0 );
 
+    if ( !first ) {
+      //floor
+      for ( int i = 0; i < map.length; i++ ) {
+        map[i][map[0].length - 1] = ROCK;
+      }
+    }
+
     int units = 0;
     while ( true ) {
       final var sand = new Pair<>( start );
@@ -83,10 +90,6 @@ class AoC142022 implements Solution {
   }
 
   private static boolean isBlocked(final char[][] map, final Pair<Integer, Integer> tile) {
-    if ( tile.getSecond() == map[0].length - 1 ) {
-      //floor
-      return true;
-    }
     final var tileValue = map[tile.getFirst()][tile.getSecond()];
     return tileValue == ROCK || tileValue == SAND;
   }
