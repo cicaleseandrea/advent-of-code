@@ -10,7 +10,7 @@
 [![Stars 2019](https://img.shields.io/static/v1?label=2019&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2019)
 [![Stars 2020](https://img.shields.io/static/v1?label=2020&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2020)
 [![Stars 2021](https://img.shields.io/static/v1?label=2021&message=46%20⭐&color=orangered)](https://adventofcode.com/2021)
-[![Stars 2022](https://img.shields.io/static/v1?label=2022&message=32%20⭐&color=orangered)](https://adventofcode.com/2022)
+[![Stars 2022](https://img.shields.io/static/v1?label=2022&message=34%20⭐&color=orangered)](https://adventofcode.com/2022)
 [![Tests](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml/badge.svg)](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml)
 
 My [Advent of Code](https://adventofcode.com/) solutions.
