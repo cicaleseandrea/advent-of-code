@@ -22,7 +22,7 @@ class AoC202022 implements Solution {
 
   private String solve(final Stream<String> input, final boolean first) {
     final var original = input.map( Utils::atol ).map( n -> n * (first ? 1L : 811589153L) )
-        .map( Value::new ).toList();
+        .map( MyNumber::new ).toList();
     final var list = new ArrayList<>( original );
     final var size = original.size();
     for ( int i = 0; i < (first ? 1 : 10); i++ ) {
@@ -34,7 +34,7 @@ class AoC202022 implements Solution {
       }
     }
 
-    final var zeroIndex = list.indexOf( new Value( 0L ) );
+    final var zeroIndex = list.indexOf( new MyNumber( 0L ) );
     final var valueOne = list.get( (zeroIndex + 1000) % size );
     final var valueTwo = list.get( (zeroIndex + 2000) % size );
     final var valueThree = list.get( (zeroIndex + 3000) % size );
@@ -43,13 +43,13 @@ class AoC202022 implements Solution {
 
   //the input list has duplicate numbers! 🤬🤬🤬
   //so we need to redefine equality to find their index in the list
-  private record Value(Long value) {
+  private record MyNumber(long value) {
 
     @Override
     public boolean equals(final Object o) {
-      final Value other = (Value) o;
-      //equal if it's the same object, or if value is 0 (there can only be one 0 in the input list)
-      return this == other || (Objects.equals( value, 0L ) && Objects.equals( other.value, 0L ));
+      final MyNumber other = (MyNumber) o;
+      //equal if they are the same object, or if their value is 0 (there can only be one 0 in the input list)
+      return this == other || (value == 0L && other.value == 0L);
     }
 
     @Override
