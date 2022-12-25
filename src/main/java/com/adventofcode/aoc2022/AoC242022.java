@@ -109,13 +109,7 @@ class AoC242022 implements Solution {
 
   private int getNextBlizzardPosition(final int i, final int max) {
     //wrap around edges
-    if ( i == 0 ) {
-      return max - 1;
-    } else if ( i == max ) {
-      return 1;
-    } else {
-      return i;
-    }
+    return Math.floorMod( i - 1, max - 1 ) + 1;
   }
 
   private List<Valley> getValleys(final List<String> input) {
