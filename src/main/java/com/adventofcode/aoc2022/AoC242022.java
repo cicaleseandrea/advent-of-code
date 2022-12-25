@@ -7,6 +7,7 @@ import static java.util.stream.Stream.concat;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -51,7 +52,7 @@ class AoC242022 implements Solution {
   }
 
   private int computeTime(final Pair<Integer, Integer> source,
-      final Pair<Integer, Integer> destination, Map<Integer, Valley> valleys, final int startTime) {
+      final Pair<Integer, Integer> destination, List<Valley> valleys, final int startTime) {
     //BFS to find shortest path (unweighted graph, no need for Dijkstra)
     final var queue = new LinkedList<State>();
     final var seen = new HashSet<>();
@@ -89,18 +90,19 @@ class AoC242022 implements Solution {
         .filter( n -> 0 < n.getFirst() && n.getFirst() < end.getFirst() + 1 && 0 < n.getSecond()
             && n.getSecond() < end.getSecond() || n.equals( start ) || n.equals( end ) )
         //no blizzard
-        .filter( nextPosition -> !valley.blizzards.containsKey( nextPosition ) ).toList();
+        .filter( nextPosition -> !valley.blizzards.contains( nextPosition ) ).toList();
   }
 
-  private Valley computeNextValley(final Valley valley) {
-    final var nextValley = new Valley( new HashMap<>() );
-    valley.blizzards.keySet().forEach( position -> valley.blizzards.get( position ).forEach( c -> {
+  private Map<Pair<Integer, Integer>, Set<Character>> computeNextValley(
+      final Map<Pair<Integer, Integer>, Set<Character>> valley) {
+    final Map<Pair<Integer, Integer>, Set<Character>> nextValley = new HashMap<>();
+    valley.keySet().forEach( position -> valley.get( position ).forEach( c -> {
       final var move = MOVES.get( c );
       final var x = getNextBlizzardPosition( position.getFirst() + move.getFirst(),
           end.getFirst() + 1 );
       final var y = getNextBlizzardPosition( position.getSecond() + move.getSecond(),
           end.getSecond() );
-      nextValley.blizzards.computeIfAbsent( new Pair<>( x, y ), k -> new HashSet<>() ).add( c );
+      nextValley.computeIfAbsent( new Pair<>( x, y ), k -> new HashSet<>() ).add( c );
     } ) );
     return nextValley;
   }
@@ -116,44 +118,42 @@ class AoC242022 implements Solution {
     }
   }
 
-  private Map<Integer, Valley> getValleys(final List<String> input) {
+  private List<Valley> getValleys(final List<String> input) {
     var valley = getInitialValley( input );
-    final var max = valley.blizzards.keySet().stream()
+    final var max = valley.keySet().stream()
         .max( comparingInt( Pair<Integer, Integer>::getFirst ).thenComparingInt( Pair::getSecond ) )
         .map( p -> new Pair<>( p.getFirst() + 1, p.getSecond() + 1 ) ).orElseThrow();
     start = new Pair<>( 1, 0 );
     end = new Pair<>( max.getFirst() - 1, max.getSecond() );
 
     //precompute all possible blizzards combinations
-    final Map<Integer, Valley> valleys = new HashMap<>();
-    int i = 0;
-    while ( !valleys.containsValue( valley ) ) {
-      valleys.put( i, valley );
+    final List<Valley> valleys = new ArrayList<>();
+    while ( !valleys.contains( new Valley( valley.keySet() ) ) ) {
+      valleys.add( new Valley( valley.keySet() ) );
       valley = computeNextValley( valley );
-      i++;
     }
     return valleys;
   }
 
-  private Valley getInitialValley(final List<String> input) {
-    final Valley valley = new Valley( new HashMap<>() );
+  private Map<Pair<Integer, Integer>, Set<Character>> getInitialValley(final List<String> input) {
+    final Map<Pair<Integer, Integer>, Set<Character>> blizzards = new HashMap<>();
     for ( int y = 0; y < input.size(); y++ ) {
       final var row = input.get( y );
       for ( int x = 0; x < row.length(); x++ ) {
         final var c = row.charAt( x );
         if ( MOVES.containsKey( c ) ) {
-          valley.blizzards.computeIfAbsent( new Pair<>( x, y ), k -> new HashSet<>() ).add( c );
+          blizzards.computeIfAbsent( new Pair<>( x, y ), k -> new HashSet<>() ).add( c );
         }
       }
     }
-    return valley;
+    return blizzards;
   }
 
   private record State(Pair<Integer, Integer> position, int time) {
 
   }
 
-  private record Valley(Map<Pair<Integer, Integer>, Set<Character>> blizzards) {
+  private record Valley(Set<Pair<Integer, Integer>> blizzards) {
 
   }
 }
