@@ -11,8 +11,10 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -396,6 +398,15 @@ public class Utils {
 
 	public static long manhattanDistance( final long x, final long y, final long i, final long j ) {
 		return Math.abs( x - i ) + Math.abs( y - j );
+	}
+
+	public static <K, V> Map<K, V> createLRUMap(final int LRU_CACHE_SIZE) {
+		return new LinkedHashMap<>( LRU_CACHE_SIZE * 2 ) {
+			@Override
+			protected boolean removeEldestEntry(final Entry<K, V> eldest) {
+				return size() > LRU_CACHE_SIZE;
+			}
+		};
 	}
 
 	public static <E> void rotate( final Deque<E> deque, final long n ) {

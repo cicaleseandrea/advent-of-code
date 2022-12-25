@@ -1,15 +1,14 @@
 package com.adventofcode.aoc2022;
 
+import static com.adventofcode.utils.Utils.createLRUMap;
 import static com.adventofcode.utils.Utils.itoa;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 class AoC192022 implements Solution {
@@ -40,7 +39,7 @@ class AoC192022 implements Solution {
   }
 
   private int getMaxGeodes(final Blueprint blueprint, final int minutesLeft) {
-    return getMaxGeodes( createLRUMap(), blueprint, minutesLeft, 1, 0, 0, 0, 0, 0, 0, 0,
+    return getMaxGeodes( createLRUMap( 3_000_000 ), blueprint, minutesLeft, 1, 0, 0, 0, 0, 0, 0, 0,
         new int[1] );
   }
 
@@ -156,17 +155,6 @@ class AoC192022 implements Solution {
         list -> new Blueprint( list.get( 1 ).intValue(), list.get( 2 ).intValue(),
             list.get( 3 ).intValue(), list.get( 4 ).intValue(), list.get( 5 ).intValue(),
             list.get( 6 ).intValue() ) ).toList();
-  }
-
-  private <K, V> Map<K, V> createLRUMap() {
-    final int LRU_CACHE_SIZE = 3_000_000;
-
-    return new LinkedHashMap<>( LRU_CACHE_SIZE * 2 ) {
-      @Override
-      protected boolean removeEldestEntry(final Entry<K, V> eldest) {
-        return size() > LRU_CACHE_SIZE;
-      }
-    };
   }
 
   private record Blueprint(int oreOreCost, int clayOreCost, int obsidianOreCost,
