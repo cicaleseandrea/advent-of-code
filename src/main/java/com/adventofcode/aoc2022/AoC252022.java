@@ -3,31 +3,29 @@ package com.adventofcode.aoc2022;
 import static com.adventofcode.utils.Utils.MERRY_CHRISTMAS;
 
 import com.adventofcode.Solution;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 class AoC252022 implements Solution {
 
-  private static final BiMap<Character, Integer> DIGITS = ImmutableBiMap.of( '=', -2, '-', -1, '0',
-      0, '1', 1, '2', 2 );
+  private static final Map<Character, Integer> VALUES = Map.of( '0', 0, '1', 1, '2', 2, '=', -2,
+      '-', -1 );
+  private static final List<Character> DIGITS = List.of( '0', '1', '2', '=', '-' );
+  private static final List<Integer> REMAINDERS = List.of( 0, 1, 2, -2, -1 );
 
   @Override
   public String solveFirstPart(final Stream<String> input) {
     return toSnafu( input.mapToLong( this::toDecimal ).sum() );
   }
 
-  private String toSnafu(final long decimal) {
+  private String toSnafu(long decimal) {
     final var snafu = new StringBuilder();
-    long division = decimal;
-    while ( division != 0 ) {
-      int remainder = (int) (division % 5);
-      if ( remainder > 2 ) {
-        remainder -= 5;
-      }
-      division -= remainder;
-      snafu.append( DIGITS.inverse().get( remainder ) );
-      division /= 5;
+    while ( decimal != 0 ) {
+      final int remainder = (int) (decimal % 5);
+      decimal -= REMAINDERS.get( remainder );
+      snafu.append( DIGITS.get( remainder ) );
+      decimal /= 5;
     }
     return snafu.reverse().toString();
   }
@@ -36,7 +34,7 @@ class AoC252022 implements Solution {
     long decimal = 0L;
     for ( final var c : snafu.toCharArray() ) {
       decimal *= 5;
-      decimal += DIGITS.get( c );
+      decimal += VALUES.get( c );
     }
     return decimal;
   }
