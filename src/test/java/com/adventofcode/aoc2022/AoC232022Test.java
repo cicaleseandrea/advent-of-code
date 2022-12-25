@@ -22,7 +22,7 @@ public class AoC232022Test extends Generic {
     @Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
-            { FIRST, """
+                { FIRST, """
                         ....#..
                         ..###.#
                         #...#.#
