@@ -12,7 +12,6 @@ class AoC252022 implements Solution {
   private static final Map<Character, Integer> VALUES = Map.of( '0', 0, '1', 1, '2', 2, '=', -2,
       '-', -1 );
   private static final List<Character> DIGITS = List.of( '0', '1', '2', '=', '-' );
-  private static final List<Integer> REMAINDERS = List.of( 0, 1, 2, -2, -1 );
 
   @Override
   public String solveFirstPart(final Stream<String> input) {
@@ -23,16 +22,17 @@ class AoC252022 implements Solution {
     final var snafu = new StringBuilder();
     while ( decimal != 0 ) {
       final int remainder = (int) (decimal % 5);
-      decimal -= REMAINDERS.get( remainder );
-      snafu.append( DIGITS.get( remainder ) );
+      final char digit = DIGITS.get( remainder );
+      decimal -= VALUES.get( digit );
       decimal /= 5;
+      snafu.append( digit );
     }
     return snafu.reverse().toString();
   }
 
   private long toDecimal(final String snafu) {
     long decimal = 0L;
-    for ( final var c : snafu.toCharArray() ) {
+    for ( final char c : snafu.toCharArray() ) {
       decimal *= 5;
       decimal += VALUES.get( c );
     }
