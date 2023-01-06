@@ -3,9 +3,9 @@
 
 # 🎄 Advent of Code 🎅
 
-[![Stars 2015](https://img.shields.io/static/v1?label=2015&message=38%20⭐&color=orangered)](https://adventofcode.com/2015)
+[![Stars 2015](https://img.shields.io/static/v1?label=2015&message=39%20⭐&color=orangered)](https://adventofcode.com/2015)
 [![Stars 2016](https://img.shields.io/static/v1?label=2016&message=30%20⭐&color=orangered)](https://adventofcode.com/2016)
-[![Stars 2017](https://img.shields.io/static/v1?label=2017&message=20%20⭐&color=orangered)](https://adventofcode.com/2017)
+[![Stars 2017](https://img.shields.io/static/v1?label=2017&message=22%20⭐&color=orangered)](https://adventofcode.com/2017)
 [![Stars 2018](https://img.shields.io/static/v1?label=2018&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2018)
 [![Stars 2019](https://img.shields.io/static/v1?label=2019&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2019)
 [![Stars 2020](https://img.shields.io/static/v1?label=2020&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2020)
