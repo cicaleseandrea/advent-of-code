@@ -1,63 +1,39 @@
 package com.adventofcode.aoc2018;
 
+import static com.adventofcode.utils.Utils.MERRY_CHRISTMAS;
+import static com.adventofcode.utils.Utils.itoa;
+import static java.lang.Math.abs;
+
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import com.adventofcode.utils.DisjointSet;
+import com.adventofcode.utils.Utils;
+import java.util.List;
 import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
 
 class AoC252018 implements Solution {
 
     @Override
     public String solveFirstPart(final Stream<String> input) {
-        final Set<Pair<Pair<Long, Long>, Pair<Long, Long>>> points =
-                input.map(row -> row.split(","))
-                        .map(tmp -> new Pair<>(
-                                new Pair<>(atol(tmp[0]), atol(tmp[1])),
-                                new Pair<>(atol(tmp[2]), atol(tmp[3]))))
-                        .collect(Collectors.toUnmodifiableSet());
-        final Map<Pair<Pair<Long, Long>, Pair<Long, Long>>,
-                Set<Pair<Pair<Long, Long>, Pair<Long, Long>>>> starMapping = new HashMap<>();
-        long res = 0L;
-        for (final var one : points) {
-            for (final var two : points) {
-                final long dist = manhattanDistance(one.getFirst(), two.getFirst()) +
-                        manhattanDistance(one.getSecond(), two.getSecond());
-                if (dist <= 3) {
-                    var constellationOneOpt = Optional.ofNullable(starMapping.get(one));
-                    var constellationTwoOpt = Optional.ofNullable(starMapping.get(two));
-                    if (constellationOneOpt.isEmpty() && constellationTwoOpt.isEmpty()) {
-                        //new constellation
-                        res++;
-                        constellationOneOpt = Optional.of(new HashSet<>());
-                    } else if (constellationOneOpt.isEmpty()) {
-                        //existing constellation
-                        constellationOneOpt = constellationTwoOpt;
-                    } else if (constellationTwoOpt.isPresent() && !constellationOneOpt.equals(constellationTwoOpt)) {
-                        //merge two constellations into one
-                        res--;
-                        for (final var star : constellationTwoOpt.get()) {
-                            constellationOneOpt.ifPresent(constellationOne -> {
-                                //add this stars to the constellation
-                                constellationOne.add(star);
-                                //this star now belongs to this constellation
-                                starMapping.put(star, constellationOne);
-                            });
-                        }
-                    }
-                    constellationOneOpt.ifPresent(constellationOne -> {
-                        constellationOne.add(one);
-                        starMapping.put(one, constellationOne);
-                        constellationOne.add(two);
-                        starMapping.put(two, constellationOne);
-                    });
+        final List<Point> points = input.map( Utils::toLongList ).map( Point::new ).toList();
+        final DisjointSet<Point> constellations = new DisjointSet<>();
+        for ( int i = 0; i < points.size(); i++ ) {
+            final var one = points.get( i );
+            constellations.makeSet( one );
+            for ( int j = i + 1; j < points.size(); j++ ) {
+                final var two = points.get( j );
+                constellations.makeSet( two );
+                final long dist = getDistance( one, two );
+                if ( dist <= 3 ) {
+                    constellations.union( one, two );
                 }
             }
         }
-        return itoa(res);
+        return itoa( constellations.getSize() );
+    }
+
+    private static long getDistance(final Point one, final Point two) {
+        return abs( one.x - two.x ) + abs( one.y - two.y ) + abs( one.z - two.z ) + abs(
+            one.t - two.t );
     }
 
     @Override
@@ -65,4 +41,10 @@ class AoC252018 implements Solution {
         return MERRY_CHRISTMAS;
     }
 
+    private record Point(long x, long y, long z, long t) {
+
+        Point(final List<Long> numbers) {
+            this( numbers.get( 0 ), numbers.get( 1 ), numbers.get( 2 ), numbers.get( 3 ) );
+        }
+    }
 }
