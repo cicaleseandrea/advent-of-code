@@ -5,7 +5,7 @@
 
 [![Stars 2015](https://img.shields.io/static/v1?label=2015&message=39%20⭐&color=orangered)](https://adventofcode.com/2015)
 [![Stars 2016](https://img.shields.io/static/v1?label=2016&message=30%20⭐&color=orangered)](https://adventofcode.com/2016)
-[![Stars 2017](https://img.shields.io/static/v1?label=2017&message=34%20⭐&color=orangered)](https://adventofcode.com/2017)
+[![Stars 2017](https://img.shields.io/static/v1?label=2017&message=36%20⭐&color=orangered)](https://adventofcode.com/2017)
 [![Stars 2018](https://img.shields.io/static/v1?label=2018&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2018)
 [![Stars 2019](https://img.shields.io/static/v1?label=2019&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2019)
 [![Stars 2020](https://img.shields.io/static/v1?label=2020&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2020)
@@ -13,7 +13,7 @@
 [![Stars 2022](https://img.shields.io/static/v1?label=2022&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2022)
 [![Tests](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml/badge.svg)](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml)
 
-My [Advent of Code](https://adventofcode.com/) solutions.
+My [Advent of Code](https://adventofcode.com/) solutions in Java.
 
 
 ## Goals
@@ -21,7 +21,7 @@ My [Advent of Code](https://adventofcode.com/) solutions.
 - have fun
 - [learn something new](topics/README.md)
 - [solve as many puzzles as possible within the time limit](https://www.reddit.com/r/adventofcode/comments/7m9mg8/all_years_all_days_solve_them_within_the_time/)
-- (over)use the following Java features: `Lambda`, `Stream`, `Optional`, `var`, `switch expressions`
+- (over)use the following Java features: `var`, `Lambda`, `Stream`, `Optional`, `switch expressions`
 
 
 ## Requirements
@@ -61,5 +61,4 @@ Following days have a `main` method that enables a basic interactive mode:
 Enjoy! 🕹️
 
 ### TODO
-- try out Kotlin
 - move to JUnit 5
