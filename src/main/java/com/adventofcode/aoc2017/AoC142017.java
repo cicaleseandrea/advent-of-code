@@ -36,20 +36,15 @@ class AoC142017 implements Solution {
     final var usedPositions = getUsedPositions( grid );
 
     final var regions = new DisjointSet<>();
-    for ( int i = 0; i < grid.size(); i++ ) {
-      for ( int j = 0; j < grid.get( 0 ).length(); j++ ) {
-        final var pos = new Pair<>( i, j );
-        if ( usedPositions.contains( pos ) ) {
-          regions.makeSet( pos );
-          NEIGHBOURS_4.stream().map(
-                  n -> new Pair<>( pos.getFirst() + n.getFirst(), pos.getSecond() + n.getSecond() ) )
-              .filter( usedPositions::contains ).forEach( n -> {
-                regions.makeSet( n );
-                regions.union( pos, n );
-              } );
-        }
-      }
-    }
+    usedPositions.forEach( pos -> {
+      regions.makeSet( pos );
+      NEIGHBOURS_4.stream()
+          .map( n -> new Pair<>( pos.getFirst() + n.getFirst(), pos.getSecond() + n.getSecond() ) )
+          .filter( usedPositions::contains ).forEach( n -> {
+            regions.makeSet( n );
+            regions.union( pos, n );
+          } );
+    } );
 
     return itoa( first ? usedPositions.size() : regions.getSize() );
   }
