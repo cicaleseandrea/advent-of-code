@@ -48,10 +48,10 @@ public enum Direction {
 
   public void move(final Pair<Long, Long> point) {
     switch ( this ) {
-      case UP -> point.setSecond( point.getSecond() + 1L );
-      case DOWN -> point.setSecond( point.getSecond() - 1L );
-      case LEFT -> point.setFirst( point.getFirst() - 1L );
-      case RIGHT -> point.setFirst( point.getFirst() + 1L );
+      case RIGHT -> point.setSecond( point.getSecond() + 1L );
+      case LEFT -> point.setSecond( point.getSecond() - 1L );
+      case UP -> point.setFirst( point.getFirst() - 1L );
+      case DOWN -> point.setFirst( point.getFirst() + 1L );
     }
   }
 
