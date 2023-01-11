@@ -29,6 +29,10 @@ public enum Direction {
     return BY_VALUE.get( decrementMod( value, BY_VALUE.size() ) );
   }
 
+  public Direction reverse() {
+    return BY_VALUE.get( incrementMod( value, 2, BY_VALUE.size() ) );
+  }
+
   public Direction rotate(final char c) {
     if ( this == UP || this == DOWN ) {
       if ( c == '\\' ) {
