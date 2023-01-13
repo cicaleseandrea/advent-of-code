@@ -3,14 +3,12 @@ package com.adventofcode.aoc2015;
 import static com.adventofcode.Generic.Type.FIRST;
 import static com.adventofcode.Generic.Type.SECOND;
 
+import com.adventofcode.Generic;
+import com.adventofcode.Solution;
 import java.util.List;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import com.adventofcode.Generic;
-import com.adventofcode.Solution;
 
 @RunWith(Parameterized.class)
 public class AoC152015Test extends Generic {
@@ -27,10 +25,13 @@ public class AoC152015Test extends Generic {
                 {FIRST, """
                         Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
                         Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3
-                        """, "0"},
-                {FIRST, getInput(INSTANCE), "0"},
-                {SECOND, "", "0"},
-                {SECOND, getInput(INSTANCE), "0"},
+                        """, "62842880"},
+                {FIRST, getInput(INSTANCE), "13882464"},
+                {SECOND, """
+                        Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
+                        Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3
+                        """, "57600000"},
+                {SECOND, getInput(INSTANCE), "11171160"},
         });
     }
 }
