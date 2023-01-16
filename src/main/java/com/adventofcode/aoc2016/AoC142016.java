@@ -1,14 +1,12 @@
 package com.adventofcode.aoc2016;
 
+import static com.adventofcode.utils.Utils.computeMD5AsString;
 import static com.adventofcode.utils.Utils.getFirstString;
 import static com.adventofcode.utils.Utils.itoa;
 
 import com.adventofcode.Solution;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.hash.Hashing;
-import com.google.common.io.BaseEncoding;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
@@ -55,7 +53,7 @@ class AoC142016 implements Solution {
       final Multimap<String, Character> fives, final boolean first) {
     String hash = salt + i;
     for ( int j = 0; j < (first ? 1 : 2017); j++ ) {
-      hash = computeHash( hash );
+      hash = computeMD5AsString( hash );
     }
     hashes.add( hash );
     fives.putAll( hash, computeFives( hash ) );
@@ -69,11 +67,5 @@ class AoC142016 implements Solution {
   private Set<Character> computeFives(final String hash) {
     final var matcher = REGEX_FIVE.matcher( hash );
     return matcher.results().map( r -> r.group( 1 ).charAt( 0 ) ).collect( Collectors.toSet() );
-  }
-
-  @SuppressWarnings("deprecation")
-  private String computeHash(final CharSequence message) {
-    final byte[] md5 = Hashing.md5().hashString( message, StandardCharsets.UTF_8 ).asBytes();
-    return BaseEncoding.base16().lowerCase().encode( md5 );
   }
 }

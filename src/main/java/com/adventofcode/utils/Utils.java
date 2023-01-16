@@ -4,7 +4,10 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+import com.google.common.hash.Hashing;
+import com.google.common.io.BaseEncoding;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -409,7 +412,18 @@ public class Utils {
 		};
 	}
 
-	public static <E> void rotate( final Deque<E> deque, final long n ) {
+	@SuppressWarnings("deprecation")
+	public static String computeMD5AsString(final CharSequence message) {
+		final byte[] md5 = computeMD5AsBytes( message );
+		return BaseEncoding.base16().lowerCase().encode( md5 );
+	}
+
+	@SuppressWarnings("deprecation")
+	public static byte[] computeMD5AsBytes(final CharSequence message) {
+		return Hashing.md5().hashString( message, StandardCharsets.UTF_8 ).asBytes();
+	}
+
+	public static <E> void rotate(final Deque<E> deque, final long n) {
 		if ( deque == null || deque.isEmpty() ) {
 			return;
 		}
