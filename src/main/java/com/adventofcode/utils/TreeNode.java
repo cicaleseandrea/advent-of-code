@@ -6,12 +6,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class Node<K> {
+public class TreeNode<K> {
     private final K key;
-    private final List<Node<K>> children;
-    private Node<K> parent;
+    private final List<TreeNode<K>> children;
+    private TreeNode<K> parent;
 
-    public Node(K key) {
+    public TreeNode(K key) {
         this.key = Objects.requireNonNull(key);
         children = new ArrayList<>(1);
     }
@@ -20,15 +20,15 @@ public class Node<K> {
         return key;
     }
 
-    public Optional<Node<K>> getParent() {
+    public Optional<TreeNode<K>> getParent() {
         return Optional.ofNullable(parent);
     }
 
-    private void setParent(Node<K> parent) {
+    private void setParent(TreeNode<K> parent) {
         this.parent = parent;
     }
 
-    public List<Node<K>> getChildren() {
+    public List<TreeNode<K>> getChildren() {
         return children;
     }
 
@@ -36,14 +36,14 @@ public class Node<K> {
         parent = null;
     }
 
-    public void addChild(Node<K> child) {
+    public void addChild(TreeNode<K> child) {
         if (child != null) {
             children.add(child);
             child.setParent(this);
         }
     }
 
-    public void removeChild(Node<K> child) {
+    public void removeChild(TreeNode<K> child) {
         if (children.remove(child)) {
             child.removeParent();
         }
@@ -51,7 +51,7 @@ public class Node<K> {
 
     public void visit(Consumer<K> consumer) {
         consumer.accept(key);
-        for (Node<K> n : children) {
+        for ( TreeNode<K> n : children) {
             n.visit(consumer);
         }
     }
@@ -68,7 +68,7 @@ public class Node<K> {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Node<?> node = (Node<?>) o;
+        final TreeNode<?> node = (TreeNode<?>) o;
         return getKey().equals(node.getKey());
     }
 

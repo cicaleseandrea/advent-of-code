@@ -5,8 +5,8 @@ import static com.adventofcode.utils.Utils.itoa;
 import static java.util.stream.LongStream.concat;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Node;
 import com.adventofcode.utils.Pair;
+import com.adventofcode.utils.TreeNode;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -35,7 +35,7 @@ class AoC072022 implements Solution {
     return itoa( result );
   }
 
-  private LongStream getDirSizes(final Node<Pair<String, Long>> n) {
+  private LongStream getDirSizes(final TreeNode<Pair<String, Long>> n) {
     if ( n.getChildren().isEmpty() ) {
       return LongStream.of();
     } else {
@@ -45,7 +45,7 @@ class AoC072022 implements Solution {
     }
   }
 
-  private long computeDirSizes(final Node<Pair<String, Long>> n) {
+  private long computeDirSizes(final TreeNode<Pair<String, Long>> n) {
     if ( n.getChildren().isEmpty() ) {
       return n.getKey().getSecond();
     } else {
@@ -55,9 +55,9 @@ class AoC072022 implements Solution {
     }
   }
 
-  private Node<Pair<String, Long>> getNode(final Stream<String> input) {
-    var curr = new Node<>( new Pair<>( "", 0L ) );
-    final var root = new Node<>( new Pair<>( "/", 0L ) );
+  private TreeNode<Pair<String, Long>> getNode(final Stream<String> input) {
+    var curr = new TreeNode<>( new Pair<>( "", 0L ) );
+    final var root = new TreeNode<>( new Pair<>( "/", 0L ) );
     curr.addChild( root );
     for ( final var line : input.toList() ) {
       if ( line.startsWith( "$ cd" ) ) {
@@ -72,7 +72,7 @@ class AoC072022 implements Solution {
         final var info = line.split( " " );
         final var size = line.startsWith( "dir" ) ? 0L : atol( info[0] );
         final var name = info[1];
-        final var n = new Node<>( new Pair<>( name, size ) );
+        final var n = new TreeNode<>( new Pair<>( name, size ) );
         curr.addChild( n );
       }
     }

@@ -1,14 +1,16 @@
 package com.adventofcode.aoc2018;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Node;
+import static com.adventofcode.utils.Utils.atoi;
+import static com.adventofcode.utils.Utils.getFirstString;
+import static com.adventofcode.utils.Utils.itoa;
+import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.TreeNode;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.ToIntFunction;
 import java.util.stream.Stream;
-
-import static com.adventofcode.utils.Utils.*;
 
 class AoC082018 implements Solution {
 
@@ -18,16 +20,16 @@ class AoC082018 implements Solution {
         index = 0;
     }
 
-    private static String solve(final List<String> input, final ToIntFunction<Node<List<Integer>>> computeResult) {
+    private static String solve(final List<String> input, final ToIntFunction<TreeNode<List<Integer>>> computeResult) {
         reset();
         final var root = getNode(input);
         final int res = computeResult.applyAsInt(root);
         return itoa(res);
     }
 
-    private static Node<List<Integer>> getNode(final List<String> input) {
+    private static TreeNode<List<Integer>> getNode(final List<String> input) {
         final List<Integer> metadata = new LinkedList<>();
-        final var n = new Node<>(metadata);
+        final var n = new TreeNode<>(metadata);
         final int nChildren = getNextInt(input);
         final int nMetadata = getNextInt(input);
         for (int i = 0; i < nChildren; i++) {
@@ -43,7 +45,7 @@ class AoC082018 implements Solution {
         return atoi(input.get(index++));
     }
 
-    private static int computeNodeValue(final Node<List<Integer>> n) {
+    private static int computeNodeValue(final TreeNode<List<Integer>> n) {
         final var children = n.getChildren();
         final int nChildren = children.size();
         final Stream<Integer> metadataStream = n.getKey().parallelStream();
@@ -58,7 +60,7 @@ class AoC082018 implements Solution {
         return res;
     }
 
-    private static int computeNodeSum(final Node<List<Integer>> n) {
+    private static int computeNodeSum(final TreeNode<List<Integer>> n) {
         int res = n.getKey().parallelStream().mapToInt(Integer::intValue).sum();
         res += n.getChildren().parallelStream().mapToInt(AoC082018::computeNodeSum).sum();
         return res;

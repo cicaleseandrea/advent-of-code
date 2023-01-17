@@ -4,7 +4,7 @@ import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.splitOnRegex;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Node;
+import com.adventofcode.utils.TreeNode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -18,13 +18,13 @@ class AoC062019 implements Solution {
 	}
 
 	public String solveSecondPart( final Stream<String> input ) {
-		final Map<String, Node<String>> nodes = new HashMap<>();
+		final Map<String, TreeNode<String>> nodes = new HashMap<>();
 		return solve( input, nodes, n -> countTransfers( nodes ) );
 	}
 
-	private String solve( final Stream<String> input, final Map<String, Node<String>> nodes,
-			final ToLongFunction<Node<String>> computeResult ) {
-		final Node<String> COM = new Node<>( "COM" );
+	private String solve( final Stream<String> input, final Map<String, TreeNode<String>> nodes,
+			final ToLongFunction<TreeNode<String>> computeResult ) {
+		final TreeNode<String> COM = new TreeNode<>( "COM" );
 		nodes.put( "COM", COM );
 
 		input.forEach( line -> {
@@ -35,28 +35,28 @@ class AoC062019 implements Solution {
 		return itoa( computeResult.applyAsLong( COM ) );
 	}
 
-	private Node<String> getOrAddNode( final Map<String, Node<String>> nodes,
+	private TreeNode<String> getOrAddNode( final Map<String, TreeNode<String>> nodes,
 			final String nodeStr ) {
-		return nodes.computeIfAbsent( nodeStr, Node::new );
+		return nodes.computeIfAbsent( nodeStr, TreeNode::new );
 	}
 
-	private long countOrbits( final Node<String> node ) {
+	private long countOrbits( final TreeNode<String> node ) {
 		return countOrbits( node, 0 );
 	}
 
-	private long countOrbits( final Node<String> node, final long count ) {
+	private long countOrbits( final TreeNode<String> node, final long count ) {
 		long val = count;
-		for ( final Node<String> n : node.getChildren() ) {
+		for ( final TreeNode<String> n : node.getChildren() ) {
 			val += countOrbits( n, count + 1 );
 		}
 		return val;
 	}
 
-	private long countTransfers( final Map<String, Node<String>> nodes ) {
-		final Map<Node<String>, Long> youAncestors = new HashMap<>();
-		Node<String> youAncestor = nodes.get( "YOU" );
-		final Map<Node<String>, Long> sanAncestors = new HashMap<>();
-		Node<String> sanAncestor = nodes.get( "SAN" );
+	private long countTransfers( final Map<String, TreeNode<String>> nodes ) {
+		final Map<TreeNode<String>, Long> youAncestors = new HashMap<>();
+		TreeNode<String> youAncestor = nodes.get( "YOU" );
+		final Map<TreeNode<String>, Long> sanAncestors = new HashMap<>();
+		TreeNode<String> sanAncestor = nodes.get( "SAN" );
 
 		long currDistance = 0;
 		Optional<Long> distance;
@@ -69,16 +69,16 @@ class AoC062019 implements Solution {
 		return distance.get() + currDistance - 2;
 	}
 
-	private Node<String> addAncestor( final Map<Node<String>, Long> ancestors,
-			final Node<String> node, final long distance ) {
-		final Node<String> ancestor = node.getParent().orElseThrow();
+	private TreeNode<String> addAncestor( final Map<TreeNode<String>, Long> ancestors,
+			final TreeNode<String> node, final long distance ) {
+		final TreeNode<String> ancestor = node.getParent().orElseThrow();
 		ancestors.put( ancestor, distance );
 		return ancestor;
 	}
 
-	private Optional<Long> getDistance( final Map<Node<String>, Long> ancestorsFirst,
-			final Node<String> ancestorSecond, final Map<Node<String>, Long> ancestorsSecond,
-			final Node<String> nodeFirst ) {
+	private Optional<Long> getDistance( final Map<TreeNode<String>, Long> ancestorsFirst,
+			final TreeNode<String> ancestorSecond, final Map<TreeNode<String>, Long> ancestorsSecond,
+			final TreeNode<String> nodeFirst ) {
 		final Long distance = ancestorsFirst.get( ancestorSecond );
 		if ( distance != null ) {
 			return Optional.of( distance );

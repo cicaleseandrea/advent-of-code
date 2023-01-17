@@ -7,6 +7,9 @@ import static com.adventofcode.utils.Utils.incrementMapElement;
 import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.splitOnTabOrSpace;
 
+import com.adventofcode.Solution;
+import com.adventofcode.utils.Pair;
+import com.adventofcode.utils.TreeNode;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,14 +17,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.adventofcode.Solution;
-import com.adventofcode.utils.Node;
-import com.adventofcode.utils.Pair;
-
 class AoC072017 implements Solution {
-    private static Node<Pair<String, Long>> buildTree(final Stream<String> input) {
-        var root = new Node<>(new Pair<>(EMPTY, 0L));
-        final Map<String, Node<Pair<String, Long>>> programsSeen = new HashMap<>();
+    private static TreeNode<Pair<String, Long>> buildTree(final Stream<String> input) {
+        var root = new TreeNode<>(new Pair<>(EMPTY, 0L));
+        final Map<String, TreeNode<Pair<String, Long>>> programsSeen = new HashMap<>();
         for (final String s : getIterable(input)) {
             var n = parseRow(s, programsSeen).getParent();
             while (n.isPresent()) {
@@ -32,18 +31,18 @@ class AoC072017 implements Solution {
         return root;
     }
 
-    private static Node<Pair<String, Long>> parseRow(final String row, final Map<String, Node<Pair<String, Long>>> programsSeen) {
+    private static TreeNode<Pair<String, Long>> parseRow(final String row, final Map<String, TreeNode<Pair<String, Long>>> programsSeen) {
         final List<String> strings = splitOnTabOrSpace(row);
         final String name = strings.get(0);
         final long weight = atol(strings.get(1).replaceAll("[()]", EMPTY));
 
-        final var n = programsSeen.computeIfAbsent(name, k -> new Node<>(new Pair<>(k, weight)));
+        final var n = programsSeen.computeIfAbsent(name, k -> new TreeNode<>(new Pair<>(k, weight)));
         n.getKey().setSecond(weight);
 
         var child = n;
         for (int i = 3; i < strings.size(); i++) {
             final String childName = strings.get(i).replace(",", EMPTY);
-            child = programsSeen.computeIfAbsent(childName, k -> new Node<>(new Pair<>(k, 0L)));
+            child = programsSeen.computeIfAbsent(childName, k -> new TreeNode<>(new Pair<>(k, 0L)));
             n.addChild(child);
         }
         return child;
@@ -73,9 +72,9 @@ class AoC072017 implements Solution {
         return itoa(res);
     }
 
-    private long computeBalancedSum(final Node<Pair<String, Long>> root) {
+    private long computeBalancedSum(final TreeNode<Pair<String, Long>> root) {
         long sum = root.getKey().getSecond(); //weight
-        final Map<Long, Node<Pair<String, Long>>> childrenSums = new HashMap<>();
+        final Map<Long, TreeNode<Pair<String, Long>>> childrenSums = new HashMap<>();
         final Map<Long, Long> frequencies = new HashMap<>();
         for (final var child : root.getChildren()) {
             final long childSum = computeBalancedSum(child);
