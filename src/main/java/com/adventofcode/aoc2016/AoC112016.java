@@ -20,6 +20,8 @@ import java.util.stream.Stream;
 
 class AoC112016 implements Solution {
 
+  private static final int FLOOR_SIZE = 4;
+
   @Override
   public String solveFirstPart(final Stream<String> input) {
     return solve( input, true );
@@ -91,8 +93,8 @@ class AoC112016 implements Solution {
   }
 
   private Floor[] getFloors(final List<String> input, final boolean first) {
-    final Floor[] floors = new Floor[4];
-    for ( int i = 0; i < 4; i++ ) {
+    final Floor[] floors = new Floor[FLOOR_SIZE];
+    for ( int i = 0; i < FLOOR_SIZE; i++ ) {
       final Set<String> generators = new HashSet<>();
       final Set<String> microchips = new HashSet<>();
       final String additionalComponents;
@@ -119,7 +121,7 @@ class AoC112016 implements Solution {
 
   private record Floor(Set<String> generators, Set<String> microchips) {
 
-    Floor(Floor floor) {
+    Floor(final Floor floor) {
       this( new HashSet<>( floor.generators ), new HashSet<>( floor.microchips ) );
     }
 
@@ -139,14 +141,10 @@ class AoC112016 implements Solution {
     }
 
     boolean isSafe() {
-      for ( final var microchip : microchips ) {
-        if ( !generators.isEmpty() && !generators.contains( microchip ) ) {
-          //this microchip is fried
-          return false;
-        }
-        //this microchip is safe
-      }
-      return true;
+      //floor is safe if:
+      //either there are no generators on this floor
+      //or all microchips have their generator
+      return generators.isEmpty() || generators.containsAll( microchips );
     }
 
     int size() {
@@ -175,20 +173,14 @@ class AoC112016 implements Solution {
     public int hashCode() {
       return Objects.hash( generators.size(), microchips.size() );
     }
-
-    @Override
-    public String toString() {
-      return MoreObjects.toStringHelper( this ).add( "generators", generators )
-          .add( "microchips", microchips ).toString();
-    }
   }
 
   private record State(int elevator, Floor[] floors) {
 
-    private State(final int elevator, final Floor[] floors) {
+    State(final int elevator, final Floor[] floors) {
       this.elevator = elevator;
-      this.floors = new Floor[4];
-      for ( int i = 0; i < floors.length; i++ ) {
+      this.floors = new Floor[FLOOR_SIZE];
+      for ( int i = 0; i < FLOOR_SIZE; i++ ) {
         this.floors[i] = new Floor( floors[i] );
       }
     }
@@ -218,7 +210,6 @@ class AoC112016 implements Solution {
           .add( "floors", Arrays.toString( floors ) ).toString();
     }
   }
-
   private record Component(String name, boolean isGenerator) {
 
   }
