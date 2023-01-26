@@ -3,7 +3,7 @@
 
 # 🎄 Advent of Code 🎅
 
-[![Stars](https://img.shields.io/badge/stars%20⭐-396-dodgerblue)](https://adventofcode.com/events)
+[![Stars](https://img.shields.io/badge/stars%20⭐-397-dodgerblue)](https://adventofcode.com/events)
 [![Tests](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml/badge.svg)](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml)
 
 My [Advent of Code](https://adventofcode.com/) solutions in Java.
@@ -16,7 +16,7 @@ My [Advent of Code](https://adventofcode.com/) solutions in Java.
 | [Day 16](/src/main/java/com/adventofcode/aoc2022/AoC162022.java) | [Day 17](/src/main/java/com/adventofcode/aoc2022/AoC172022.java) | [Day 18](/src/main/java/com/adventofcode/aoc2022/AoC182022.java)                                                            | [Day 19](/src/main/java/com/adventofcode/aoc2022/AoC192022.java) | [Day 20](/src/main/java/com/adventofcode/aoc2022/AoC202022.java) |
 | [Day 21](/src/main/java/com/adventofcode/aoc2022/AoC212022.java) | [Day 22](/src/main/java/com/adventofcode/aoc2022/AoC222022.java) | [Day 23](/src/main/java/com/adventofcode/aoc2022/AoC232022.java)                                                            | [Day 24](/src/main/java/com/adventofcode/aoc2022/AoC242022.java) | [Day 25](/src/main/java/com/adventofcode/aoc2022/AoC252022.java) |
 
-|                                                                  |                                                                  | [![Stars 2021](https://img.shields.io/static/v1?label=2021&message=46%20⭐&color=orangered)](https://adventofcode.com/2021) |                                                                      |                                                                  |
+|                                                                  |                                                                  | [![Stars 2021](https://img.shields.io/static/v1?label=2021&message=47%20⭐&color=orangered)](https://adventofcode.com/2021) |                                                                      |                                                                  |
 |------------------------------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|------------------------------------------------------------------|
 | [Day 1](/src/main/java/com/adventofcode/aoc2021/AoC012021.java)  | [Day 2](/src/main/java/com/adventofcode/aoc2021/AoC022021.java)  | [Day 3](/src/main/java/com/adventofcode/aoc2021/AoC032021.java)                                                            | [Day 4](/src/main/java/com/adventofcode/aoc2021/AoC042021.java)      | [Day 5](/src/main/java/com/adventofcode/aoc2021/AoC052021.java)  |
 | [Day 6](/src/main/java/com/adventofcode/aoc2021/AoC062021.java)  | [Day 7](/src/main/java/com/adventofcode/aoc2021/AoC072021.java)  | [Day 8](/src/main/java/com/adventofcode/aoc2021/AoC082021.java)                                                            | [Day 9](/src/main/java/com/adventofcode/aoc2021/AoC092021.java)      | [Day 10](/src/main/java/com/adventofcode/aoc2021/AoC102021.java) |

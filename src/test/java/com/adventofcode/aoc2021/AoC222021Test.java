@@ -3,14 +3,12 @@ package com.adventofcode.aoc2021;
 import static com.adventofcode.Generic.Type.FIRST;
 import static com.adventofcode.Generic.Type.SECOND;
 
+import com.adventofcode.Generic;
+import com.adventofcode.Solution;
 import java.util.List;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import com.adventofcode.Generic;
-import com.adventofcode.Solution;
 
 @RunWith(Parameterized.class)
 public class AoC222021Test extends Generic {
@@ -117,7 +115,7 @@ public class AoC222021Test extends Generic {
                         on x=-53470..21291,y=-120233..-33476,z=-44150..38147
                         off x=-93533..-4276,y=-16170..68771,z=-104985..-24507
                         """, "2758514936282235" },
-                { SECOND, getInput( INSTANCE ), "2758514936282235" }
+                { SECOND, getInput( INSTANCE ), "1311612259117092" }
         });
     }
 
