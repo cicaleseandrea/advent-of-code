@@ -1,18 +1,16 @@
 package com.adventofcode.aoc2019;
 
-import static com.adventofcode.Generic.Type.FIRST;
-import static com.adventofcode.Generic.Type.SECOND;
+import static com.adventofcode.AbstractSolutionTest.Type.FIRST;
+import static com.adventofcode.AbstractSolutionTest.Type.SECOND;
 
+import com.adventofcode.AbstractSolutionTest;
+import com.adventofcode.Solution;
 import java.util.List;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.adventofcode.Generic;
-import com.adventofcode.Solution;
-
 @RunWith(Parameterized.class)
-public class AoC212019Test extends Generic {
+public class AoC212019Test extends AbstractSolutionTest {
 
     private static final Solution INSTANCE = new AoC212019();
 

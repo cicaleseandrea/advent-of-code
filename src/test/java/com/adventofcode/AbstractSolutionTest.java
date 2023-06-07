@@ -1,11 +1,9 @@
 package com.adventofcode;
 
-import static java.lang.ClassLoader.getSystemResource;
-
-import static org.junit.Assert.assertEquals;
-
 import static com.adventofcode.utils.Utils.DOT;
 import static com.adventofcode.utils.Utils.splitOnNewLine;
+import static java.lang.ClassLoader.getSystemResource;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,17 +12,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
 import org.junit.Test;
 
-public abstract class Generic {
+public abstract class AbstractSolutionTest {
 	private final Solution solution;
 	private final Type type;
 	private final String input;
 	private final String result;
 	protected static final String PARAMETERS_MESSAGE = "{index}: {0} = {2}";
 
-	protected Generic( final Solution solution, final Type type, final String input,
+	protected AbstractSolutionTest( final Solution solution, final Type type, final String input,
 			final String result ) {
 		this.solution = solution;
 		this.type = type;
