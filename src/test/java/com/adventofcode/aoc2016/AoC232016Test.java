@@ -19,7 +19,7 @@ public class AoC232016Test extends Generic {
         super(INSTANCE, type, input, result);
     }
 
-    @Parameters(name = "{0}({index})->{2}")
+    @Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
             { FIRST, """

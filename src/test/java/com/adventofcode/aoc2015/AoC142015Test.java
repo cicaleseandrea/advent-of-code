@@ -3,14 +3,12 @@ package com.adventofcode.aoc2015;
 import static com.adventofcode.Generic.Type.FIRST;
 import static com.adventofcode.Generic.Type.SECOND;
 
+import com.adventofcode.Generic;
+import com.adventofcode.Solution;
 import java.util.List;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import com.adventofcode.Generic;
-import com.adventofcode.Solution;
 
 @RunWith(Parameterized.class)
 public class AoC142015Test extends Generic {
@@ -21,7 +19,7 @@ public class AoC142015Test extends Generic {
         super(INSTANCE, type, input, result);
     }
 
-    @Parameters(name = "{0}({index})->{2}")
+    @Parameters(name = PARAMETERS_MESSAGE)
     public static Iterable<Object[]> data() {
         return List.of(new Object[][]{
                 {FIRST, """
