@@ -4,8 +4,8 @@ import static com.adventofcode.utils.Utils.itoa;
 import static java.util.Comparator.comparingInt;
 
 import com.adventofcode.Solution;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
@@ -14,7 +14,7 @@ class AoC012023 implements Solution {
 
   private static final Map<String, Integer> DIGIT_TO_DIGIT = Map.of( "1", 1, "2", 2, "3", 3, "4", 4,
       "5", 5, "6", 6, "7", 7, "8", 8, "9", 9 );
-  private static final Map<String, Integer> LETTER_TO_DIGIT = Map.of( "one", 1, "two", 2, "three",
+  private static final Map<String, Integer> LETTERS_TO_DIGIT = Map.of( "one", 1, "two", 2, "three",
       3, "four", 4, "five", 5, "six", 6, "seven", 7, "eight", 8, "nine", 9 );
 
   @Override
@@ -26,32 +26,33 @@ class AoC012023 implements Solution {
   public String solveSecondPart(final Stream<String> input) {
     final HashMap<String, Integer> digitsMap = new HashMap<>();
     digitsMap.putAll( DIGIT_TO_DIGIT );
-    digitsMap.putAll( LETTER_TO_DIGIT );
+    digitsMap.putAll( LETTERS_TO_DIGIT );
     return solve( input, digitsMap );
   }
 
   private String solve(final Stream<String> input, final Map<String, Integer> digitsMap) {
-    final long sum = input.mapToLong( str -> getCalibrationValue( str, digitsMap ) ).sum();
-    return itoa( sum );
+    return itoa( input.mapToInt( str -> getCalibrationValue( str, digitsMap ) ).sum() );
   }
 
   private static int getCalibrationValue(String str, final Map<String, Integer> digitsMap) {
-    final int first = getDigit( str, digitsMap, String::indexOf, true );
-    final int last = getDigit( str, digitsMap, String::lastIndexOf, false );
+    final int first = getDigit( str, digitsMap, true );
+    final int last = getDigit( str, digitsMap, false );
     return first * 10 + last;
   }
 
   private static int getDigit(final String str, final Map<String, Integer> digitsMap,
-      BiFunction<String, String, Integer> indexOf, boolean first) {
-    final List<Integer> digitsSorted = digitsMap.entrySet().stream()
-        .map( e -> new Digit( indexOf.apply( str, e.getKey() ), e.getValue() ) )
-        .filter( digit -> digit.index() >= 0 ).sorted( comparingInt( Digit::index ) )
-        .map( Digit::value ).toList();
+      boolean first) {
+    final BiFunction<String, String, Integer> indexOf =
+        first ? String::indexOf : String::lastIndexOf;
+    final Comparator<Digit> comparator =
+        first ? comparingInt( Digit::index ) : comparingInt( Digit::index ).reversed();
 
-    return first ? digitsSorted.get( 0 ) : digitsSorted.get( digitsSorted.size() - 1 );
+    return digitsMap.entrySet().stream()
+        .map( e -> new Digit( e.getValue(), indexOf.apply( str, e.getKey() ) ) )
+        .filter( digit -> digit.index() >= 0 ).min( comparator ).map( Digit::value ).orElseThrow();
   }
 
-  private record Digit(int index, int value) {
+  private record Digit(int value, int index) {
 
   }
 }
