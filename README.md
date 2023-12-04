@@ -1,12 +1,17 @@
-
-
-
 # 🎄 Advent of Code 🎅
 
-[![Stars](https://img.shields.io/badge/stars%20⭐-400-dodgerblue)](https://adventofcode.com/events)
+[![Stars](https://img.shields.io/badge/stars%20⭐-404-red)](https://adventofcode.com/events)
 [![Tests](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml/badge.svg)](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml)
 
 My [Advent of Code](https://adventofcode.com/) solutions in Java.
+
+|                                                                  |                                                                  | [![Stars 2023](https://img.shields.io/static/v1?label=2023&message=04%20⭐&color=red)](https://adventofcode.com/2023) |                                                                  |                                                                  |
+|------------------------------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------|
+| [Day 1](/src/main/java/com/adventofcode/aoc2023/AoC012023.java)  | [Day 2](/src/main/java/com/adventofcode/aoc2023/AoC022023.java)  | [Day 3](/src/main/java/com/adventofcode/aoc2023/AoC032023.java)                                                      | [Day 4](/src/main/java/com/adventofcode/aoc2023/AoC042023.java)  | [Day 5](/src/main/java/com/adventofcode/aoc2023/AoC052023.java)  |
+| [Day 6](/src/main/java/com/adventofcode/aoc2023/AoC062023.java)  | [Day 7](/src/main/java/com/adventofcode/aoc2023/AoC072023.java)  | [Day 8](/src/main/java/com/adventofcode/aoc2023/AoC082023.java)                                                      | [Day 9](/src/main/java/com/adventofcode/aoc2023/AoC092023.java)  | [Day 10](/src/main/java/com/adventofcode/aoc2023/AoC102023.java) |
+| [Day 11](/src/main/java/com/adventofcode/aoc2023/AoC112023.java) | [Day 12](/src/main/java/com/adventofcode/aoc2023/AoC122023.java) | [Day 13](/src/main/java/com/adventofcode/aoc2023/AoC132023.java)                                                     | [Day 14](/src/main/java/com/adventofcode/aoc2023/AoC142023.java) | [Day 15](/src/main/java/com/adventofcode/aoc2023/AoC152023.java) |
+| [Day 16](/src/main/java/com/adventofcode/aoc2023/AoC162023.java) | [Day 17](/src/main/java/com/adventofcode/aoc2023/AoC172023.java) | [Day 18](/src/main/java/com/adventofcode/aoc2023/AoC182023.java)                                                     | [Day 19](/src/main/java/com/adventofcode/aoc2023/AoC192023.java) | [Day 20](/src/main/java/com/adventofcode/aoc2023/AoC202023.java) |
+| [Day 21](/src/main/java/com/adventofcode/aoc2023/AoC212023.java) | [Day 22](/src/main/java/com/adventofcode/aoc2023/AoC222023.java) | [Day 23](/src/main/java/com/adventofcode/aoc2023/AoC232023.java)                                                     | [Day 24](/src/main/java/com/adventofcode/aoc2023/AoC242023.java) | [Day 25](/src/main/java/com/adventofcode/aoc2023/AoC252023.java) |
 
 |                                                                  |                                                                  | [![Stars 2022](https://img.shields.io/static/v1?label=2022&message=50%20⭐&color=dodgerblue)](https://adventofcode.com/2022) |                                                                  |                                                                  |
 |------------------------------------------------------------------|------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------|
@@ -73,14 +78,15 @@ My [Advent of Code](https://adventofcode.com/) solutions in Java.
 | [Day 21](/src/main/java/com/adventofcode/aoc2015/AoC212015.java) | [Day 22](/src/main/java/com/adventofcode/aoc2015/AoC222015.java) | [Day 23](/src/main/java/com/adventofcode/aoc2015/AoC232015.java)                                                            | [Day 24](/src/main/java/com/adventofcode/aoc2015/AoC242015.java) | [Day 25](/src/main/java/com/adventofcode/aoc2015/AoC252015.java) |
 
 ## Goals
+
 - have fun
 - have fun
 - [learn something new](topics/README.md)
 - [solve as many puzzles as possible within the time limit](https://www.reddit.com/r/adventofcode/comments/7m9mg8/all_years_all_days_solve_them_within_the_time/)
 - (over)use the following Java features: `var`, `Lambda`, `Stream`, `Optional`, `switch expressions`
 
-
 ## Requirements
+
 You will need JDK 17.
 
 By default the project will look for it in your `JAVA_HOME`.
@@ -90,6 +96,7 @@ You can also specify your own JDK path like this when using gradle:
 `./gradlew <command> -Dorg.gradle.java.home=/path/to/java17`
 
 ## Run Unit Tests
+
 Run all tests:
 
 `./gradlew clean test`
@@ -102,19 +109,21 @@ Run a specific day:
 
 `./gradlew clean test --tests *132019*`
 
-
 ## Enable printing to `stdout`
+
 Print a representation of some puzzles to `stdout`:
 
 `./gradlew clean test -Dprint=true`
 
-
 ## Enable interactive mode
+
 Following days have a `main` method that enables a basic interactive mode:
+
 - 13th December 2019
 - 25th December 2019
 
 Enjoy! 🕹️
 
 ### TODO
+
 - move to JUnit 5
