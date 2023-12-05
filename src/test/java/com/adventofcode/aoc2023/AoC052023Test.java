@@ -93,7 +93,7 @@ public class AoC052023Test extends AbstractSolutionTest {
                 60 56 37
                 56 93 4
                 """, "46"},
-        {SECOND, getInput( INSTANCE ), "5571760"}
+        {SECOND, getInput( INSTANCE ), "26714516"}
     } );
   }
 }
