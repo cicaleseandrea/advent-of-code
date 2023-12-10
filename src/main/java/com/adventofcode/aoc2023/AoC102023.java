@@ -13,6 +13,10 @@ import static com.adventofcode.utils.Utils.itoa;
 import static com.adventofcode.utils.Utils.listGetOrDefault;
 import static java.lang.Math.ceil;
 import static java.lang.Math.floor;
+import static java.util.Comparator.comparing;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.GraphUtils;
@@ -20,14 +24,12 @@ import com.adventofcode.utils.Utils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class AoC102023 implements Solution {
@@ -53,96 +55,108 @@ class AoC102023 implements Solution {
 
     if ( first ) {
       final long maxDistance = loopTileToDistance.values().stream()
-          .max( Comparator.comparing( Long::longValue ) ).orElseThrow();
+          .max( comparing( Long::longValue ) ).orElseThrow();
       return itoa( maxDistance );
     } else {
-      return itoa( countInnerTiles( loopTileToDistance.keySet(), matrix, tiles ) );
+      final Map<Position, Tile> loopTiles = tiles.keySet().stream()
+          .filter( loopTileToDistance::containsKey ).collect( toMap( identity(), tiles::get ) );
+      final Set<Position> positionsToExplore = tiles.keySet().stream()
+          .filter( Predicate.not( loopTileToDistance::containsKey ) ).collect( toSet() );
+      return itoa( countInnerTiles( positionsToExplore, loopTiles, matrix ) );
     }
   }
 
-  private static int countInnerTiles(final Set<Position> loopTiles,
-      final List<List<Character>> matrix, final Map<Position, Tile> tiles) {
+  private static int countInnerTiles(final Set<Position> toExplore,
+      final Map<Position, Tile> loopTiles, final List<List<Character>> matrix) {
     final int maxI = matrix.size() - 1;
     final int maxJ = matrix.get( 0 ).size() - 1;
-
-    final Set<Position> toExplore = new HashSet<>( tiles.keySet() );
-    loopTiles.forEach( toExplore::remove );
 
     final Set<Position> innerTiles = new HashSet<>();
     final Set<Position> outerTiles = new HashSet<>();
     while ( !toExplore.isEmpty() ) {
-      final Set<Position> connected = GraphUtils.fill( toExplore.iterator().next(),
-          position -> getNeighbours( position, tiles, loopTiles, maxI, maxJ ) );
-      final Set<Position> connectedReal = connected.stream()
-          .filter( Predicate.not( Position::isSqueezed ) ).collect( Collectors.toSet() );
-      if ( connectedReal.stream().anyMatch( p -> isBoundary( p, maxI, maxJ ) ) ) {
-        outerTiles.addAll( connectedReal );
+      final Set<Position> connectedPositions = GraphUtils.fill( toExplore.iterator().next(),
+          position -> getNeighbours( position, loopTiles, maxI, maxJ ) );
+      final Set<Position> connectedTiles = connectedPositions.stream().filter( Position::isTile )
+          .collect( toSet() );
+      if ( connectedTiles.stream().anyMatch( p -> isOnBoundary( p, maxI, maxJ ) ) ) {
+        outerTiles.addAll( connectedTiles );
       } else {
-        innerTiles.addAll( connectedReal );
+        innerTiles.addAll( connectedTiles );
       }
-      connectedReal.forEach( toExplore::remove );
+      connectedTiles.forEach( toExplore::remove );
     }
     print( matrix, innerTiles, outerTiles );
     return innerTiles.size();
   }
 
-  private static Collection<Position> getNeighbours(Position position,
-      final Map<Position, Tile> tiles,
-      final Set<Position> loopTiles, final int maxI, final int maxJ) {
-    //TODO
+  private static Collection<Position> getNeighbours(final Position position,
+      final Map<Position, Tile> loopTiles, final int maxI, final int maxJ) {
     final Set<Position> neighbours = new HashSet<>();
-    if ( position.isSqueezed() ) {
-      Stream.of( new Position( 0.5, 0.5 ), new Position( 0.5, -0.5 ), new Position( -0.5, 0.5 ),
-              new Position( -0.5, -0.5 ) ).map( direction -> position.add( direction.i, direction.j ) )
-          .filter( p -> canSqueeze( p, tiles, loopTiles ) ).forEach( neighbours::add );
-      if ( position.isSqueezedVertically() ) {
-        Stream.of( WEST, EAST ).flatMap(
-                direction -> Stream.of( new Position( floor( position.i ), position.j + direction.j ),
-                    new Position( ceil( position.i ), position.j + direction.j ) ) )
-            .filter( Predicate.not( loopTiles::contains ) ).forEach( neighbours::add );
-        Stream.of( WEST, EAST )
-            .map( direction -> new Position( position.i, position.j + direction.j ) )
-            .filter( p -> canSqueeze( p, tiles, loopTiles ) ).forEach( neighbours::add );
-      } else {
-        Stream.of( NORTH, SOUTH ).flatMap(
-                direction -> Stream.of( new Position( position.i + direction.i, floor( position.j ) ),
-                    new Position( position.i + direction.i, ceil( position.j ) ) ) )
-            .filter( Predicate.not( loopTiles::contains ) ).forEach( neighbours::add );
-        Stream.of( NORTH, SOUTH )
-            .map( direction -> new Position( position.i + direction.i, position.j ) )
-            .filter( p -> canSqueeze( p, tiles, loopTiles ) ).forEach( neighbours::add );
-      }
-    } else {
-      Stream.of( NORTH, SOUTH, WEST, EAST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST )
-          .map( position::add ).filter( Predicate.not( loopTiles::contains ) )
+    if ( position.isTile() ) {
+      //normal movement
+      Stream.of( Direction.values() )
+          .map( position::add )
+          .filter( Predicate.not( loopTiles::containsKey ) )
           .forEach( neighbours::add );
-      Stream.of( new Position( 1, 0.5 ), new Position( 1, -0.5 ), new Position( -1, 0.5 ),
-              new Position( -1, -0.5 ), new Position( 0.5, 1 ), new Position( 0.5, -1 ),
-              new Position( -0.5, 1 ), new Position( -0.5, -1 ) )
-          .map( direction -> position.add( direction.i, direction.j ) )
-          .filter( p -> canSqueeze( p, tiles, loopTiles ) ).forEach( neighbours::add );
+      //squeeze between pipes
+      Stream.of( NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST )
+          .flatMap( direction -> Stream.of(
+                  new Position( direction.i, direction.j / 2.0 ),
+                  new Position( direction.i / 2.0, direction.j )
+              )
+          )
+          .map( position::add )
+          .filter( p -> canSqueeze( p, loopTiles ) )
+          .forEach( neighbours::add );
+    } else {
+      //squeeze around corner
+      Stream.of( NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST )
+          .map( d -> new Position( d.i / 2.0, d.j / 2.0 ) )
+          .map( position::add )
+          .filter( p -> canSqueeze( p, loopTiles ) )
+          .forEach( neighbours::add );
+      if ( position.isSqueezedVertically() ) {
+        Stream.of( WEST, EAST )
+            .flatMap( direction -> Stream.of(
+                    //keep squeezing
+                    position.add( direction ),
+                    //squeeze out
+                    new Position( floor( position.i ), position.j + direction.j ),
+                    new Position( ceil( position.i ), position.j + direction.j )
+                )
+            )
+            .filter( p -> p.isTile() ? !loopTiles.containsKey( p ) : canSqueeze( p, loopTiles ) )
+            .forEach( neighbours::add );
+      } else {
+        Stream.of( NORTH, SOUTH )
+            .flatMap( direction -> Stream.of(
+                    //keep squeezing
+                    position.add( direction ),
+                    //squeeze out
+                    new Position( position.i + direction.i, floor( position.j ) ),
+                    new Position( position.i + direction.i, ceil( position.j ) )
+                )
+            )
+            .filter( p -> p.isTile() ? !loopTiles.containsKey( p ) : canSqueeze( p, loopTiles ) )
+            .forEach( neighbours::add );
+      }
     }
 
-    return neighbours.stream()
-        .filter( p -> p.i >= -1 && p.j >= -1 && p.i <= maxI + 1 && p.j <= maxJ + 1 )
-        .collect( Collectors.toSet() );
+    //stay within the matrix
+    return neighbours.stream().filter( p -> p.i >= 0 && p.j >= 0 && p.i <= maxI && p.j <= maxJ )
+        .collect( toSet() );
   }
 
-  private static boolean canSqueeze(final Position position, final Map<Position, Tile> tiles,
-      final Set<Position> loopTiles) {
-    if ( !position.isSqueezed() ) {
+  private static boolean canSqueeze(final Position position, final Map<Position, Tile> loopTiles) {
+    if ( position.isTile() ) {
       return false;
     }
-    final Position pipePosition = new Position( floor( position.i ), floor( position.j ) );
-    if ( !loopTiles.contains( pipePosition ) ) {
+    final Position tilePosition = new Position( floor( position.i ), floor( position.j ) );
+    if ( !loopTiles.containsKey( tilePosition ) ) {
       return false;
     }
-    final Pipe pipe = Pipe.of( tiles.get( pipePosition ).symbol );
-    if ( position.isSqueezedVertically() ) {
-      return !pipe.isConnected( SOUTH );
-    } else {
-      return !pipe.isConnected( EAST );
-    }
+    final Pipe pipe = Pipe.of( loopTiles.get( tilePosition ).symbol );
+    return position.isSqueezedVertically() ? !pipe.isConnected( SOUTH ) : !pipe.isConnected( EAST );
   }
 
   private static Position parseInput(final List<List<Character>> matrix,
@@ -164,7 +178,7 @@ class AoC102023 implements Solution {
     return start;
   }
 
-  private static boolean isBoundary(final Position position, final int maxI, final int maxJ) {
+  private static boolean isOnBoundary(final Position position, final int maxI, final int maxJ) {
     return position.i == 0 || position.i == maxI || position.j == 0 || position.j == maxJ;
   }
 
@@ -191,8 +205,12 @@ class AoC102023 implements Solution {
 
   private static Pipe getPipe(final Position position, final List<List<Character>> matrix) {
     return Pipe.of(
-        listGetOrDefault( listGetOrDefault( matrix, (int) position.i, List.of() ), (int) position.j,
-            DOT ) );
+        listGetOrDefault(
+            listGetOrDefault( matrix, (int) position.i, List.of() ),
+            (int) position.j,
+            DOT
+        )
+    );
   }
 
   private static void print(final List<List<Character>> matrix, final Set<Position> innerTiles,
@@ -222,20 +240,24 @@ class AoC102023 implements Solution {
 
   private record Position(double i, double j) {
 
-    Position(int i, int j) {
+    Position(final int i, final int j) {
       this( (double) i, (double) j );
     }
 
-    Position add(double i, double j) {
+    Position add(final double i, final double j) {
       return new Position( this.i + i, this.j + j );
     }
 
-    Position add(final Direction direction) {
-      return new Position( i + direction.i, j + direction.j );
+    Position add(final Position position) {
+      return add( position.i, position.j );
     }
 
-    boolean isSqueezed() {
-      return isSqueezedVertically() || isSqueezedHorizontally();
+    Position add(final Direction direction) {
+      return add( direction.i, direction.j );
+    }
+
+    boolean isTile() {
+      return !isSqueezedVertically() && !isSqueezedHorizontally();
     }
 
     boolean isSqueezedVertically() {
