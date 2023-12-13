@@ -53,21 +53,24 @@ class AoC122023 implements Solution {
       return 0;
     }
 
+    //remove a complete group of damaged springs and count combinations on the rest of the springs
     final int completeGroupEndIndex = getCompleteGroupEndIndex( springs );
     if ( completeGroupEndIndex >= 0 ) {
       final char[] subSprings = getCopy( springs, completeGroupEndIndex );
       final long[] subDamagedSizes = getCopy( damagedSizes, 1 );
-
       final long subCount = count( new Info( subSprings, subDamagedSizes ), 0, cache );
+      //memoize result
       return cache.compute( new Info( subSprings, subDamagedSizes ), (k, v) -> subCount );
     }
 
     while ( index < springs.length ) {
+      //find the first unknown spring
       if ( springs[index] == UNKNOWN ) {
+        //replace unknown with damaged and count combinations
         final char[] damaged = getCopy( springs );
         damaged[index] = DAMAGED;
         final long count1 = count( new Info( damaged, damagedSizes ), index + 1, cache );
-
+        //replace unknown with operational and count combinations
         final char[] operational = getCopy( springs );
         operational[index] = OPERATIONAL;
         final long count2 = count( new Info( operational, damagedSizes ), index + 1, cache );
@@ -79,15 +82,18 @@ class AoC122023 implements Solution {
     return 1;
   }
 
+  /**
+   * If there is a known group of damaged springs, return their endIndex, otherwise return -1
+   */
   private static int getCompleteGroupEndIndex(final char[] springs) {
     boolean groupStarted = false;
     int index = 0;
     while ( index < springs.length ) {
       final char spring = springs[index];
-      if ( spring == DAMAGED ) {
-        groupStarted = true;
-      } else if ( spring == UNKNOWN ) {
+      if ( spring == UNKNOWN ) {
         return -1;
+      } else if ( spring == DAMAGED ) {
+        groupStarted = true;
       } else if ( spring == OPERATIONAL && groupStarted ) {
         return index;
       }
@@ -100,11 +106,16 @@ class AoC122023 implements Solution {
     int groupSize = 0;
     int nGroups = 0;
     int i = 0;
-    while ( i < springs.length && springs[i] != UNKNOWN ) {
-      if ( springs[i] == DAMAGED ) {
+    while ( i < springs.length ) {
+      final char spring = springs[i];
+      if ( spring == UNKNOWN ) {
+        //found an unknown spring
+        break;
+      } else if ( spring == DAMAGED ) {
         groupSize++;
-      } else if ( groupSize > 0 ) {
+      } else if ( spring == OPERATIONAL && groupSize > 0 ) {
         if ( !(nGroups < damagedSizes.length && groupSize == damagedSizes[nGroups]) ) {
+          //damaged group is complete and does not have expected size
           return false;
         }
         nGroups++;
@@ -115,12 +126,15 @@ class AoC122023 implements Solution {
     final boolean isUnknown = (i < springs.length);
     if ( isUnknown ) {
       if ( nGroups < damagedSizes.length ) {
+        //check if incomplete damaged group is still smaller than expected size
         return groupSize <= damagedSizes[nGroups];
       }
     } else {
       if ( nGroups < damagedSizes.length - 1 ) {
+        //not enough damaged groups
         return false;
       } else if ( nGroups == damagedSizes.length - 1 ) {
+        //check if complete damaged group has expected size
         return groupSize == damagedSizes[nGroups];
       }
     }
