@@ -37,19 +37,21 @@ class AoC142023 implements Solution {
     }
 
     final Map<Platform, Integer> seen = new HashMap<>();
-    int steps = 0;
-    boolean isCycle = false;
-    while ( !isCycle ) {
-      seen.put( platform, steps );
+    final int totalSpins = 1_000_000_000;
+    int spins = 0;
+    while ( spins < totalSpins ) {
+      seen.put( platform, spins );
       platform = spin( platform );
-      isCycle = seen.containsKey( platform );
-      steps++;
-    }
-    final int cycleStart = seen.get( platform );
-    final int cycleLength = steps - cycleStart;
-    final int stepsLeft = 1_000_000_000 - steps;
-    for ( int i = 0; i < stepsLeft % cycleLength; i++ ) {
-      platform = spin( platform );
+      spins++;
+      if ( seen.containsKey( platform ) ) {
+        final int cycleStart = seen.get( platform );
+        final int cycleLength = spins - cycleStart;
+        final int spinsLeft = totalSpins - spins;
+        final int cyclesToSkip = spinsLeft / cycleLength;
+        final int spinsToSkip = cyclesToSkip * cycleLength;
+        spins += spinsToSkip;
+        seen.clear();
+      }
     }
     return itoa( platform.getLoad() );
   }
