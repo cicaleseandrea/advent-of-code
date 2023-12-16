@@ -34,20 +34,21 @@ public enum Direction {
   }
 
   public Direction rotate(final char c) {
-    if ( this == UP || this == DOWN ) {
-      if ( c == '\\' ) {
-        return rotateCounterClockwise();
-      } else if ( c == '/' ) {
-        return rotateClockwise();
-      }
-    } else if ( this == RIGHT || this == LEFT ) {
-      if ( c == '\\' ) {
-        return rotateClockwise();
-      } else if ( c == '/' ) {
-        return rotateCounterClockwise();
-      }
-    }
-    return this;
+    return switch ( c ) {
+      case '\\' -> (this == UP || this == DOWN) ? rotateCounterClockwise() : rotateClockwise();
+      case '/' -> (this == UP || this == DOWN) ? rotateClockwise() : rotateCounterClockwise();
+      default -> this;
+    };
+  }
+
+  public List<Direction> split(final char c) {
+    return switch ( c ) {
+      case '|' -> (this == UP || this == DOWN) ? List.of( this )
+          : List.of( rotateClockwise(), rotateCounterClockwise() );
+      case '-' -> (this == RIGHT || this == LEFT) ? List.of( this )
+          : List.of( rotateClockwise(), rotateCounterClockwise() );
+      default -> List.of( this );
+    };
   }
 
   public void move(final Pair<Long, Long> point) {
