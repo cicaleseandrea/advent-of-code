@@ -33,6 +33,41 @@ public class GraphUtils {
     return computeShortestPathsInternal( start, end, getNeighbours, getNeighbourDistance );
   }
 
+  public static <T> Map<T, Long> computeShortestPaths(final T start,
+      final Function<T, Collection<T>> getNeighbours) {
+    return computeShortestPaths( start, end -> false, getNeighbours );
+  }
+
+  public static <T> Map<T, Long> computeShortestPaths(final T start,
+      final Function<T, Collection<T>> getNeighbours,
+      final ToLongFunction<T> getNeighbourDistance) {
+    return computeShortestPaths( start, end -> false, getNeighbours, getNeighbourDistance );
+  }
+
+  public static <T> long computeShortestPath(final T start, final Predicate<T> end,
+      final Function<T, Collection<T>> getNeighbours) {
+    final Map<T, Long> distances = computeShortestPaths( start, end, getNeighbours );
+    return getShortest( distances, end );
+  }
+
+  public static <T> long computeShortestPath(final T start, final Predicate<T> end,
+      final Function<T, Collection<T>> getNeighbours,
+      final ToLongFunction<T> getNeighbourDistance) {
+    final Map<T, Long> distances = computeShortestPaths( start, end, getNeighbours,
+        getNeighbourDistance );
+    return getShortest( distances, end );
+  }
+
+  public static <T> Set<T> fill(final T start, final Function<T, Collection<T>> getNeighbours) {
+    return computeShortestPaths( start, end -> false, getNeighbours ).keySet();
+  }
+
+  public static <T> Set<T> fill(final T start, final Function<T, Collection<T>> getNeighbours,
+      final ToLongFunction<T> getNeighbourDistance) {
+    return computeShortestPaths( start, end -> false, getNeighbours,
+        getNeighbourDistance ).keySet();
+  }
+
   private static <T> Map<T, Long> computeShortestPathsInternal(final T start,
       final Predicate<T> end, final Function<T, Collection<T>> getNeighbours,
       ToLongFunction<T> getNeighbourDistance) {
@@ -70,44 +105,8 @@ public class GraphUtils {
     return distances;
   }
 
-  public static <T> Map<T, Long> computeShortestPaths(final T start,
-      final Function<T, Collection<T>> getNeighbours) {
-    return computeShortestPaths( start, end -> false, getNeighbours );
-  }
-
-  public static <T> Map<T, Long> computeShortestPaths(final T start,
-      final Function<T, Collection<T>> getNeighbours,
-      final ToLongFunction<T> getNeighbourDistance) {
-    return computeShortestPaths( start, end -> false, getNeighbours, getNeighbourDistance );
-  }
-
-  public static <T> long computeShortestPath(final T start, final Predicate<T> end,
-      final Function<T, Collection<T>> getNeighbours) {
-    final Map<T, Long> distances = computeShortestPaths( start, end, getNeighbours );
-    return getShortest( distances, end );
-  }
-
-  public static <T> long computeShortestPath(final T start, final Predicate<T> end,
-      final Function<T, Collection<T>> getNeighbours,
-      final ToLongFunction<T> getNeighbourDistance) {
-    final Map<T, Long> distances = computeShortestPaths( start, end, getNeighbours,
-        getNeighbourDistance );
-    return getShortest( distances, end );
-  }
-
-  public static <T> Set<T> fill(final T start, final Function<T, Collection<T>> getNeighbours) {
-    return computeShortestPaths( start, end -> false, getNeighbours ).keySet();
-  }
-
-  public static <T> Set<T> fill(final T start, final Function<T, Collection<T>> getNeighbours,
-      final ToLongFunction<T> getNeighbourDistance) {
-    return computeShortestPaths( start, end -> false, getNeighbours,
-        getNeighbourDistance ).keySet();
-  }
-
   private static <T> long getShortest(final Map<T, Long> distances, final Predicate<T> end) {
     return distances.keySet().stream().filter( end ).mapToLong( distances::get ).min()
         .orElseThrow( () -> new IllegalArgumentException( "Could not reach the end" ) );
   }
-
 }
