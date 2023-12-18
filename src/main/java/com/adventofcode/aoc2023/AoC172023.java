@@ -8,6 +8,7 @@ import static com.adventofcode.utils.Utils.itoa;
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Direction;
 import com.adventofcode.utils.GraphUtils;
+import com.adventofcode.utils.Point;
 import java.util.Collection;
 import java.util.List;
 import java.util.OptionalLong;
@@ -28,14 +29,14 @@ class AoC172023 implements Solution {
 
   private static String solve(final Stream<String> input, final int minSteps, final int maxSteps) {
     final int[][] grid = getGrid( input.toList() );
-    final Position end = new Position( grid.length - 1, grid[0].length - 1 );
+    final Point end = new Point( grid.length - 1, grid[0].length - 1 );
     final OptionalLong shortestDistance = Stream.of( RIGHT, DOWN )
-        .map( direction -> new State( new Position( 0, 0 ), direction ) )
+        .map( direction -> new State( new Point( 0, 0 ), direction ) )
         .mapToLong( start -> computeShortestPath( start, end, grid, minSteps, maxSteps ) ).min();
     return itoa( shortestDistance.orElseThrow() );
   }
 
-  private static long computeShortestPath(final State start, final Position end, final int[][] grid,
+  private static long computeShortestPath(final State start, final Point end, final int[][] grid,
       final int minSteps, final int maxSteps) {
     final Predicate<State> walkedEnough = state -> state.steps >= minSteps;
     final Predicate<State> isEnd = state -> state.position().equals( end );
@@ -54,12 +55,13 @@ class AoC172023 implements Solution {
       nextDirections = Stream.of( direction );
     }
     return nextDirections.map( state::move ).filter( next -> next.steps <= maxSteps )
-        .filter( next -> isInGrid( next.position.i, next.position.j, grid.length, grid[0].length ) )
+        .filter(
+            next -> isInGrid( next.position.i(), next.position.j(), grid.length, grid[0].length ) )
         .toList();
   }
 
   private static long getDistance(final State state, final int[][] grid) {
-    return grid[state.position.i][state.position.j];
+    return grid[state.position.i()][state.position.j()];
   }
 
   private static int[][] getGrid(final List<String> input) {
@@ -76,9 +78,9 @@ class AoC172023 implements Solution {
     return i >= 0 && j >= 0 && i < maxI && j < maxJ;
   }
 
-  private record State(Position position, Direction direction, int steps) {
+  private record State(Point position, Direction direction, int steps) {
 
-    State(Position position, Direction direction) {
+    State(Point position, Direction direction) {
       this( position, direction, 1 );
     }
 
@@ -88,15 +90,5 @@ class AoC172023 implements Solution {
     }
   }
 
-  private record Position(int i, int j) {
 
-    Position move(Direction direction) {
-      return switch ( direction ) {
-        case UP -> new Position( i - 1, j );
-        case DOWN -> new Position( i + 1, j );
-        case LEFT -> new Position( i, j - 1 );
-        case RIGHT -> new Position( i, j + 1 );
-      };
-    }
-  }
 }

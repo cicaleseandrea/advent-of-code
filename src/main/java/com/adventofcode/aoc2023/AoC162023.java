@@ -11,6 +11,7 @@ import static java.lang.Math.min;
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Direction;
 import com.adventofcode.utils.GraphUtils;
+import com.adventofcode.utils.Point;
 import java.util.Collection;
 import java.util.List;
 import java.util.OptionalLong;
@@ -23,7 +24,7 @@ class AoC162023 implements Solution {
 
   @Override
   public String solveFirstPart(final Stream<String> input) {
-    return solve( input.toList(), List.of( new Beam( new Position( 0, 0 ), RIGHT ) ) );
+    return solve( input.toList(), List.of( new Beam( new Point( 0, 0 ), RIGHT ) ) );
   }
 
   @Override
@@ -31,14 +32,11 @@ class AoC162023 implements Solution {
     final List<String> inputList = input.toList();
     final int maxI = inputList.size();
     final int maxJ = inputList.get( 0 ).length();
-    final List<Beam> starts = IntStream.range( 0, max( maxI, maxJ ) ).boxed()
-        .flatMap( n -> Stream.of(
-            new Beam( new Position( 0, min( n, maxJ - 1 ) ), DOWN ),
-            new Beam( new Position( maxI - 1, min( n, maxJ - 1 ) ), UP ),
-            new Beam( new Position( min( n, maxI - 1 ), 0 ), RIGHT ),
-            new Beam( new Position( min( n, maxI - 1 ), maxJ - 1 ), LEFT ) ) )
-        .distinct()
-        .toList();
+    final List<Beam> starts = IntStream.range( 0, max( maxI, maxJ ) ).boxed().flatMap(
+        n -> Stream.of( new Beam( new Point( 0, min( n, maxJ - 1 ) ), DOWN ),
+            new Beam( new Point( maxI - 1, min( n, maxJ - 1 ) ), UP ),
+            new Beam( new Point( min( n, maxI - 1 ), 0 ), RIGHT ),
+            new Beam( new Point( min( n, maxI - 1 ), maxJ - 1 ), LEFT ) ) ).distinct().toList();
     return solve( inputList, starts );
   }
 
@@ -54,9 +52,9 @@ class AoC162023 implements Solution {
   }
 
   private static Collection<Beam> getNext(final Beam beam, final char[][] grid) {
-    final char c = grid[beam.position.i][beam.position.j];
-    return beam.direction.rotate( c ).split( c ).stream().map( beam::move )
-        .filter( next -> isInGrid( next.position.i, next.position.j, grid.length, grid[0].length ) )
+    final char c = grid[beam.position.i()][beam.position.j()];
+    return beam.direction.rotate( c ).split( c ).stream().map( beam::move ).filter(
+            next -> isInGrid( next.position.i(), next.position.j(), grid.length, grid[0].length ) )
         .toList();
   }
 
@@ -74,22 +72,10 @@ class AoC162023 implements Solution {
     return i >= 0 && j >= 0 && i < maxI && j < maxJ;
   }
 
-  private record Beam(Position position, Direction direction) {
+  private record Beam(Point position, Direction direction) {
 
     Beam move(Direction direction) {
       return new Beam( position.move( direction ), direction );
-    }
-  }
-
-  private record Position(int i, int j) {
-
-    Position move(Direction direction) {
-      return switch ( direction ) {
-        case UP -> new Position( i - 1, j );
-        case DOWN -> new Position( i + 1, j );
-        case LEFT -> new Position( i, j - 1 );
-        case RIGHT -> new Position( i, j + 1 );
-      };
     }
   }
 }
