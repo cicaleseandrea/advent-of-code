@@ -1,11 +1,11 @@
 # 🎄 Advent of Code 🎅
 
-[![Stars](https://img.shields.io/badge/stars%20⭐-434-red)](https://adventofcode.com/events)
+[![Stars](https://img.shields.io/badge/stars%20⭐-436-red)](https://adventofcode.com/events)
 [![Tests](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml/badge.svg)](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml)
 
 My [Advent of Code](https://adventofcode.com/) solutions in Java.
 
-|                                                                  |                                                                  | [![Stars 2023](https://img.shields.io/static/v1?label=2023&message=34%20⭐&color=red)](https://adventofcode.com/2023) |                                                                  |                                                                  |
+|                                                                  |                                                                  | [![Stars 2023](https://img.shields.io/static/v1?label=2023&message=36%20⭐&color=red)](https://adventofcode.com/2023) |                                                                  |                                                                  |
 |------------------------------------------------------------------|------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------|
 | [Day 1](/src/main/java/com/adventofcode/aoc2023/AoC012023.java)  | [Day 2](/src/main/java/com/adventofcode/aoc2023/AoC022023.java)  | [Day 3](/src/main/java/com/adventofcode/aoc2023/AoC032023.java)                                                      | [Day 4](/src/main/java/com/adventofcode/aoc2023/AoC042023.java)  | [Day 5](/src/main/java/com/adventofcode/aoc2023/AoC052023.java)  |
 | [Day 6](/src/main/java/com/adventofcode/aoc2023/AoC062023.java)  | [Day 7](/src/main/java/com/adventofcode/aoc2023/AoC072023.java)  | [Day 8](/src/main/java/com/adventofcode/aoc2023/AoC082023.java)                                                      | [Day 9](/src/main/java/com/adventofcode/aoc2023/AoC092023.java)  | [Day 10](/src/main/java/com/adventofcode/aoc2023/AoC102023.java) |
