@@ -2,16 +2,19 @@ package com.adventofcode.aoc2023;
 
 import static com.adventofcode.utils.Utils.itoa;
 import static java.util.function.UnaryOperator.identity;
+import static java.util.stream.Collectors.toMap;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Pair;
 import com.adventofcode.utils.Utils;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -100,7 +103,7 @@ class AoC192023 implements Solution {
   private static Rule getRule(final boolean greater, final int number, final char letter,
       final String next) {
     final Predicate<Range> check = part -> {
-      final long value = part.get( letter );
+      final long value = part.getValue( letter );
       return (greater && value > number) || (!greater && value < number);
     };
     final UnaryOperator<Range> left = range -> {
@@ -152,53 +155,45 @@ class AoC192023 implements Solution {
   }
 
 
-  private record Range(int minX, int maxX, int minM, int maxM, int minA, int maxA, int minS,
-                       int maxS) {
+  private record Range(Map<Character, Pair<Integer, Integer>> xmas) {
+
+    Range {
+      Preconditions.checkArgument( xmas.keySet().equals( Set.of( 'x', 'm', 'a', 's' ) ) );
+    }
 
     Range(final int min, final int max) {
-      this( min, max, min, max, min, max, min, max );
+      this( Stream.of( 'x', 'm', 'a', 's' )
+          .collect( toMap( identity(), c -> new Pair<>( min, max ) ) ) );
     }
 
     Range(final int x, final int m, final int a, final int s) {
-      this( x, x, m, m, a, a, s, s );
+      this( Map.of( 'x', new Pair<>( x, x ), 'm', new Pair<>( m, m ), 'a', new Pair<>( a, a ), 's',
+          new Pair<>( s, s ) ) );
     }
 
-    int get(char c) {
-      return switch ( c ) {
-        case 'x' -> minX;
-        case 'm' -> minM;
-        case 'a' -> minA;
-        case 's' -> minS;
-        default -> throw new IllegalStateException( "Unexpected value: " + c );
-      };
+    int getValue(final char c) {
+      return xmas.get( c ).getFirst();
     }
 
-    Range updateMin(int min, char c) {
-      return switch ( c ) {
-        case 'x' -> new Range( min, maxX, minM, maxM, minA, maxA, minS, maxS );
-        case 'm' -> new Range( minX, maxX, min, maxM, minA, maxA, minS, maxS );
-        case 'a' -> new Range( minX, maxX, minM, maxM, min, maxA, minS, maxS );
-        case 's' -> new Range( minX, maxX, minM, maxM, minA, maxA, min, maxS );
-        default -> throw new IllegalStateException( "Unexpected value: " + c );
-      };
+    Range updateMin(final int min, final char c) {
+      final HashMap<Character, Pair<Integer, Integer>> updated = new HashMap<>( xmas );
+      updated.compute( c, (k, v) -> new Pair<>( min, v.getSecond() ) );
+      return new Range( updated );
     }
 
-    Range updateMax(int max, char c) {
-      return switch ( c ) {
-        case 'x' -> new Range( minX, max, minM, maxM, minA, maxA, minS, maxS );
-        case 'm' -> new Range( minX, maxX, minM, max, minA, maxA, minS, maxS );
-        case 'a' -> new Range( minX, maxX, minM, maxM, minA, max, minS, maxS );
-        case 's' -> new Range( minX, maxX, minM, maxM, minA, maxA, minS, max );
-        default -> throw new IllegalStateException( "Unexpected value: " + c );
-      };
+    Range updateMax(final int max, final char c) {
+      final HashMap<Character, Pair<Integer, Integer>> updated = new HashMap<>( xmas );
+      updated.compute( c, (k, v) -> new Pair<>( v.getFirst(), max ) );
+      return new Range( updated );
     }
 
     long countCombinations() {
-      return (maxX - minX + 1L) * (maxM - minM + 1L) * (maxA - minA + 1L) * (maxS - minS + 1L);
+      return xmas.values().stream().mapToLong( p -> 1 + p.getSecond() - p.getFirst() )
+          .reduce( 1, (a, b) -> a * b );
     }
 
     long getSum() {
-      return minX + minM + minA + minS;
+      return xmas.values().stream().mapToLong( Pair::getFirst ).sum();
     }
   }
 }
