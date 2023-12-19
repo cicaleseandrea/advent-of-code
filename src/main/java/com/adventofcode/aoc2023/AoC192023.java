@@ -12,10 +12,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+import kotlin.jvm.functions.Function4;
 
 class AoC192023 implements Solution {
 
@@ -29,138 +30,117 @@ class AoC192023 implements Solution {
 
   @Override
   public String solveSecondPart(final Stream<String> input) {
-    final Iterator<String> inputIterator = input.iterator();
-    final Map<String, Workflow2> workflows = getWorkflows2( inputIterator );
-
-    final long combinations = getRanges( new Range( 1, 4000 ), workflows, "in" ).stream().mapToLong(
-        Range::countCombinations ).sum();
-    return itoa( combinations );
+    return solve( input, false );
   }
 
-  private static List<Range> getRanges(final Range range, final Map<String, Workflow2> workflows,
-      final String start) {
+  private static String solve(final Stream<String> input, final boolean first) {
+    final Iterator<String> inputIterator = input.iterator();
+    long sum;
+    if ( first ) {
+      final Map<String, Workflow> workflows = getWorkflows( inputIterator,
+          workflow -> getWorkflow( workflow, Rule::new, AoC192023::createRule, Workflow::new ) );
+      sum = getParts( inputIterator ).stream().filter( part -> isAccepted( "in", part, workflows ) )
+          .mapToLong( Part::getTotal ).sum();
+    } else {
+      final Map<String, Workflow2> workflows = getWorkflows( inputIterator,
+          workflow -> getWorkflow( workflow, Split::new, AoC192023::createSplit, Workflow2::new ) );
+      sum = getRanges( "in", new Range( 1, 4000 ), workflows ).stream()
+          .mapToLong( Range::countCombinations ).sum();
+    }
+    return itoa( sum );
+  }
+
+  private static List<Range> getRanges(final String start, final Range range,
+      final Map<String, Workflow2> workflows) {
     if ( start.equals( REJECTED ) ) {
       return List.of();
     } else if ( start.equals( ACCEPTED ) ) {
       return List.of( range );
     }
-
-    return workflows.get( start ).split( range )
-        .stream().map( next -> getRanges( next.getFirst(), workflows, next.getSecond() ) )
+    return workflows.get( start ).split( range ).stream()
+        .map( next -> getRanges( next.getSecond(), next.getFirst(), workflows ) )
         .flatMap( Collection::stream ).toList();
   }
 
-  private static String solve(final Stream<String> input, final boolean first) {
-    final Iterator<String> inputIterator = input.iterator();
-    final Map<String, Workflow> workflows = getWorkflows( inputIterator );
-    final List<Part> parts = getParts( inputIterator );
-
-    final long sum = parts.stream().filter( part -> isAccepted( part, workflows, "in" ) )
-        .mapToLong( Part::getTotal ).sum();
-    return itoa( sum );
+  private static boolean isAccepted(String start, final Part part,
+      final Map<String, Workflow> workflows) {
+    if ( start.equals( REJECTED ) ) {
+      return false;
+    } else if ( start.equals( ACCEPTED ) ) {
+      return true;
+    }
+    return isAccepted( workflows.get( start ).send( part ), part, workflows );
   }
 
   private static List<Part> getParts(final Iterator<String> inputIterator) {
     final List<Part> parts = new ArrayList<>();
     while ( inputIterator.hasNext() ) {
       final List<Long> numbers = Utils.toLongList( inputIterator.next() );
-      parts.add( new Part( numbers.get( 0 ), numbers.get( 1 ), numbers.get( 2 ),
-          numbers.get( 3 ) ) );
+      parts.add(
+          new Part( numbers.get( 0 ), numbers.get( 1 ), numbers.get( 2 ), numbers.get( 3 ) ) );
     }
     return parts;
   }
 
-  private static Map<String, Workflow> getWorkflows(final Iterator<String> inputIterator) {
-    final Map<String, Workflow> workflows = new HashMap<>();
+  private static <T> Map<String, T> getWorkflows(final Iterator<String> inputIterator,
+      Function<String, T> getWorkflow) {
+    final Map<String, T> workflows = new HashMap<>();
     String line;
     while ( inputIterator.hasNext() && !(line = inputIterator.next()).isEmpty() ) {
       final int startRules = line.indexOf( '{' );
       final int endRules = line.length() - 1;
       final String name = line.substring( 0, startRules );
-      final Workflow workflow = getWorkflow( line.substring( startRules + 1, endRules ) );
+      final T workflow = getWorkflow.apply( line.substring( startRules + 1, endRules ) );
       workflows.put( name, workflow );
     }
     return workflows;
   }
 
-  private static Map<String, Workflow2> getWorkflows2(final Iterator<String> inputIterator) {
-    final Map<String, Workflow2> workflows = new HashMap<>();
-    String line;
-    while ( inputIterator.hasNext() && !(line = inputIterator.next()).isEmpty() ) {
-      final int startRules = line.indexOf( '{' );
-      final int endRules = line.length() - 1;
-      final String name = line.substring( 0, startRules );
-      final Workflow2 workflow = getWorkflow2( line.substring( startRules + 1, endRules ) );
-      workflows.put( name, workflow );
-    }
-    return workflows;
+  private static Rule createRule(final boolean greater, final int number, final char letter,
+      final String next) {
+    final Predicate<Part> check = part -> {
+      long value = part.get( letter );
+      return (greater && value > number) || (!greater && value < number);
+    };
+    return new Rule( check, next );
   }
 
-  private static Workflow2 getWorkflow2(final String workflow) {
-    final List<Split> splits = new ArrayList<>();
+  private static Split createSplit(final boolean greater, final int number, final char letter,
+      final String next) {
+    final UnaryOperator<Range> a = range -> {
+      if ( greater ) {
+        return range.updateMin( number + 1, letter );
+      } else {
+        return range.updateMax( number - 1, letter );
+      }
+    };
+    final UnaryOperator<Range> b = range -> {
+      if ( greater ) {
+        return range.updateMax( number, letter );
+      } else {
+        return range.updateMin( number, letter );
+      }
+    };
+    return new Split( a, b, next );
+  }
+
+  private static <T, R> R getWorkflow(final String workflow,
+      final Function<String, T> toIntermediate1,
+      final Function4<Boolean, Integer, Character, String, T> toIntermediate2,
+      final Function<List<T>, R> toResult) {
+    final List<T> splits = new ArrayList<>();
     for ( final String rule : workflow.split( "," ) ) {
       final String[] checkArr = rule.split( ":" );
       if ( checkArr.length == 1 ) {
-        splits.add( new Split( rule ) );
+        splits.add( toIntermediate1.apply( rule ) );
       } else {
         final boolean greater = checkArr[0].contains( ">" );
         final char letter = checkArr[0].charAt( 0 );
         final int number = Utils.extractIntegerFromString( rule );
-        final UnaryOperator<Range> a = range -> {
-          if ( greater ) {
-            return range.updateMin( number + 1, letter );
-          } else {
-            return range.updateMax( number - 1, letter );
-          }
-        };
-        final UnaryOperator<Range> b = range -> {
-          if ( greater ) {
-            return range.updateMax( number, letter );
-          } else {
-            return range.updateMin( number, letter );
-          }
-        };
-        splits.add( new Split( a, b, checkArr[1] ) );
+        splits.add( toIntermediate2.invoke( greater, number, letter, checkArr[1] ) );
       }
     }
-    return new Workflow2( splits );
-  }
-
-  private static Workflow getWorkflow(final String workflow) {
-    final List<Rule> rules = new ArrayList<>();
-    for ( final String rule : workflow.split( "," ) ) {
-      final String[] checkArr = rule.split( ":" );
-      if ( checkArr.length == 1 ) {
-        rules.add( new Rule( part -> true, rule ) );
-      } else {
-        final boolean greater = checkArr[0].contains( ">" );
-        final ToLongFunction<Part> extract =
-            switch ( Utils.toWordList( rule ).get( 0 ) ) {
-              case "x" -> part -> part.x;
-              case "m" -> part -> part.m;
-              case "a" -> part -> part.a;
-              case "s" -> part -> part.s;
-              default -> throw new IllegalStateException(
-                  "Unexpected value: " + Utils.toWordList( rule ).get( 0 ) );
-            };
-        final long number = Utils.extractIntegerFromString( rule );
-        final Predicate<Part> check = part -> {
-          long value = extract.applyAsLong( part );
-          return (greater && value > number) || (!greater && value < number);
-        };
-        rules.add( new Rule( check, checkArr[1] ) );
-      }
-    }
-    return new Workflow( rules );
-  }
-
-  private static boolean isAccepted(final Part part, final Map<String, Workflow> workflows,
-      String curr) {
-    while ( !curr.equals( ACCEPTED ) && !curr.equals( REJECTED ) ) {
-      curr = workflows.get( curr ).send( part );
-    }
-
-    return curr.equals( ACCEPTED );
+    return toResult.apply( splits );
   }
 
   private record Workflow(List<Rule> rules) {
@@ -175,9 +155,11 @@ class AoC192023 implements Solution {
     }
   }
 
-
   private record Rule(Predicate<Part> check, String next) {
 
+    Rule(String next) {
+      this( part -> true, next );
+    }
   }
 
 
@@ -203,6 +185,16 @@ class AoC192023 implements Solution {
 
   private record Part(long x, long m, long a, long s) {
 
+    long get(char c) {
+      return switch ( c ) {
+        case 'x' -> x;
+        case 'm' -> m;
+        case 'a' -> a;
+        case 's' -> s;
+        default -> throw new IllegalStateException( "Unexpected value: " + c );
+      };
+    }
+
     long getTotal() {
       return x + m + a + s;
     }
@@ -210,10 +202,6 @@ class AoC192023 implements Solution {
 
   private record Range(int minX, int maxX, int minM, int maxM, int minA, int maxA, int minS,
                        int maxS) {
-
-    static Range empty() {
-      return new Range( 1, 0 );
-    }
 
     Range(final int min, final int max) {
       this( min, max, min, max, min, max, min, max );
