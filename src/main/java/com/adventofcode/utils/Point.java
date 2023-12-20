@@ -28,7 +28,7 @@ public record Point(int i, int j) {
     return move( direction, 1 );
   }
 
-  public static double computeArea(List<Point> points) {
+  public static double computeArea(final List<Point> points) {
     //Shoelace formula
     long area = 0;
     for ( int i = 0; i < points.size(); i++ ) {
@@ -37,5 +37,11 @@ public record Point(int i, int j) {
       area += ((long) curr.i() * next.j()) - ((long) curr.j() * next.i());
     }
     return abs( area ) / 2.0;
+  }
+
+  public static long countPointsInside(final List<Point> points, final long nBoundaryPoints) {
+    final double area = computeArea( points );
+    //Pick's theorem: A = i + b/2 - 1 ==> i = A - b/2 +1
+    return (long) (area - nBoundaryPoints / 2.0 + 1);
   }
 }

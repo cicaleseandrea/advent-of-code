@@ -28,11 +28,9 @@ class AoC182023 implements Solution {
       final Function<String, Instruction> getInstruction) {
     final List<Instruction> instructions = input.map( getInstruction ).toList();
     final List<Point> points = getPoints( instructions );
-    final double area = Point.computeArea( points );
-    final long boundaryPoints = instructions.stream().mapToLong( Instruction::distance ).sum();
-    //Pick's theorem: A = i + b/2 - 1 ==> i = A - b/2 +1
-    final double interiorPoints = area - boundaryPoints / 2.0 + 1;
-    return itoa( interiorPoints + boundaryPoints );
+    final long nBoundaryPoints = instructions.stream().mapToLong( Instruction::distance ).sum();
+    final long nInteriorPoints = Point.countPointsInside( points, nBoundaryPoints );
+    return itoa( nBoundaryPoints + nInteriorPoints );
   }
 
   private static List<Point> getPoints(final List<Instruction> instructions) {
