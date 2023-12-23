@@ -19,7 +19,7 @@ public class GraphUtils {
   private GraphUtils() {
   }
 
-  private static <T> Map<T, Long> computeShortestPaths(final T start, final Predicate<T> end,
+  public static <T> Map<T, Long> computeShortestPaths(final T start, final Predicate<T> end,
       final Function<T, Collection<T>> getNeighbours) {
     //unweighted graph
     return computeShortestPathsInternal( start, end, getNeighbours, null );
