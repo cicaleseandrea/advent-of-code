@@ -3,18 +3,22 @@ package com.adventofcode.aoc2023;
 import static com.adventofcode.utils.Utils.itoa;
 import static java.lang.Math.max;
 import static java.util.Comparator.comparingInt;
-import static java.util.function.Predicate.not;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
 import com.adventofcode.utils.Utils;
+import com.google.common.graph.Graph;
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.Graphs;
+import com.google.common.graph.ImmutableGraph;
+import com.google.common.graph.MutableGraph;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.Queue;
 import java.util.stream.Stream;
 
+@SuppressWarnings("UnstableApiUsage")
 class AoC222023 implements Solution {
 
   @Override
@@ -31,25 +35,46 @@ class AoC222023 implements Solution {
     final List<Brick> bricks = input.map( AoC222023::toBrick )
         .sorted( comparingInt( brick -> brick.end.z ) ) //sort by end point z axis
         .toList();
-    final List<Brick> settledBricks = fallDown( bricks ).getSecond();
-    final Set<Brick> safeToDisintegrate = getSafeToDisintegrate( settledBricks );
-    if ( first ) {
-      return itoa( safeToDisintegrate.size() );
-    }
+    final List<Brick> settledBricks = fallDown( bricks );
 
-    final int fallenBricks = settledBricks.stream()
-        //this brick would cause other bricks to fall down
-        .filter( brick -> !safeToDisintegrate.contains( brick ) )
-        //remove brick
-        .map( toRemove -> settledBricks.stream().filter( not( toRemove::equals ) ).toList() )
-        //simulate fall
-        .mapToInt( removed -> fallDown( removed ).getFirst() )
-        .sum();
-    return itoa( fallenBricks );
+    final Graph<Brick> supportingGraph = computeSupportingGraph( settledBricks );
+    if ( first ) {
+      return itoa( settledBricks.size() - countUnsafe( supportingGraph ) );
+    } else {
+      return itoa( countFallen( supportingGraph ) );
+    }
   }
 
-  private static Pair<Integer, List<Brick>> fallDown(final List<Brick> bricks) {
+  private static long countUnsafe(final Graph<Brick> supportingGraph) {
+    return supportingGraph.nodes().stream()
+        .filter( supported -> supportingGraph.inDegree( supported ) == 1 )
+        .map( supportingGraph::predecessors )
+        .flatMap( Collection::stream )
+        .distinct().count();
+  }
+
+  private static int countFallen(final Graph<Brick> supporting) {
     int fallen = 0;
+    //remove one brick at a time
+    for ( final Brick removed : supporting.nodes() ) {
+      final MutableGraph<Brick> graphCopy = Graphs.copyOf( supporting );
+      final Queue<Brick> fallingBricks = new LinkedList<>();
+      fallingBricks.add( removed );
+      while ( !fallingBricks.isEmpty() ) {
+        final Brick fallingBrick = fallingBricks.remove();
+        //find bricks supported only by this falling brick
+        final List<Brick> willFall = graphCopy.successors( fallingBrick ).stream()
+            .filter( supported -> graphCopy.inDegree( supported ) == 1 ).toList();
+        fallingBricks.addAll( willFall );
+        fallen += willFall.size();
+        //remove falling brick
+        graphCopy.removeNode( fallingBrick );
+      }
+    }
+    return fallen;
+  }
+
+  private static List<Brick> fallDown(final List<Brick> bricks) {
     final List<Brick> settledBricks = new ArrayList<>();
     for ( final Brick brick : bricks ) {
       int newZ = 1;
@@ -58,25 +83,16 @@ class AoC222023 implements Solution {
           newZ = max( newZ, settledBrick.end.z + 1 );
         }
       }
-      if ( newZ != brick.start.z ) {
-        fallen++;
-      }
-      final Brick fallenBrick = brick.withStartZ( newZ );
-      settledBricks.add( fallenBrick );
+      settledBricks.add( brick.withStartZ( newZ ) );
     }
-    return new Pair<>( fallen, settledBricks );
+    return settledBricks;
   }
 
-  private static Set<Brick> getSafeToDisintegrate(final List<Brick> bricks) {
-    final Set<Brick> safe = new HashSet<>( bricks );
-    for ( final Brick brick : bricks ) {
-      final Collection<Brick> supporting = bricks.stream()
-          .filter( other -> other.supports( brick ) ).toList();
-      if ( supporting.size() == 1 ) {
-        safe.removeAll( supporting );
-      }
-    }
-    return safe;
+  private static Graph<Brick> computeSupportingGraph(final List<Brick> bricks) {
+    final ImmutableGraph.Builder<Brick> supportingGraph = GraphBuilder.directed().immutable();
+    bricks.forEach( supporting -> bricks.stream().filter( supporting::supports )
+        .forEach( supported -> supportingGraph.putEdge( supporting, supported ) ) );
+    return supportingGraph.build();
   }
 
   private static Brick toBrick(final String str) {
