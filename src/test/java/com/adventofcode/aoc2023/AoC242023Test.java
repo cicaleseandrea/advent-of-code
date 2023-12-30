@@ -37,7 +37,7 @@ public class AoC242023Test extends AbstractSolutionTest {
                 12, 31, 28 @ -1, -2, -1
                 20, 19, 15 @  1, -5, -3
                 """, "47"},
-        {SECOND, getInput( INSTANCE ), "47"}
+        {SECOND, getInput( INSTANCE ), "888708704663413"}
     } );
   }
 }
