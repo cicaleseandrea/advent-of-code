@@ -1,4 +1,4 @@
-name: Update AoC Badges
+name: Update badges
 on:
   schedule: # run workflow based on schedule
     - cron: '0 18 * 12,1 *'                      # every day of December&January at 6pm
@@ -12,7 +12,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.2.2
 
       - uses: joblo2213/aoc-badges-action@v3
         with:

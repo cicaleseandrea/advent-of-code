@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.2.2
       - name: Decrypt test input files
         uses: sliteteam/github-action-git-crypt-unlock@1.2.0
         env:
