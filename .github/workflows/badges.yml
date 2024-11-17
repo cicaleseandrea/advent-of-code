@@ -21,6 +21,13 @@ jobs:
           year: 2023
           starsRegex: '(?<=https:\/\/img\.shields\.io\/badge\/2023-)[0-9]+(?=_⭐-dodgerblue)' # regex to find the badge
 
+      - uses: joblo2213/aoc-badges-action@v3
+        with:
+          userid: ${{ secrets.AOC_USERID }}
+          session: ${{ secrets.AOC_SESSION }}
+          year: 2022
+          starsRegex: '(?<=https:\/\/img\.shields\.io\/badge\/2022-)[0-9]+(?=_⭐-dodgerblue)' # regex to find the badge
+
       - uses: stefanzweifel/git-auto-commit-action@v5.0.1     # push these local changes
         with:
           commit_message: Update badges
