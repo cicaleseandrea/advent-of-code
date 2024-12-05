@@ -40,6 +40,8 @@ class AoC052024 implements Solution {
       List<Long> orderedUpdate = new ArrayList<>( update );
       orderedUpdate.sort( getComparator( pageToNextPages ) );
       boolean alreadyOrdered = update.equals( orderedUpdate );
+      //for first part, consider update if it was already ordered
+      //for second part, consider update if it was incorrectly ordered
       if ( printAlreadyOrdered == alreadyOrdered ) {
         result += orderedUpdate.get( orderedUpdate.size() / 2 );
       }
