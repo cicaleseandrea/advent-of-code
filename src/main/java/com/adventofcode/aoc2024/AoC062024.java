@@ -96,10 +96,8 @@ class AoC062024 implements Solution {
   }
 
   private Pair<Long, Long> getStart(final List<List<Character>> grid) {
-    int rows = grid.size();
-    int columns = grid.get( 0 ).size();
-    for ( int i = 0; i < rows; i++ ) {
-      for ( int j = 0; j < columns; j++ ) {
+    for ( int i = 0; i < grid.size(); i++ ) {
+      for ( int j = 0; j < grid.get( 0 ).size(); j++ ) {
         if ( grid.get( i ).get( j ) == UP.getSymbol() ) {
           return new Pair<>( (long) i, (long) j );
         }
