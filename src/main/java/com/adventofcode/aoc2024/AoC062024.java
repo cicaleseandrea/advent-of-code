@@ -80,16 +80,14 @@ class AoC062024 implements Solution {
         if ( nextSymbol == OBSTACLE ) {
           //turn around
           direction = direction.rotateClockwise();
-          //store state
           if ( !states.add( new State( position, direction ) ) ) {
-            //found a loop
+            //was here with same direction before: found a loop
             return -1;
           }
         } else {
           //move
           position = nextPosition;
           if ( count ) { //conditional to speedup part 2
-            //store position
             states.add( new State( position, direction ) );
           }
         }
