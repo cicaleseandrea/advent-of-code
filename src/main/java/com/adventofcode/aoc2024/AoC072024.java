@@ -4,8 +4,6 @@ import static com.adventofcode.utils.Utils.itoa;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Utils;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.LongBinaryOperator;
 import java.util.stream.Stream;
@@ -33,27 +31,24 @@ class AoC072024 implements Solution {
   }
 
   private long getResult(final List<Long> numbers, final List<LongBinaryOperator> operators) {
-    Long result = numbers.get( 0 );
-    Iterator<Long> operands = numbers.subList( 1, numbers.size() ).iterator();
-    List<Long> tmpResults = List.of( operands.next() );
-    return hasResult( result, operands, tmpResults, operators ) ? result : 0;
+    long result = numbers.get( 0 );
+    List<Long> operands = numbers.subList( 1, numbers.size() );
+    return hasResult( result, operands.get( 0 ), operands, 1, operators ) ? result : 0;
   }
 
-  private boolean hasResult(final Long result, final Iterator<Long> operands,
-      final List<Long> tmpResults, final List<LongBinaryOperator> operators) {
-    if ( !operands.hasNext() ) {
-      return tmpResults.stream().anyMatch( n -> n.equals( result ) );
+  private boolean hasResult(final long total, final long tmpResult, final List<Long> operands,
+      final int index, final List<LongBinaryOperator> operators) {
+    if ( index == operands.size() ) {
+      return tmpResult == total;
     }
-    long operand = operands.next();
-    List<Long> updatedTmpResults = new ArrayList<>();
     for ( LongBinaryOperator operator : operators ) {
-      for ( Long tmpResult : tmpResults ) {
-        long updatedTmpResult = operator.applyAsLong( tmpResult, operand );
-        if ( updatedTmpResult <= result ) {
-          updatedTmpResults.add( updatedTmpResult );
+      long updatedTmpResult = operator.applyAsLong( tmpResult, operands.get( index ) );
+      if ( updatedTmpResult <= total ) {
+        if ( hasResult( total, updatedTmpResult, operands, index + 1, operators ) ) {
+          return true;
         }
       }
     }
-    return hasResult( result, operands, updatedTmpResults, operators );
+    return false;
   }
 }
