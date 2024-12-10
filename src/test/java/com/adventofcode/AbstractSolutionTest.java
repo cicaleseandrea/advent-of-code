@@ -15,41 +15,42 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 public abstract class AbstractSolutionTest {
-	private final Solution solution;
-	private final Type type;
-	private final String input;
-	private final String result;
-	protected static final String PARAMETERS_MESSAGE = "{index}: {0} = {2}";
 
-	protected AbstractSolutionTest( final Solution solution, final Type type, final String input,
-			final String result ) {
-		this.solution = solution;
-		this.type = type;
-		this.input = input;
-		this.result = result;
-	}
+  private final Solution solution;
+  private final Type type;
+  private final String input;
+  private final String result;
+  protected static final String PARAMETERS_MESSAGE = "{0}: {index} = {2}";
 
-	protected static String getInput( final Solution sol ) {
-		final String packageName = sol.getClass().getPackage().getName();
-		final String className = sol.getClass().getSimpleName();
-		final String extension = "txt";
-		final String fileName = packageName + File.separator + className + DOT + extension;
-		try {
-			return Files.readString( Path.of( getSystemResource( fileName ).toURI() ) );
-		} catch ( IOException | URISyntaxException e ) {
-			throw new IllegalStateException( fileName + "not found" );
-		}
-	}
+  protected AbstractSolutionTest(final Solution solution, final Type type, final String input,
+      final String result) {
+    this.solution = solution;
+    this.type = type;
+    this.input = input;
+    this.result = result;
+  }
 
-	@Test
-	public void test() {
-		final Function<Stream<String>, String> solutionFunction =
-				( type == Type.FIRST ) ? solution::solveFirstPart : solution::solveSecondPart;
-		assertEquals( result, solutionFunction.apply( splitOnNewLine( input ) ) );
-	}
+  protected static String getInput(final Solution sol) {
+    final String packageName = sol.getClass().getPackage().getName();
+    final String className = sol.getClass().getSimpleName();
+    final String extension = "txt";
+    final String fileName = packageName + File.separator + className + DOT + extension;
+    try {
+      return Files.readString( Path.of( getSystemResource( fileName ).toURI() ) );
+    } catch ( IOException | URISyntaxException e ) {
+      throw new IllegalStateException( fileName + "not found" );
+    }
+  }
 
-	public enum Type {
-		FIRST,
-		SECOND
-	}
+  @Test
+  public void test() {
+    final Function<Stream<String>, String> solutionFunction =
+        (type == Type.FIRST) ? solution::solveFirstPart : solution::solveSecondPart;
+    assertEquals( result, solutionFunction.apply( splitOnNewLine( input ) ) );
+  }
+
+  public enum Type {
+    FIRST,
+    SECOND
+  }
 }
