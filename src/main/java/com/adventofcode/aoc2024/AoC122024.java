@@ -1,13 +1,10 @@
 package com.adventofcode.aoc2024;
 
-import static com.adventofcode.utils.Direction.DOWN;
-import static com.adventofcode.utils.Direction.UP;
 import static com.adventofcode.utils.Utils.itoa;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Direction;
 import com.adventofcode.utils.GraphUtils;
-import com.adventofcode.utils.Pair;
 import com.adventofcode.utils.Point;
 import java.util.Collection;
 import java.util.HashSet;
@@ -64,28 +61,11 @@ class AoC122024 implements Solution {
   }
 
   private long getSides(final Set<Point> region) {
-    return Stream.of( Direction.values() )
-        .mapToLong( direction -> getSides( region, direction ) )
-        .sum();
-  }
-
-  private long getSides(final Set<Point> region, final Direction sideToCheck) {
-    boolean moveHorizontally = sideToCheck.equals( UP ) || sideToCheck.equals( DOWN );
-    var indexingValues = getIndexingValues( region, moveHorizontally );
-    var firstLoop = indexingValues.getFirst();
-    var secondLoop = indexingValues.getSecond();
-    int sides = 0;
-    //scan the grid either horizontally or vertically depending on the side we are checking
-    for ( int a = firstLoop.getFirst(); a <= firstLoop.getSecond(); a++ ) {
-      boolean wasPerimeter = false;
-      for ( int b = secondLoop.getFirst(); b <= secondLoop.getSecond(); b++ ) {
-        Point curr = new Point( moveHorizontally ? a : b, moveHorizontally ? b : a );
-        boolean isPerimeter = isPerimeter( curr, region, sideToCheck );
-        //when perimeter stops, we count a side
-        sides += wasPerimeter && !isPerimeter ? 1 : 0;
-        wasPerimeter = isPerimeter;
-      }
-      sides += wasPerimeter ? 1 : 0;
+    long sides = 0;
+    for ( final Point curr : region ) {
+      sides += Stream.of( Direction.values() )
+          .filter( direction -> isCorner( curr, region, direction ) )
+          .count();
     }
     return sides;
   }
@@ -95,14 +75,14 @@ class AoC122024 implements Solution {
     return region.contains( point ) && !region.contains( point.move( sideToCheck ) );
   }
 
-  private Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getIndexingValues(
-      final Set<Point> region, final boolean moveHorizontally) {
-    int minI = region.stream().mapToInt( Point::i ).min().getAsInt();
-    int minJ = region.stream().mapToInt( Point::j ).min().getAsInt();
-    int maxI = region.stream().mapToInt( Point::i ).max().getAsInt();
-    int maxJ = region.stream().mapToInt( Point::j ).max().getAsInt();
-    var firstLoop = moveHorizontally ? new Pair<>( minI, maxI ) : new Pair<>( minJ, maxJ );
-    var secondLoop = moveHorizontally ? new Pair<>( minJ, maxJ ) : new Pair<>( minI, maxI );
-    return new Pair<>( firstLoop, secondLoop );
+  private boolean isCorner(final Point point, final Set<Point> region,
+      final Direction sideToCheck) {
+    boolean isInRegionA = region.contains( point.move( sideToCheck ) );
+    boolean isInRegionB = region.contains( point.move( sideToCheck.rotateCounterClockwise() ) );
+    boolean isInRegionC =
+        region.contains( point.move( sideToCheck ).move( sideToCheck.rotateCounterClockwise() ) );
+    boolean convex = !isInRegionA && !isInRegionB;
+    boolean concave = isInRegionA && isInRegionB && !isInRegionC;
+    return convex || concave;
   }
 }
