@@ -8,8 +8,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.Direction;
-import com.adventofcode.utils.Pair;
-import com.adventofcode.utils.Utils;
+import com.adventofcode.utils.Point;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,98 +30,82 @@ class AoC062024 implements Solution {
   }
 
   private String solve(final Stream<String> input, final boolean first) {
-    List<List<Character>> grid = Utils.getCharMatrix( input );
-    Pair<Long, Long> start = getStart( grid );
-    List<Pair<Long, Long>> path = checkNotNull( moveGuard( start, grid, true ) );
+    char[][] grid = input.map( String::toCharArray ).toArray( char[][]::new );
+    Point start = getStart( grid );
+    List<Point> path = checkNotNull( moveGuard( start, grid, true ) );
     if ( first ) {
       return itoa( path.size() );
     }
-
     int result = 0;
     //consider all positions except the starting one
-    for ( Pair<Long, Long> position : path.subList( 1, path.size() ) ) {
-      int i = position.getFirst().intValue();
-      int j = position.getSecond().intValue();
+    for ( Point position : path.subList( 1, path.size() ) ) {
       //add obstacle
-      grid.get( i ).set( j, OBSTACLE );
+      grid[position.i()][position.j()] = OBSTACLE;
       if ( moveGuard( start, grid, false ) == null ) {
         //found a loop
         result++;
       }
       //remove obstacle
-      grid.get( i ).set( j, EMPTY );
+      grid[position.i()][position.j()] = EMPTY;
     }
     return itoa( result );
   }
 
   /**
-   * Simulate movement. Return null if there is a loop. Otherwise, return the full path if fullPath
-   * is true, otherwise return an empty list
+   * Simulate movement. Return null if there is a loop. Otherwise, return all positions explored if
+   * allPositions is true, otherwise return an empty list
    *
-   * @param position starting position
-   * @param grid     grid with obstacles and starting position
-   * @param fullPath enable returning the full path
-   * @return null if there is a loop, otherwise all positions explored if fullPath is true,
+   * @param position     starting position
+   * @param grid         grid with obstacles and starting position
+   * @param allPositions enable returning all positions
+   * @return null if there is a loop, otherwise all positions explored if allPositions is true,
    * otherwise empty list
    */
-  private List<Pair<Long, Long>> moveGuard(Pair<Long, Long> position,
-      final List<List<Character>> grid, boolean fullPath) {
+  private List<Point> moveGuard(Point position, final char[][] grid, boolean allPositions) {
     Direction direction = UP;
     Set<State> states = new LinkedHashSet<>();
     states.add( new State( position, direction ) );
     while ( true ) {
-      Pair<Long, Long> nextPosition = getNextPosition( position, direction );
+      Point nextPosition = position.move( direction );
       if ( isOutsideGrid( nextPosition, grid ) ) {
         //leave the area
-        return fullPath ? states.stream().map( State::position ).distinct().toList() : List.of();
+        return allPositions ?
+            states.stream().map( State::position ).distinct().toList() : List.of();
+      } else if ( grid[nextPosition.i()][nextPosition.j()] == OBSTACLE ) {
+        //turn around
+        direction = direction.rotateClockwise();
+        if ( !states.add( new State( position, direction ) ) ) {
+          //was here with same direction before: found a loop
+          return null;
+        }
       } else {
-        char nextSymbol = grid.get( nextPosition.getFirst().intValue() )
-            .get( nextPosition.getSecond().intValue() );
-        if ( nextSymbol == OBSTACLE ) {
-          //turn around
-          direction = direction.rotateClockwise();
-          if ( !states.add( new State( position, direction ) ) ) {
-            //was here with same direction before: found a loop
-            return null;
-          }
-        } else {
-          //move
-          position = nextPosition;
-          if ( fullPath ) { //conditional to speedup part 2
-            states.add( new State( position, direction ) );
-          }
+        //move
+        position = nextPosition;
+        if ( allPositions ) { //conditional to speedup part 2
+          states.add( new State( position, direction ) );
         }
       }
     }
   }
 
-  private Pair<Long, Long> getStart(final List<List<Character>> grid) {
-    for ( int i = 0; i < grid.size(); i++ ) {
-      for ( int j = 0; j < grid.get( 0 ).size(); j++ ) {
-        if ( grid.get( i ).get( j ) == UP.getSymbol() ) {
-          return new Pair<>( (long) i, (long) j );
+  private Point getStart(final char[][] grid) {
+    for ( int i = 0; i < grid.length; i++ ) {
+      for ( int j = 0; j < grid[0].length; j++ ) {
+        if ( grid[i][j] == UP.getSymbol() ) {
+          return new Point( i, j );
         }
       }
     }
     throw new IllegalArgumentException( "Grid does not contain symbol ^" );
   }
 
-  private boolean isOutsideGrid(final Pair<Long, Long> position, final List<List<Character>> grid) {
-    int i = position.getFirst().intValue();
-    int j = position.getSecond().intValue();
-    int rows = grid.size();
-    int columns = grid.get( 0 ).size();
-    return i < 0 || rows <= i || j < 0 || columns <= j;
+  private boolean isOutsideGrid(final Point position, final char[][] grid) {
+    int rows = grid.length;
+    int columns = grid[0].length;
+    return position.i() < 0 || rows <= position.i() || position.j() < 0 || columns <= position.j();
   }
 
-  private static Pair<Long, Long> getNextPosition(final Pair<Long, Long> position,
-      final Direction direction) {
-    Pair<Long, Long> nextPosition = new Pair<>( position );
-    direction.move( nextPosition );
-    return nextPosition;
-  }
-
-  private record State(Pair<Long, Long> position, Direction direction) {
+  private record State(Point position, Direction direction) {
 
   }
 
