@@ -1,78 +1,78 @@
 package com.adventofcode.aoc2024;
 
+import static com.adventofcode.utils.Direction.DOWN;
+import static com.adventofcode.utils.Direction.RIGHT;
+import static com.adventofcode.utils.Direction.UP;
 import static com.adventofcode.utils.Utils.itoa;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Utils;
-import java.util.List;
+import com.adventofcode.utils.Direction;
+import com.adventofcode.utils.Point;
 import java.util.function.Function;
-import java.util.function.IntBinaryOperator;
+import java.util.function.ToIntFunction;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 class AoC042024 implements Solution {
 
   @Override
   public String solveFirstPart(final Stream<String> input) {
-    return solve( input, grid -> (i, j) -> searchAll( grid, i, j ) );
+    return solve( input, grid -> p -> searchAll( grid, p ) );
   }
 
   @Override
   public String solveSecondPart(final Stream<String> input) {
-    return solve( input, grid -> (i, j) -> searchX( grid, i, j ) );
+    return solve( input, grid -> p -> searchX( grid, p ) );
   }
 
   private String solve(final Stream<String> input,
-      final Function<List<List<Character>>, IntBinaryOperator> search) {
-    List<List<Character>> grid = Utils.getCharMatrix( input );
-    int rows = grid.size();
-    int columns = grid.get( 0 ).size();
+      final Function<char[][], ToIntFunction<Point>> search) {
+    char[][] grid = input.map( String::toCharArray ).toArray( char[][]::new );
     int result = 0;
-    for ( int i = 0; i < rows; i++ ) {
-      for ( int j = 0; j < columns; j++ ) {
-        result += search.apply( grid ).applyAsInt( i, j );
+    for ( int i = 0; i < grid.length; i++ ) {
+      for ( int j = 0; j < grid[0].length; j++ ) {
+        result += search.apply( grid ).applyAsInt( new Point( i, j ) );
       }
     }
     return itoa( result );
   }
 
-  private int searchWord(final String word, final List<List<Character>> grid, final int i,
-      final int j, IntBinaryOperator iMove, IntBinaryOperator jMove) {
-    int rows = grid.size();
-    int columns = grid.get( 0 ).size();
-    for ( int k = 0; k < word.length(); k++ ) {
-      char c = word.charAt( k );
-      int nextI = iMove.applyAsInt( i, k );
-      int nextJ = jMove.applyAsInt( j, k );
-      if ( nextI < 0 || rows <= nextI || nextJ < 0 || columns <= nextJ
-          || grid.get( nextI ).get( nextJ ) != c ) {
-        return 0;
-      }
-    }
-    return 1;
-  }
-
-  private int searchAll(final List<List<Character>> grid, final int i, final int j) {
+  private int searchAll(final char[][] grid, final Point start) {
+    ToIntFunction<UnaryOperator<Point>> search = move -> searchWord( "XMAS", grid, start, move );
     int result = 0;
-    //horizontal
-    result += searchWord( "XMAS", grid, i, j, (a, b) -> a, (a, b) -> a + b );
-    result += searchWord( "XMAS", grid, i, j, (a, b) -> a, (a, b) -> a - b );
-    //vertical
-    result += searchWord( "XMAS", grid, i, j, (a, b) -> a + b, (a, b) -> a );
-    result += searchWord( "XMAS", grid, i, j, (a, b) -> a - b, (a, b) -> a );
-    //diagonal right
-    result += searchWord( "XMAS", grid, i, j, (a, b) -> a + b, (a, b) -> a + b );
-    result += searchWord( "XMAS", grid, i, j, (a, b) -> a - b, (a, b) -> a + b );
-    //diagonal left
-    result += searchWord( "XMAS", grid, i, j, (a, b) -> a + b, (a, b) -> a - b );
-    result += searchWord( "XMAS", grid, i, j, (a, b) -> a - b, (a, b) -> a - b );
+    //horizontal and vertical
+    result += Stream.of( Direction.values() )
+        .mapToInt( direction -> search.applyAsInt( p -> p.move( direction ) ) )
+        .sum();
+    //diagonals
+    result += Stream.of( Direction.values() )
+        .mapToInt( direction ->
+            search.applyAsInt( p -> p.move( direction ).move( direction.rotateClockwise() ) )
+        ).sum();
     return result;
   }
 
-  private int searchX(final List<List<Character>> grid, final int i, final int j) {
-    final boolean diagonalDown = Stream.of( "MAS", "SAM" )
-        .anyMatch( word -> searchWord( word, grid, i, j, (a, b) -> a + b, (a, b) -> a + b ) == 1 );
-    final boolean diagonalUp = Stream.of( "MAS", "SAM" ).anyMatch(
-        word -> searchWord( word, grid, i + 2, j, (a, b) -> a - b, (a, b) -> a + b ) == 1 );
-    return diagonalDown && diagonalUp ? 1 : 0;
+  private int searchX(final char[][] grid, final Point start) {
+    Function<Point, ToIntFunction<UnaryOperator<Point>>> search =
+        p -> move ->
+            searchWord( "MAS", grid, p, move ) | searchWord( "SAM", grid, p, move );
+    int diagonalDown = search.apply( start ).applyAsInt( p -> p.move( RIGHT ).move( DOWN ) );
+    int diagonalUp = search.apply( start.move( DOWN ).move( DOWN ) )
+        .applyAsInt( p -> p.move( RIGHT ).move( UP ) );
+    return diagonalDown & diagonalUp;
+  }
+
+  private int searchWord(final String word, final char[][] grid, Point position,
+      UnaryOperator<Point> move) {
+    int rows = grid.length;
+    int columns = grid[0].length;
+    for ( final char c : word.toCharArray() ) {
+      if ( position.i() < 0 || rows <= position.i() || position.j() < 0 || columns <= position.j()
+          || grid[position.i()][position.j()] != c ) {
+        return 0;
+      }
+      position = move.apply( position );
+    }
+    return 1;
   }
 }
