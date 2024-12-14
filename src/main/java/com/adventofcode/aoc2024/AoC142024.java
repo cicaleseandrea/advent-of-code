@@ -1,7 +1,6 @@
 package com.adventofcode.aoc2024;
 
 import static com.adventofcode.utils.Utils.BLACK;
-import static com.adventofcode.utils.Utils.WHITE;
 import static com.adventofcode.utils.Utils.itoa;
 
 import com.adventofcode.Solution;
@@ -79,7 +78,7 @@ class AoC142024 implements Solution {
     for ( int i = 0; i < rows; i++ ) {
       for ( int j = 0; j < columns; j++ ) {
         if ( positions.contains( new Pair<>( (long) i, (long) j ) ) ) {
-          System.out.print( WHITE );
+          System.out.print( "🤖" );
         } else {
           System.out.print( BLACK );
         }
