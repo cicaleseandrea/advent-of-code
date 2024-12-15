@@ -7,6 +7,10 @@ import java.util.List;
 
 public record Point(int i, int j) {
 
+  public Point(Point point) {
+    this( point.i, point.j );
+  }
+
   public Point add(int i, int j) {
     return new Point( this.i + i, this.j + j );
   }
