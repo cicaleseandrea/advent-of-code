@@ -45,6 +45,9 @@ class AoC142024 implements Solution {
         Set<Pair<Long, Long>> positions = robots.stream()
             .map( Robot::position )
             .collect( Collectors.toSet() );
+        if ( robots.size() != positions.size() ) {  //to speedup part 2
+          continue;
+        }
         for ( final Pair<Long, Long> start : positions ) {
           Set<Pair<Long, Long>> connectedRobots = GraphUtils.fill( start,
               n -> getNeighbours( n, positions ) );
