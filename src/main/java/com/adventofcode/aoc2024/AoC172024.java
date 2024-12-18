@@ -33,28 +33,28 @@ class AoC172024 implements Solution {
       List<Integer> output = runComputer( instructions, a );
       return output.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
     }
-    BigInteger result = ZERO;
-    BigInteger mul = EIGHT.pow( instructions.size() - 1 );
+    a = ZERO;
+    boolean backtrack = false;
     for ( int i = instructions.size() - 1; i >= 0; i-- ) {
-      a = result.divide( mul );
+      a = backtrack ? a.divide( EIGHT ) : a.multiply( EIGHT );
       int digitWanted = instructions.get( i );
-      BigInteger offset = ZERO;
+      int offset = 0;
       while ( runComputer( instructions, a ).get( 0 ) != digitWanted ) {
         a = a.add( ONE );
-        offset = offset.add( ONE );
+        offset++;
       }
-      result = result.add( offset.multiply( mul ) );
-      if ( offset.compareTo( EIGHT ) < 0 ) {
-        mul = mul.divide( EIGHT );
+      if ( offset < 8 ) {
+        backtrack = false;
       } else {
-        //crossed the boundary. go back to previous digit
+        //crossed the boundary. backtrack to the previous digit
         i += 2;
-        mul = mul.multiply( EIGHT );
+        backtrack = true;
       }
     }
-    Preconditions.checkArgument( runComputer( instructions, result ).equals( instructions ),
-        "result: " + result + " instructions: " + instructions );
-    return result.toString();
+    List<Integer> output = runComputer( instructions, a );
+    Preconditions.checkArgument( output.equals( instructions ),
+        "output for a=" + a + ": " + output + " instructions: " + instructions );
+    return a.toString();
   }
 
   private List<Integer> runComputer(final List<Integer> instructions, final BigInteger a) {
