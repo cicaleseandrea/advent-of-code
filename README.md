@@ -87,9 +87,9 @@ My [Advent of Code](https://adventofcode.com/) solutions in Java.
 ## Goals
 
 - **have fun**
-- [learn something new](topics/README.md)
-- [get as many puzzles as possible to run within the time limit](https://www.reddit.com/r/adventofcode/comments/7m9mg8/all_years_all_days_solve_them_within_the_time/)
-- (over)use the following Java features: `var`, `Lambda`, `Stream`, `Optional`, `switch expressions`
+- [learn stuff](topics/README.md)
+- [solutions should not be too slow](https://www.reddit.com/r/adventofcode/comments/7m9mg8/all_years_all_days_solve_them_within_the_time/)
+- (over)use `var`, `Lambda`, `Stream`, `Optional`, `switch expressions`
 
 ## Requirements
 
