@@ -38,18 +38,21 @@ class AoC182024 implements Solution {
     Point start = new Point( 0, 0 );
     Point end = new Point( size - 1, size - 1 );
     Set<Point> corruptedPoints = lines.stream()
-        .limit( maxCorruption - 1 )
         .map( this::getCorrupted )
         .collect( toCollection( HashSet::new ) );
-    for ( int i = maxCorruption - 1; i < lines.size(); i++ ) {
+    //iterate in reverse order and remove points to speed up part 2
+    for ( int i = lines.size() - 1; i >= maxCorruption; i-- ) {
       Point corrupted = getCorrupted( lines.get( i ) );
-      corruptedPoints.add( corrupted );
-      Map<Point, Long> distances = GraphUtils.computeShortestPaths( start, n -> n.equals( end ),
-          (Point n) -> getNeighbours( n, corruptedPoints, size ) );
-      if ( first ) {
-        return itoa( distances.get( end ) );
-      } else if ( !distances.containsKey( end ) ) {
-        return corrupted.i() + "," + corrupted.j();
+      corruptedPoints.remove( corrupted );
+      if ( !first || i == maxCorruption ) {
+        Map<Point, Long> distances = GraphUtils.computeShortestPaths( start, n -> n.equals( end ),
+            (Point n) -> getNeighbours( n, corruptedPoints, size ) );
+        if ( first ) {
+          return itoa( distances.get( end ) );
+        } else if ( distances.containsKey( end ) ) {
+          //this block was preventing the exit from being reachable
+          return corrupted.i() + "," + corrupted.j();
+        }
       }
     }
     throw new IllegalArgumentException();
