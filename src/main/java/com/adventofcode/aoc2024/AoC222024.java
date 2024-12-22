@@ -4,16 +4,18 @@ package com.adventofcode.aoc2024;
 import static com.adventofcode.utils.Utils.itoa;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
 import com.adventofcode.utils.Utils;
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAccumulator;
 import java.util.stream.Stream;
 
 class AoC222024 implements Solution {
 
+  private static final Map<State, Integer> SEQ_TO_BANANAS = new ConcurrentHashMap<>();
+  private static final LongAccumulator MAX = new LongAccumulator( Long::max, 0 );
   private static final int B16777216 = 0b111111111111111111111111;
 
   @Override
@@ -27,27 +29,22 @@ class AoC222024 implements Solution {
   }
 
   private String solve(final Stream<String> input, final boolean first) {
-    var results = input.map( Utils::extractIntegerFromString ).map( this::getResults );
+    SEQ_TO_BANANAS.clear();
+    MAX.reset();
+    long sum = input
+        .parallel()
+        .map( Utils::extractIntegerFromString )
+        .mapToLong( secret -> getNumber( secret, first ) )
+        .sum();
     if ( first ) {
-      return itoa( results.mapToLong( Pair::getFirst ).sum() );
+      return itoa( sum );
     } else {
-      List<Map<State, Integer>> seqToDigitList = results.map( Pair::getSecond ).toList();
-      int max = seqToDigitList.stream()
-          .map( Map::keySet )
-          .flatMap( Set::stream )
-          .distinct()
-          .parallel() //TODO speedup
-          .mapToInt( seq ->
-              seqToDigitList.stream()
-                  .mapToInt( seqToDigit -> seqToDigit.getOrDefault( seq, 0 ) )
-                  .sum()
-          ).max().getAsInt();
-      return itoa( max );
+      return itoa( MAX.get() );
     }
   }
 
-  private Pair<Long, Map<State, Integer>> getResults(final long secret) {
-    Map<State, Integer> seqToDigit = new HashMap<>();
+  private long getNumber(final long secret, final boolean first) {
+    Set<State> seen = new HashSet<>();
     long a = getNextNumber( secret );
     long b = getNextNumber( a );
     long c = getNextNumber( b );
@@ -59,13 +56,16 @@ class AoC222024 implements Solution {
           (int) (c % 10 - b % 10),
           (int) (d % 10 - c % 10),
           (int) (e % 10 - d % 10) );
-      seqToDigit.putIfAbsent( state, (int) (e % 10) );
+      if ( !first && seen.add( state ) ) {
+        long sum = SEQ_TO_BANANAS.merge( state, (int) (e % 10), Integer::sum );
+        MAX.accumulate( sum );
+      }
       a = b;
       b = c;
       c = d;
       d = e;
     }
-    return new Pair<>( d, seqToDigit );
+    return d;
   }
 
   private long getNextNumber(long secret) {
