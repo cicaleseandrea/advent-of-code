@@ -16,6 +16,7 @@ class AoC222024 implements Solution {
 
   private static final Map<State, Integer> SEQ_TO_BANANAS = new ConcurrentHashMap<>();
   private static final LongAccumulator MAX = new LongAccumulator( Long::max, 0 );
+  private static final LongAccumulator SUM = new LongAccumulator( Long::sum, 0 );
   private static final int B16777216 = 0b111111111111111111111111;
 
   @Override
@@ -31,19 +32,14 @@ class AoC222024 implements Solution {
   private String solve(final Stream<String> input, final boolean first) {
     SEQ_TO_BANANAS.clear();
     MAX.reset();
-    long sum = input
-        .parallel()
+    SUM.reset();
+    input.parallel()
         .map( Utils::extractIntegerFromString )
-        .mapToLong( secret -> getNumber( secret, first ) )
-        .sum();
-    if ( first ) {
-      return itoa( sum );
-    } else {
-      return itoa( MAX.get() );
-    }
+        .forEach( this::computeNumbers );
+    return itoa( first ? SUM.get() : MAX.get() );
   }
 
-  private long getNumber(final long secret, final boolean first) {
+  private void computeNumbers(final long secret) {
     Set<State> seen = new HashSet<>();
     long a = getNextNumber( secret );
     long b = getNextNumber( a );
@@ -56,7 +52,7 @@ class AoC222024 implements Solution {
           (int) (c % 10 - b % 10),
           (int) (d % 10 - c % 10),
           (int) (e % 10 - d % 10) );
-      if ( !first && seen.add( state ) ) {
+      if ( seen.add( state ) ) {
         long sum = SEQ_TO_BANANAS.merge( state, (int) (e % 10), Integer::sum );
         MAX.accumulate( sum );
       }
@@ -65,7 +61,7 @@ class AoC222024 implements Solution {
       c = d;
       d = e;
     }
-    return d;
+    SUM.accumulate( d );
   }
 
   private long getNextNumber(long secret) {
