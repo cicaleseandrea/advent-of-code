@@ -1,6 +1,7 @@
 # 🎄 Advent of Code 🎅
 
 [![Tests](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml/badge.svg)](https://github.com/cicaleseandrea/advent-of-code/actions/workflows/gradle.yml)
+[![Stars Total]( https://img.shields.io/badge/Total_stars-500_⭐-dodgerblue?logo=adventofcode)](https://adventofcode.com)
 
 My [Advent of Code](https://adventofcode.com/) solutions in Java.
 
