@@ -7,11 +7,12 @@ import static com.adventofcode.utils.Utils.itoa;
 
 import com.adventofcode.Solution;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
 class AoC252024 implements Solution {
+
+  private static final int MAX_HEIGHT = 7;
 
   @Override
   public String solveFirstPart(final Stream<String> input) {
@@ -29,16 +30,13 @@ class AoC252024 implements Solution {
     }
     List<int[]> locks = new ArrayList<>();
     List<int[]> keys = new ArrayList<>();
-    var itr = input.iterator();
-    while ( itr.hasNext() ) {
-      String firstLine = itr.next();
-      if ( firstLine.isEmpty() ) {
-        continue;
-      }
-      if ( firstLine.charAt( 0 ) == HASH ) {
-        locks.add( getPins( itr, false ) );
+    List<String> inputList = input.toList();
+    for ( int i = 0; i < inputList.size(); i += MAX_HEIGHT + 1 ) {
+      int[] pins = getPins( inputList, i );
+      if ( inputList.get( i ).charAt( 0 ) == HASH ) {
+        locks.add( pins );
       } else {
-        keys.add( getPins( itr, true ) );
+        keys.add( pins );
       }
     }
     return itoa( keys.stream()
@@ -46,11 +44,11 @@ class AoC252024 implements Solution {
         .sum() );
   }
 
-  private int[] getPins(final Iterator<String> itr, final boolean isKey) {
+  private int[] getPins(final List<String> inputList, final int index) {
     int[] pins = new int[5];
-    for ( int i = 0; i < 6; i++ ) {
-      String line = itr.next();
-      for ( int j = 0; !(isKey && i == 5) && (j < pins.length); j++ ) {
+    for ( int i = 0; i < MAX_HEIGHT; i++ ) {
+      String line = inputList.get( index + i );
+      for ( int j = 0; j < pins.length; j++ ) {
         if ( line.charAt( j ) == HASH ) {
           pins[j]++;
         }
@@ -61,7 +59,7 @@ class AoC252024 implements Solution {
 
   private boolean fits(int[] key, int[] lock) {
     for ( int i = 0; i < lock.length; i++ ) {
-      if ( lock[i] + key[i] > 5 ) {
+      if ( lock[i] + key[i] > MAX_HEIGHT ) {
         return false;
       }
     }
