@@ -32,13 +32,16 @@ class AoC022025 implements Solution {
             int idLength = (int) (Math.log10(id) + 1);
             for (int nSequences = 2; nSequences <= (first ? 2 : idLength); nSequences++) {
               if (idLength % nSequences == 0) {
-                long tens = (long) Math.pow(10, idLength / nSequences);
-                long sequence = id % tens;
+                int sequenceLength = idLength / nSequences;
+                long tens = (long) Math.pow(10, sequenceLength);
+                long sequence = id % tens; //candidate sequence
                 long toProcess = id;
                 for (int i = 0; i < nSequences - 1 && sequence == (toProcess % tens); i++) {
+                  //remove the sequence that matched
                   toProcess /= tens;
                 }
                 if (sequence == toProcess) {
+                  //last sequence matches the candidate sequence
                   result.addAndGet(id);
                   break;
                 }

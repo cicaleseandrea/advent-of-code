@@ -26,10 +26,13 @@ class AoC032025 implements Solution {
       int[] outputArray = new int[digits];
       for (int i = 0; i < inputArray.length; i++) {
         int digit = inputArray[i];
-        for (int j = max(0, outputArray.length - (inputArray.length - i)); j < outputArray.length; j++) {
+        int nDigitsToProcess = inputArray.length - i;
+        for (int j = max(0, outputArray.length - nDigitsToProcess); j < outputArray.length; j++) {
           if (digit > outputArray[j]) {
+            //update with higher value
             outputArray[j] = digit;
             if (j + 1 < outputArray.length) {
+              //clear next digit, we can find a higher value for it
               outputArray[j + 1] = 0;
             }
             break;

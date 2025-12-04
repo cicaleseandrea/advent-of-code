@@ -38,10 +38,12 @@ class AoC012025 implements Solution {
         case "R" -> position += distance;
         case "L" -> {
           if (position > 0) {
+            //if we don't start at zero, we might cross it with fewer than 100 clicks
             zeroes = 1;
           }
           position -= distance;
           if (position > 0) {
+            //if we end on a positive number, we didn't cross zero
             zeroes = 0;
           }
         }
