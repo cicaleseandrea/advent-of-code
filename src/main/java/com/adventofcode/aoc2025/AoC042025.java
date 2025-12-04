@@ -24,34 +24,31 @@ class AoC042025 implements Solution {
 
   private String solve(final Stream<String> input, final boolean first) {
     Character[][] grid = getGrid(input);
-    int removed = 0;
-    State state;
+    int result = 0;
+    int removed;
     do {
-      state = removeRolls(grid);
-      grid = state.grid();
-      removed += state.removed();
-    } while (state.removed() > 0 && !first);
-    return itoa(removed);
+      removed = checkRolls(grid, first);
+      result += removed;
+    } while (removed > 0 && !first);
+    return itoa(result);
   }
 
-  private State removeRolls(Character[][] grid) {
+  private int checkRolls(Character[][] grid, boolean first) {
     int rows = grid.length;
     int columns = grid[0].length;
-    Character[][] nextGrid = new Character[rows][columns];
     int result = 0;
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
-        nextGrid[i][j] = grid[i][j];
-        if (grid[i][j] == ROLL) {
-          if (countRolls(grid, i, j, rows, columns) < 4) {
+        if (grid[i][j] == ROLL && countRolls(grid, i, j, rows, columns) < 4) {
+          result++;
+          if (!first) {
             //remove roll
-            nextGrid[i][j] = DOT;
-            result++;
+            grid[i][j] = DOT;
           }
         }
       }
     }
-    return new State(nextGrid, result);
+    return result;
   }
 
   private int countRolls(Character[][] grid, int i, int j, int rows, int columns) {
@@ -70,5 +67,4 @@ class AoC042025 implements Solution {
         .toArray(Character[][]::new);
   }
 
-  private record State(Character[][] grid, int removed) {}
 }
