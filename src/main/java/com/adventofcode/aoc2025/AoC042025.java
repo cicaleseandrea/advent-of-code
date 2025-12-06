@@ -66,5 +66,4 @@ class AoC042025 implements Solution {
         .map(row -> row.chars().mapToObj(c -> (char) c).toArray(Character[]::new))
         .toArray(Character[][]::new);
   }
-
 }
