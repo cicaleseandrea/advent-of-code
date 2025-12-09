@@ -4,9 +4,11 @@ import static com.adventofcode.utils.Utils.atoi;
 import static com.adventofcode.utils.Utils.incrementMod;
 import static com.adventofcode.utils.Utils.itoa;
 import static java.lang.Integer.signum;
+import static java.util.Comparator.comparingLong;
 
 import com.adventofcode.Solution;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.stream.Stream;
 
 class AoC092025 implements Solution {
@@ -23,18 +25,19 @@ class AoC092025 implements Solution {
 
   private String solve(Stream<String> input, boolean first) {
     List<Point> vertices = input.map(this::getTile).toList();
-    long result = 0;
-    for (int i = 0; i < vertices.size(); i++) {
-      for (int j = 0; j < vertices.size(); j++) {
-        long area = Point.area(vertices.get(i), vertices.get(j));
-        if (area > result) {
-          if (first || isInsidePolygon(vertices.get(i), vertices.get(j), vertices)) {
-            result = area;
-          }
-        }
+    PriorityQueue<Rectangle> rectanglesSortedByArea = new PriorityQueue<>(comparingLong(Rectangle::area).reversed());
+    for (Point vertexA : vertices) {
+      for (Point vertexB : vertices) {
+        rectanglesSortedByArea.add(new Rectangle(vertexA, vertexB));
       }
     }
-    return itoa(result);
+    while (!rectanglesSortedByArea.isEmpty()) {
+      Rectangle rectangle = rectanglesSortedByArea.remove();
+      if (first || isInsidePolygon(rectangle.a, rectangle.b, vertices)) {
+        return itoa(rectangle.area());
+      }
+    }
+    throw new IllegalStateException("No acceptable rectangle found");
   }
 
   private boolean isInsidePolygon(Point a, Point b, List<Point> vertices) {
@@ -136,9 +139,11 @@ class AoC092025 implements Solution {
     return Math.min(start, end) <= value && value <= Math.max(start, end);
   }
 
-  private record Point(int x, int y) {
-    static long area(Point first, Point second) {
-      return Math.multiplyExact((long) Math.abs(first.x - second.x) + 1, Math.abs(first.y - second.y) + 1);
+  private record Point(int x, int y) {}
+
+  private record Rectangle(Point a, Point b) {
+    long area() {
+      return Math.multiplyExact((long) Math.abs(a.x - b.x) + 1, Math.abs(a.y - b.y) + 1);
     }
   }
 }
