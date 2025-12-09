@@ -6,9 +6,9 @@ import static java.util.Comparator.reverseOrder;
 
 import com.adventofcode.Solution;
 import com.adventofcode.utils.DisjointSet;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.stream.Stream;
 
 class AoC082025 implements Solution {
@@ -26,11 +26,11 @@ class AoC082025 implements Solution {
   private String solve(Stream<String> input, boolean first) {
     List<Point> boxes = input.map(this::getBox).toList();
     DisjointSet<Point> circuits = initCircuits(boxes);
-    List<PairWithDistance> pairsSortedByDistance = getPairsSortedByDistance(boxes);
+    Queue<PairWithDistance> pairsSortedByDistance = getPairsSortedByDistance(boxes);
 
     int maxConnections = boxes.size() > 20 ? 1000 : 10;
     for (int i = 0; i < (first ? maxConnections : pairsSortedByDistance.size()); i++) {
-      PairWithDistance pair = pairsSortedByDistance.get(i);
+      PairWithDistance pair = pairsSortedByDistance.remove();
       circuits.union(pair.first, pair.second);
       if (circuits.getSize() == 1 && !first) {
         return itoa((long) pair.first.x * pair.second.x);
@@ -60,14 +60,13 @@ class AoC082025 implements Solution {
     return circuits;
   }
 
-  private static List<PairWithDistance> getPairsSortedByDistance(List<Point> boxes) {
-    List<PairWithDistance> pairsWithDistances = new ArrayList<>();
+  private static Queue<PairWithDistance> getPairsSortedByDistance(List<Point> boxes) {
+    Queue<PairWithDistance> pairsWithDistances = new PriorityQueue<>();
     for (int i = 0; i < boxes.size(); i++) {
       for (int j = i + 1; j < boxes.size(); j++) {
         pairsWithDistances.add(new PairWithDistance(boxes.get(i), boxes.get(j)));
       }
     }
-    Collections.sort(pairsWithDistances);
     return pairsWithDistances;
   }
 
