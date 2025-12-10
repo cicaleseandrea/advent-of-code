@@ -83,38 +83,28 @@ class AoC092025 implements Solution {
           return false;
         }
 
-        // for a vertical rectangle edge, check horizontal polygon edges
-        if (rectangleEdgeStart.x == rectangleEdgeEnd.x && edgeStart.y == edgeEnd.y) {
-          int edgeY = edgeStart.y;
-          int rectangleEdgeDirection = signum(rectangleEdgeEnd.y - rectangleEdgeStart.y);
-          // if a rectangle vertex touches the polygon edge, check another point of the rectangle edge to see if it's outside the polygon
-          int nextY;
-          if (rectangleEdgeStart.y == edgeY) {
-            nextY = edgeY + rectangleEdgeDirection;
-          } else if (rectangleEdgeEnd.y == edgeY) {
-            nextY = edgeY - rectangleEdgeDirection;
-          } else {
-            continue;
-          }
-          if (!isInsidePolygon(new Point(rectangleEdgeStart.x, nextY), vertices)) {
-            return false;
-          }
-        }
-
-        // for a horizontal rectangle edge, check vertical polygon edges
-        if (rectangleEdgeStart.y == rectangleEdgeEnd.y && edgeStart.x == edgeEnd.x) {
+        // for a vertical rectangle edge, check horizontal polygon edges. for a horizontal rectangle edge, check vertical polygon edges
+        if ((rectangleEdgeStart.x == rectangleEdgeEnd.x && edgeStart.y == edgeEnd.y) || (rectangleEdgeStart.y == rectangleEdgeEnd.y && edgeStart.x == edgeEnd.x)) {
           int edgeX = edgeStart.x;
-          int rectangleEdgeDirection = signum(rectangleEdgeEnd.x - rectangleEdgeStart.x);
+          int edgeY = edgeStart.y;
+          int rectangleEdgeXDirection = signum(rectangleEdgeEnd.x - rectangleEdgeStart.x);
+          int rectangleEdgeYDirection = signum(rectangleEdgeEnd.y - rectangleEdgeStart.y);
+          int nextX = rectangleEdgeStart.x;
+          int nextY = rectangleEdgeStart.y;
           // if a rectangle vertex touches the polygon edge, check another point of the rectangle edge to see if it's outside the polygon
-          int nextX;
           if (rectangleEdgeStart.x == edgeX) {
-            nextX = edgeX + rectangleEdgeDirection;
+            nextX = edgeX + rectangleEdgeXDirection;
           } else if (rectangleEdgeEnd.x == edgeX) {
-            nextX = edgeX - rectangleEdgeDirection;
+            nextX = edgeX - rectangleEdgeXDirection;
+          } else if (rectangleEdgeStart.y == edgeY) {
+            nextY = edgeY + rectangleEdgeYDirection;
+          } else if (rectangleEdgeEnd.y == edgeY) {
+            nextY = edgeY - rectangleEdgeYDirection;
           } else {
+            // edges don't touch each other
             continue;
           }
-          if (!isInsidePolygon(new Point(nextX, rectangleEdgeStart.y), vertices)) {
+          if (!isInsidePolygon(new Point(nextX, nextY), vertices)) {
             return false;
           }
         }
