@@ -3,7 +3,6 @@ package com.adventofcode.aoc2025;
 import static com.adventofcode.utils.Utils.itoa;
 
 import com.adventofcode.Solution;
-import com.adventofcode.utils.Pair;
 import com.adventofcode.utils.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -37,7 +36,7 @@ class AoC112025 implements Solution {
       wordList.subList(1, wordList.size())
           .forEach(word -> connections.put(wordList.get(0), word));
     });
-    
+
     if (first) {
       return itoa(countAllPaths(START_FIRST_PART, END, connections));
     } else {
@@ -58,20 +57,19 @@ class AoC112025 implements Solution {
     return countAllPaths(start, end, connections, new HashMap<>());
   }
 
-  private int countAllPaths(String start, String end, ListMultimap<String, String> connections, Map<Pair<String, String>, Integer> cache) {
-    Pair<String, String> path = new Pair<>(start, end);
-    if (cache.containsKey(path)) {
-      return cache.get(path);
+  private int countAllPaths(String start, String end, ListMultimap<String, String> connections, Map<String, Integer> distances) {
+    if (distances.containsKey(start)) {
+      return distances.get(start);
     }
     int count = 0;
     for (String neighbour : connections.get(start)) {
       if (neighbour.equals(end)) {
         count++;
       } else {
-        count += countAllPaths(neighbour, end, connections, cache);
+        count += countAllPaths(neighbour, end, connections, distances);
       }
     }
-    cache.put(path, count);
+    distances.put(start, count);
     return count;
   }
 }
