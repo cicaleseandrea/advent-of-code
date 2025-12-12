@@ -35,6 +35,7 @@ public class Utils {
 
   public static final String EMPTY = "";
   public static final String MERRY_CHRISTMAS = "MERRY CHRISTMAS";
+  public static final String EARLY_CHRISTMAS = "EARLY CHRISTMAS";
   public static final char SPACE = ' ';
   public static final char DOT = '.';
   public static final char TILDE = '~';
@@ -45,56 +46,56 @@ public class Utils {
   public static final char BLACK = '⬛';
   public static final char WHITE = '⬜';
   public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
-      "yyyy-MM-dd HH:mm" );
-  public static final Pattern LONG_PATTERN = Pattern.compile( "-?\\d+" );
-  public static final Pattern POSITIVE_LONG_PATTERN = Pattern.compile( "\\d+" );
-  public static final Pattern DOUBLE_PATTERN = Pattern.compile( "-?\\d+(?:\\.\\d+)?" );
-  public static final Pattern WORD_PATTERN = Pattern.compile( "[a-zA-Z]+" );
-  public static final List<Pair<Integer, Integer>> NEIGHBOURS_4 = List.of( new Pair<>( -1, 0 ),
-      new Pair<>( 1, 0 ), new Pair<>( 0, -1 ), new Pair<>( 0, 1 ) );
-  public static final List<Pair<Integer, Integer>> NEIGHBOURS_8 = List.of( new Pair<>( -1, 0 ),
-      new Pair<>( 1, 0 ), new Pair<>( 0, -1 ), new Pair<>( 0, 1 ), new Pair<>( -1, -1 ),
-      new Pair<>( 1, -1 ), new Pair<>( -1, 1 ), new Pair<>( 1, 1 ) );
+      "yyyy-MM-dd HH:mm");
+  public static final Pattern LONG_PATTERN = Pattern.compile("-?\\d+");
+  public static final Pattern POSITIVE_LONG_PATTERN = Pattern.compile("\\d+");
+  public static final Pattern DOUBLE_PATTERN = Pattern.compile("-?\\d+(?:\\.\\d+)?");
+  public static final Pattern WORD_PATTERN = Pattern.compile("[a-zA-Z]+");
+  public static final List<Pair<Integer, Integer>> NEIGHBOURS_4 = List.of(new Pair<>(-1, 0),
+      new Pair<>(1, 0), new Pair<>(0, -1), new Pair<>(0, 1));
+  public static final List<Pair<Integer, Integer>> NEIGHBOURS_8 = List.of(new Pair<>(-1, 0),
+      new Pair<>(1, 0), new Pair<>(0, -1), new Pair<>(0, 1), new Pair<>(-1, -1),
+      new Pair<>(1, -1), new Pair<>(-1, 1), new Pair<>(1, 1));
 
-  private static final boolean PRINT = Boolean.parseBoolean( System.getProperty( "print" ) );
+  private static final boolean PRINT = Boolean.parseBoolean(System.getProperty("print"));
 
   private Utils() {
   }
 
   public static String reverseString(final String source) {
-    return new StringBuilder( source ).reverse().toString();
+    return new StringBuilder(source).reverse().toString();
   }
 
   public static String getFirstString(final Stream<String> s) {
-    return s.findFirst().orElse( EMPTY );
+    return s.findFirst().orElse(EMPTY);
   }
 
   public static Pair<Long, Long> createPairLong(final long[] tmp) {
-    return new Pair<>( tmp[0], tmp[1] );
+    return new Pair<>(tmp[0], tmp[1]);
   }
 
   public static Pair<Long, Long> createPairLong(final String[] tmp) {
-    return new Pair<>( atol( tmp[0].trim() ), atol( tmp[1].trim() ) );
+    return new Pair<>(atol(tmp[0].trim()), atol(tmp[1].trim()));
   }
 
   public static Pair<Integer, Integer> createPairInteger(final int[] tmp) {
-    return new Pair<>( tmp[0], tmp[1] );
+    return new Pair<>(tmp[0], tmp[1]);
   }
 
   public static Pair<Integer, Integer> createPairInteger(final String[] tmp) {
-    return new Pair<>( atoi( tmp[0].trim() ), atoi( tmp[1].trim() ) );
+    return new Pair<>(atoi(tmp[0].trim()), atoi(tmp[1].trim()));
   }
 
   public static long atol(final String s) {
-    return Long.parseLong( s );
+    return Long.parseLong(s);
   }
 
   public static int atoi(final String s) {
-    return Integer.parseInt( s );
+    return Integer.parseInt(s);
   }
 
   public static Pair<String, String> createPairString(final String[] tmp) {
-    return new Pair<>( tmp[0], tmp[1] );
+    return new Pair<>(tmp[0], tmp[1]);
   }
 
   public static long boolToLong(final boolean b) {
@@ -106,24 +107,24 @@ public class Utils {
   }
 
   public static int charToInt(final char c) {
-    return Character.getNumericValue( c );
+    return Character.getNumericValue(c);
   }
 
   public static int charToInt(final int c) {
-    return Character.getNumericValue( c );
+    return Character.getNumericValue(c);
   }
 
   public static Comparator<Pair<Long, Long>> getPairComparator() {
-    return Comparator.<Pair<Long, Long>>comparingLong( Pair::getSecond )
-        .thenComparingLong( Pair::getFirst );
+    return Comparator.<Pair<Long, Long>>comparingLong(Pair::getSecond)
+        .thenComparingLong(Pair::getFirst);
   }
 
   public static long incrementMod(final long i, final long mod) {
-    return incrementMod( i, 1, mod );
+    return incrementMod(i, 1, mod);
   }
 
   public static int incrementMod(final int i, final int mod) {
-    return incrementMod( i, 1, mod );
+    return incrementMod(i, 1, mod);
   }
 
   public static long incrementMod(final long i, final long j, final long mod) {
@@ -135,31 +136,31 @@ public class Utils {
   }
 
   public static long decrementMod(final long i, final long mod) {
-    return decrementMod( i, 1, mod );
+    return decrementMod(i, 1, mod);
   }
 
   public static int decrementMod(final int i, final int mod) {
-    return decrementMod( i, 1, mod );
+    return decrementMod(i, 1, mod);
   }
 
   public static long decrementMod(final long i, final long j, final long mod) {
-    return mod != 0 ? Math.floorMod( i - j, mod ) : 0;
+    return mod != 0 ? Math.floorMod(i - j, mod) : 0;
   }
 
   public static int decrementMod(final int i, final int j, final int mod) {
-    return mod != 0 ? Math.floorMod( i - j, mod ) : 0;
+    return mod != 0 ? Math.floorMod(i - j, mod) : 0;
   }
 
   public static boolean areDistinct(final List<?> elements) {
-    return elements.stream().allMatch( new HashSet<>()::add );
+    return elements.stream().allMatch(new HashSet<>()::add);
   }
 
   public static boolean areNotAnagrams(final List<String> strings) {
-    return areDistinct( strings.stream()
-        .map( String::toCharArray )
-        .peek( Arrays::sort )
-        .map( String::new )
-        .toList() );
+    return areDistinct(strings.stream()
+        .map(String::toCharArray)
+        .peek(Arrays::sort)
+        .map(String::new)
+        .toList());
   }
 
   public static Stream<String> splitOnNewLine(final String s) {
@@ -167,62 +168,62 @@ public class Utils {
   }
 
   public static Stream<String> splitOnRegex(final String s, final String regex) {
-    return Stream.of( s.split( regex ) );
+    return Stream.of(s.split(regex));
   }
 
   public static List<Long> toPositiveLongList(final String input) {
-    return toPositiveLongStream( input ).collect( toList() );
+    return toPositiveLongStream(input).collect(toList());
   }
 
   public static List<Long> toLongList(final String input) {
-    return toLongStream( input ).collect( toList() );
+    return toLongStream(input).collect(toList());
   }
 
   public static List<Long> toLongList(final Stream<String> stream) {
-    return toLongStream( stream ).collect( toList() );
+    return toLongStream(stream).collect(toList());
   }
 
   public static List<String> toWordList(final String input) {
-    return toWordStream( input ).collect( toList() );
+    return toWordStream(input).collect(toList());
   }
 
   public static Stream<Long> toLongStream(final Stream<String> stream) {
-    return stream.map( Long::valueOf );
+    return stream.map(Long::valueOf);
   }
 
   public static Stream<Long> toLongStream(final String input) {
-    return toLongStream( LONG_PATTERN.matcher( input ).results().map( MatchResult::group ) );
+    return toLongStream(LONG_PATTERN.matcher(input).results().map(MatchResult::group));
   }
 
   public static Stream<Long> toPositiveLongStream(final String input) {
     return toLongStream(
-        POSITIVE_LONG_PATTERN.matcher( input ).results().map( MatchResult::group ) );
+        POSITIVE_LONG_PATTERN.matcher(input).results().map(MatchResult::group));
   }
 
   public static List<Double> toDoubleList(final String input) {
-    return toDoubleStream( input ).collect( toList() );
+    return toDoubleStream(input).collect(toList());
   }
 
   public static List<Double> toDoubleList(final Stream<String> stream) {
-    return toDoubleStream( stream ).collect( toList() );
+    return toDoubleStream(stream).collect(toList());
   }
 
   public static Stream<Double> toDoubleStream(final Stream<String> stream) {
-    return stream.map( Double::valueOf );
+    return stream.map(Double::valueOf);
   }
 
   public static Stream<Double> toDoubleStream(final String input) {
     return toDoubleStream(
-        DOUBLE_PATTERN.matcher( input ).results().map( MatchResult::group ) );
+        DOUBLE_PATTERN.matcher(input).results().map(MatchResult::group));
   }
 
   public static Stream<String> toWordStream(final String input) {
-    return WORD_PATTERN.matcher( input ).results().map( MatchResult::group );
+    return WORD_PATTERN.matcher(input).results().map(MatchResult::group);
   }
 
   public static <T> Stream<T> iteratorToStream(final Iterator<T> iterator) {
     return StreamSupport.stream(
-        Spliterators.spliteratorUnknownSize( iterator, Spliterator.ORDERED ), false );
+        Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false);
   }
 
   public static <T> Iterable<T> getIterable(final Stream<T> s) {
@@ -230,63 +231,63 @@ public class Utils {
   }
 
   public static List<String> splitOnTabOrSpace(final String s) {
-    return List.of( s.split( "\\s+" ) );
+    return List.of(s.split("\\s+"));
   }
 
   public static <K> K listGetOrDefault(final List<K> list, final int i, final K defaultValue) {
-    if ( i >= 0 && i < list.size() ) {
-      return list.get( i );
+    if (i >= 0 && i < list.size()) {
+      return list.get(i);
     } else {
       return defaultValue;
     }
   }
 
   public static <K> long incrementMapElement(final Map<K, Long> map, final K key) {
-    return incrementMapElement( map, key, 1L );
+    return incrementMapElement(map, key, 1L);
   }
 
   public static <K> long incrementMapElement(final Map<K, Long> map, final K key,
-      final long increment) {
-    return map.merge( key, increment, Long::sum );
+                                             final long increment) {
+    return map.merge(key, increment, Long::sum);
   }
 
   public static <K> long decrementMapElement(final Map<K, Long> map, final K key) {
-    return decrementMapElement( map, key, true );
+    return decrementMapElement(map, key, true);
   }
 
   public static <K> long decrementMapElement(final Map<K, Long> map, final K key,
-      final boolean remove) {
-    final long res = map.merge( key, -1L, Long::sum );
-    if ( remove && res == 0 ) {
-      return map.remove( key );
+                                             final boolean remove) {
+    final long res = map.merge(key, -1L, Long::sum);
+    if (remove && res == 0) {
+      return map.remove(key);
     }
     return res;
   }
 
   public static long incrementListElement(final List<Long> list, final int pos) {
-    return incrementListElement( list, pos, 1 );
+    return incrementListElement(list, pos, 1);
   }
 
   public static long incrementListElement(final List<Long> list, final int pos,
-      final long increment) {
-    final long newVal = list.get( pos ) + increment;
-    list.set( pos, newVal );
+                                          final long increment) {
+    final long newVal = list.get(pos) + increment;
+    list.set(pos, newVal);
     return newVal;
   }
 
   public static long decrementListElement(final List<Long> list, final int pos) {
-    return decrementListElement( list, pos, 1 );
+    return decrementListElement(list, pos, 1);
   }
 
   public static long decrementListElement(final List<Long> list, final int pos,
-      final long decrement) {
-    return incrementListElement( list, pos, -decrement );
+                                          final long decrement) {
+    return incrementListElement(list, pos, -decrement);
   }
 
   public static Integer extractIntegerFromString(final String msg) {
-    final Matcher matcher = LONG_PATTERN.matcher( msg );
-    if ( matcher.find() ) {
-      return atoi( matcher.group() );
+    final Matcher matcher = LONG_PATTERN.matcher(msg);
+    if (matcher.find()) {
+      return atoi(matcher.group());
     } else {
       throw new IllegalArgumentException();
     }
@@ -296,23 +297,23 @@ public class Utils {
       throws InterruptedException {
     Long x;
     do {
-      x = output.poll( 50, MILLISECONDS );
-    } while ( x == null && !writer.isDone() );
+      x = output.poll(50, MILLISECONDS);
+    } while (x == null && !writer.isDone());
     return x;
   }
 
   public static Set<Character> stringToCharacterSet(final String string) {
-    return string.chars().mapToObj( c -> (char) c ).collect( toSet() );
+    return string.chars().mapToObj(c -> (char) c).collect(toSet());
   }
 
   public static List<List<Character>> getCharMatrix(final Stream<String> input) {
-    return input.map( row -> row.chars().mapToObj( c -> (char) c ).collect( toList() ) )
-        .collect( toList() );
+    return input.map(row -> row.chars().mapToObj(c -> (char) c).collect(toList()))
+        .collect(toList());
   }
 
   public static List<List<Integer>> getDigitsMatrix(final Stream<String> input) {
-    return input.map( row -> row.chars().mapToObj( Utils::charToInt ).collect( toList() ) )
-        .collect( toList() );
+    return input.map(row -> row.chars().mapToObj(Utils::charToInt).collect(toList()))
+        .collect(toList());
   }
 
   public static boolean shouldPrint() {
@@ -320,57 +321,57 @@ public class Utils {
   }
 
   public static <E> void printMatrix(final List<? extends List<E>> matrix) {
-    for ( final List<E> row : matrix ) {
-      for ( final E e : row ) {
-        System.out.print( e );
+    for (final List<E> row : matrix) {
+      for (final E e : row) {
+        System.out.print(e);
       }
       System.out.println();
     }
   }
 
   public static <E> void printMatrix(final E[][] matrix) {
-    for ( E[] row : matrix ) {
-      for ( E e : row ) {
-        System.out.print( e );
+    for (E[] row : matrix) {
+      for (E e : row) {
+        System.out.print(e);
       }
       System.out.println();
     }
   }
 
   public static LongStream matrixToLongStream(final long[][] matrix) {
-    return Arrays.stream( matrix ).flatMapToLong( Arrays::stream );
+    return Arrays.stream(matrix).flatMapToLong(Arrays::stream);
   }
 
   public static int[] toDigitsArray(final String i) {
-    return i.chars().map( Utils::charToInt ).toArray();
+    return i.chars().map(Utils::charToInt).toArray();
   }
 
   public static int[] toDigitsArray(final long i) {
-    return toDigitsArray( String.valueOf( i ) );
+    return toDigitsArray(String.valueOf(i));
   }
 
   public static String itoa(final long i) {
-    return Long.toString( i );
+    return Long.toString(i);
   }
 
   public static String itoa(final Number i) {
-    return Long.toString( i.longValue() );
+    return Long.toString(i.longValue());
   }
 
   public static long sumNeighbors8(final long[][] matrix, final int i, final int j) {
     //with diagonals
-    return sumNeighbors4( matrix, i, j ) + getCell( matrix, i - 1, j - 1 ) + getCell( matrix,
-        i - 1, j + 1 ) + getCell( matrix, i + 1, j - 1 ) + getCell( matrix, i + 1, j + 1 );
+    return sumNeighbors4(matrix, i, j) + getCell(matrix, i - 1, j - 1) + getCell(matrix,
+        i - 1, j + 1) + getCell(matrix, i + 1, j - 1) + getCell(matrix, i + 1, j + 1);
   }
 
   //no checks on matrix size: use at your own risk!
   public static long sumNeighbors4(final long[][] matrix, final int i, final int j) {
     //no diagonals
-    if ( matrix == null ) {
+    if (matrix == null) {
       return 0;
     }
-    return getCell( matrix, i - 1, j ) + getCell( matrix, i + 1, j ) + getCell( matrix, i,
-        j - 1 ) + getCell( matrix, i, j + 1 );
+    return getCell(matrix, i - 1, j) + getCell(matrix, i + 1, j) + getCell(matrix, i,
+        j - 1) + getCell(matrix, i, j + 1);
 
   }
 
@@ -379,33 +380,33 @@ public class Utils {
   }
 
   public static Stream<Character> upperCaseLetters() {
-    return IntStream.rangeClosed( 'A', 'Z' ).mapToObj( c -> (char) c );
+    return IntStream.rangeClosed('A', 'Z').mapToObj(c -> (char) c);
   }
 
   public static Stream<Character> lowerCaseLetters() {
-    return IntStream.rangeClosed( 'a', 'z' ).mapToObj( c -> (char) c );
+    return IntStream.rangeClosed('a', 'z').mapToObj(c -> (char) c);
   }
 
   public static Stream<Character> letters() {
-    return Stream.concat( lowerCaseLetters(), upperCaseLetters() );
+    return Stream.concat(lowerCaseLetters(), upperCaseLetters());
   }
 
   public static long manhattanDistance(final Pair<Long, Long> p, final Pair<Long, Long> q) {
-    return manhattanDistance( p.getFirst(), p.getSecond(), q.getFirst(), q.getSecond() );
+    return manhattanDistance(p.getFirst(), p.getSecond(), q.getFirst(), q.getSecond());
   }
 
   public static long manhattanDistance(final Triplet<Long, Long, Long> p,
-      final Triplet<Long, Long, Long> q) {
-    return manhattanDistance( p.getFirst(), p.getSecond(), q.getFirst(),
-        q.getSecond() ) + Math.abs( p.getThird() - q.getThird() );
+                                       final Triplet<Long, Long, Long> q) {
+    return manhattanDistance(p.getFirst(), p.getSecond(), q.getFirst(),
+        q.getSecond()) + Math.abs(p.getThird() - q.getThird());
   }
 
   public static long manhattanDistance(final long x, final long y, final long i, final long j) {
-    return Math.abs( x - i ) + Math.abs( y - j );
+    return Math.abs(x - i) + Math.abs(y - j);
   }
 
   public static <K, V> Map<K, V> createLRUMap(final int LRU_CACHE_SIZE) {
-    return new LinkedHashMap<>( LRU_CACHE_SIZE * 2 ) {
+    return new LinkedHashMap<>(LRU_CACHE_SIZE * 2) {
       @Override
       protected boolean removeEldestEntry(final Entry<K, V> eldest) {
         return size() > LRU_CACHE_SIZE;
@@ -415,50 +416,50 @@ public class Utils {
 
   @SuppressWarnings("deprecation")
   public static String computeMD5AsString(final CharSequence message) {
-    final byte[] md5 = computeMD5AsBytes( message );
-    return BaseEncoding.base16().lowerCase().encode( md5 );
+    final byte[] md5 = computeMD5AsBytes(message);
+    return BaseEncoding.base16().lowerCase().encode(md5);
   }
 
   @SuppressWarnings("deprecation")
   public static byte[] computeMD5AsBytes(final CharSequence message) {
-    return Hashing.md5().hashString( message, StandardCharsets.UTF_8 ).asBytes();
+    return Hashing.md5().hashString(message, StandardCharsets.UTF_8).asBytes();
   }
 
   public static <E> void rotate(final Deque<E> deque, final long n) {
-    if ( deque == null || deque.isEmpty() ) {
+    if (deque == null || deque.isEmpty()) {
       return;
     }
-    if ( n < 0 ) {
-      for ( long i = 0; i < -n; i++ ) {
-        deque.push( deque.pollLast() );
+    if (n < 0) {
+      for (long i = 0; i < -n; i++) {
+        deque.push(deque.pollLast());
       }
-    } else if ( n > 0 ) {
-      for ( long i = 0; i < n; i++ ) {
-        deque.add( deque.poll() );
+    } else if (n > 0) {
+      for (long i = 0; i < n; i++) {
+        deque.add(deque.poll());
       }
     }
   }
 
   public static long lcm(final long a, final long b) {
-    return (a * b) / gcd( a, b );
+    return (a * b) / gcd(a, b);
   }
 
   public static long gcd(final long a, final long b) {
-    if ( b == 0 ) {
+    if (b == 0) {
       return a;
     } else {
-      return gcd( b, a % b );
+      return gcd(b, a % b);
     }
   }
 
   public static void clearScreen() {
     try {
-      if ( System.getProperty( "os.name" ).contains( "Windows" ) ) {
-        System.out.print( "\033[2J" );
+      if (System.getProperty("os.name").contains("Windows")) {
+        System.out.print("\033[2J");
       } else {
-        Runtime.getRuntime().exec( "clear" );
+        Runtime.getRuntime().exec("clear");
       }
-    } catch ( IOException e ) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
