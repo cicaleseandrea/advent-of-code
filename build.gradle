@@ -10,6 +10,7 @@ repositories {
 dependencies {
   implementation 'com.google.guava:guava:33.5.0-jre'
   implementation 'org.json:json:20250517'
+  implementation("com.google.ortools:ortools-java:9.12.4544")
   testImplementation 'junit:junit:4.13.2'
 }
 
