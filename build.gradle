@@ -8,9 +8,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:31.0.1-jre'
-    implementation 'org.json:json:20210307'
-    testImplementation 'junit:junit:4.13.2'
+  implementation 'com.google.guava:guava:33.5.0-jre'
+  implementation 'org.json:json:20250517'
+  testImplementation 'junit:junit:4.13.2'
 }
 
 group = 'com.adventofcode'
