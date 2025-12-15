@@ -5,7 +5,7 @@
 
 My [Advent of Code](https://adventofcode.com/) solutions in Java.
 
-|                                                                 |                                                                  | [![Stars 2025]( https://img.shields.io/badge/2025-0/24_⭐-dodgerblue?logo=adventofcode)](https://adventofcode.com/2025) |                                                                  |
+|                                                                 |                                                                  | [![Stars 2025]( https://img.shields.io/badge/2025-24/24_⭐-dodgerblue?logo=adventofcode)](https://adventofcode.com/2025) |                                                                  |
 |-----------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
 | [Day 1](/src/main/java/com/adventofcode/aoc2025/AoC012025.java) | [Day 2](/src/main/java/com/adventofcode/aoc2025/AoC022025.java)  | [Day 3](/src/main/java/com/adventofcode/aoc2025/AoC032025.java)                                                        | [Day 4](/src/main/java/com/adventofcode/aoc2025/AoC042025.java)  |
 | [Day 5](/src/main/java/com/adventofcode/aoc2025/AoC052025.java) | [Day 6](/src/main/java/com/adventofcode/aoc2025/AoC062025.java)  | [Day 7](/src/main/java/com/adventofcode/aoc2025/AoC072025.java)                                                        | [Day 8](/src/main/java/com/adventofcode/aoc2025/AoC082025.java)  |
